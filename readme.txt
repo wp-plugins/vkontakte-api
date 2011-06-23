@@ -1,6 +1,6 @@
 === Vkontakte API ===
 Contributors: kowack
-Donate link: http://http://www.kowack.info/projects/vk_api/
+Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, vkontakte, ajax, plugin, posts, pages
 Requires at least: 2.7
 Tested up to: 3.1.3
