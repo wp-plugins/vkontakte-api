@@ -51,6 +51,7 @@ class VK_api {
 	add_action('admin_menu', array(&$this, 'create_menu'));
 	add_action('wp_print_scripts', array(&$this, 'add_head'));
 	add_filter('comments_template', array(&$this, 'add_tabs'));
+	add_action('init', array(&$this, 'add_jquery'));  
     }
 	
 	function install(){
@@ -139,8 +140,13 @@ class VK_api {
 	
 	function load_domain() {
 		$mofile = dirname(__FILE__) . '/lang/' . $this->plugin_domain . '-' . get_locale() . '.mo';
-		
 		load_textdomain($this->plugin_domain, $mofile);
+	}
+	
+	function add_jquery() {  
+    wp_deregister_script( 'jquery' );  
+    wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js');  
+    wp_enqueue_script( 'jquery' );  
 	}
 	
 }
