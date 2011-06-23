@@ -3,7 +3,7 @@
 Plugin Name: Vkontakte API
 Plugin URI: http://http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog.
-Version: 0.9
+Version: 1.2
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -50,8 +50,8 @@ class VK_api {
 	register_deactivation_hook(__FILE__, array(&$this, 'deinstall'));
 	add_action('admin_menu', array(&$this, 'create_menu'));
 	add_action('wp_print_scripts', array(&$this, 'add_head'));
-	add_filter('comments_template', array(&$this, 'add_tabs'));
-	add_action('init', array(&$this, 'add_jquery'));  
+	add_filter('comments_template', array(&$this, 'add_tabs')); 
+	wp_enqueue_script('jquery');
     }
 	
 	function install(){
@@ -110,15 +110,18 @@ class VK_api {
 	if((empty($att{0})))$att='false';else $att .= '"';
 	if((empty($att2{0})))$att2='0';else $att2 = '1';
 	$echo='<script type="text/javascript">
+	jQuery(document).ready(function() {
+	jQuery("#comments-title").css("padding","0 0");
+	});
 	function showVK(){
-		$("#vkapi").show(2000);
-		$("#comments").hide(2500);
-		$("#respond").hide(2500);
+		jQuery("#vkapi").show(2000);
+		jQuery("#comments").hide(2500);
+		jQuery("#respond").hide(2500);
 		};
 	function showComments(){
-		$("#comments").show(2000);
-		$("#respond").show(2000);
-		$("#vkapi").hide(2000);
+		jQuery("#comments").show(2000);
+		jQuery("#respond").show(2000);
+		jQuery("#vkapi").hide(2000);
 		};
 	</script>
 	<br />
@@ -142,13 +145,6 @@ class VK_api {
 		$mofile = dirname(__FILE__) . '/lang/' . $this->plugin_domain . '-' . get_locale() . '.mo';
 		load_textdomain($this->plugin_domain, $mofile);
 	}
-	
-	function add_jquery() {  
-    wp_deregister_script( 'jquery' );  
-    wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js');  
-    wp_enqueue_script( 'jquery' );  
-	}
-	
 }
 
 else :
