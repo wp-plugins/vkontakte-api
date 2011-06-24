@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vkontakte API\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-25 00:13+0200\n"
-"PO-Revision-Date: 2011-06-25 00:14+0200\n"
+"POT-Creation-Date: 2011-06-25 01:22+0200\n"
+"PO-Revision-Date: 2011-06-25 01:23+0200\n"
 "Last-Translator: www.kowack.info <kowack@gmail.com>\n"
 "Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -86,7 +86,6 @@ msgid "Link :"
 msgstr "Ссылки :"
 
 #: ../vkapi-options.php:1
-#, fuzzy
 msgid "Like button: "
 msgstr "Кнопка \"Мне нравиться\" :"
 
@@ -188,9 +187,12 @@ msgid "Title:"
 msgstr ""
 
 #: ../vkapi.php:244
-#: ../vkapi.php:248
 msgid "ID группы (видно по ссылке на статистику):"
 msgstr ""
+
+#: ../vkapi.php:248
+msgid "Width:"
+msgstr "Ширина:"
 
 #: ../vkapi.php:253
 msgid "Тип виджета:"

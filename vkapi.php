@@ -245,7 +245,7 @@ class VKAPI_Community extends WP_Widget {
 		<input class="widefat" id="<?php echo $this->get_field_id('gid'); ?>" name="<?php echo $this->get_field_name('gid'); ?>" type="text" value="<?php echo $gid; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('ID группы (видно по ссылке на статистику):'); ?>
+		<p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:'); ?>
 		<input class="widefat" id="<?php echo $this->get_field_id('width'); ?>" name="<?php echo $this->get_field_name('width'); ?>" type="text" value="<?php echo $width; ?>" />
 		</label></p>
 		
