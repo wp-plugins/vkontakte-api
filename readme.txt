@@ -2,22 +2,20 @@
 Contributors: kowack
 Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, vkontakte, ajax, plugin, posts, pages
-Requires at least: 2.7
+Requires at least: 2.8
 Tested up to: 3.1.3
-Stable tag: 1.3
+Stable tag: 1.4
 
 Описание: Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог.
 
 == Description ==
 
-*   На данный момент реализовано комментирование и кнопка "Мне нравиться". 
-*   В разработке: кнопка "Сохранить", в планах голосование и статистика.
+*   На данный момент реализовано комментирование и кнопка "Мне нравиться" и 2 виджета. 
 *   Требуеться актуальная версия PHP ( > 5.2.3)
 *   Версия WordpPress не ниже 2.7
 *   Тестировалось на актуальной на момент создания версии.
 
-*   Currently implemented "commenting" and button "I like".
-*   In development: the button "Save", polls and statistics.
+*   Currently implemented "commenting" and button "I like" and 2 widget.
 *   Require a valid version of PHP (> 5.2.3)
 *   Version WordPress 2.7 or higher
 *   Tested on "up to date" release.
@@ -54,9 +52,11 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 1. Vkontakte comments.
 2. WordPress comments.
 3. Ajax in action.
-4. Admin panel.
 
 == Changelog ==
+
+= 1.4 = 
+* Fix something and add somethis options ^^.
 
 = 1.3 = 
 * Add "I like" button.
@@ -72,6 +72,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.4 =
+* Чучуть подправил и прибавил пару опций.
 
 = 1.3 =
 * Добавлена кнопка "Мне нравиться". 

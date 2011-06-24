@@ -3,7 +3,7 @@
 Plugin Name: Vkontakte API
 Plugin URI: http://http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog.
-Version: 1.3
+Version: 1.4
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -76,7 +76,9 @@ class VK_api {
 		add_option('vkapi_comm_show', '0');
 		add_option('vkapi_like_type', 'full');
 		add_option('vkapi_like_verb', '0');
-		add_option('vkapi_align', 'right');
+		add_option('vkapi_align', 'left');
+		add_option('vkapi_show_comm', 'true');
+		add_option('vkapi_show_like', 'true');
 	}
 	
 	function deinstall() {
@@ -94,6 +96,8 @@ class VK_api {
 		delete_option('vkapi_like_type');
 		delete_option('vkapi_like_verb');
 		delete_option('vkapi_align');
+		delete_option('vkapi_show_comm');
+		delete_option('vkapi_show_like');
 	}
 	
 	function create_menu() {
@@ -109,58 +113,65 @@ class VK_api {
 			$appId = get_option('vkapi_appId');
 			echo '<meta property="vk:app_id" content="'.$appId.'" />';
 			echo '<script type="text/javascript" src="http://userapi.com/js/api/openapi.js"></script>';
+			echo '<script type="text/javascript" src="http://vkontakte.ru/js/api/share.js?9" charset="windows-1251"></script>';
 		}
 	}
 	
 	function add_tabs() {
-		global $post;
-		$postid = $post->ID;
-		$att;
-		$att2 = get_option('vkapi_comm_autoPublish');
-		if(get_option('vkapi_comm_graffiti')=='1')$att.= '"graffiti';
-		if(get_option('vkapi_comm_photo')=='1')$att.= (empty($att{0}))?'"photo':',photo';
-		if(get_option('vkapi_comm_audio')=='1')$att.= (empty($att{0}))?'"audio':',audio';
-		if(get_option('vkapi_comm_video')=='1')$att.= (empty($att{0}))?'"video':',video';
-		if(get_option('vkapi_comm_link')=='1')$att.= (empty($att{0}))?'"link':',link';	
-		if((empty($att{0})))$att='false';else $att .= '"';
-		if((empty($att2{0})))$att2='0';else $att2 = '1';
-		$echo='<script type="text/javascript">
-		jQuery(document).ready(function() {
-		jQuery("#comments-title").css("padding","0 0");
-		});
-		function showVK(){
-			jQuery("#vkapi").show(2000);
-			jQuery("#comments").hide(2500);
-			jQuery("#respond").hide(2500);
-			};
-		function showComments(){
-			jQuery("#comments").show(2000);
-			jQuery("#respond").show(2000);
-			jQuery("#vkapi").hide(2000);
-			};
-		</script>
-		<br />
-		<button id="submit" onclick="showVK()">Комментарии Vkontakte</button>
-		<button id="submit" onclick="showComments()">Комментарии Wordpress</button><br /><br /><br />
-		<div id="vkapi"></div>
-		<script type="text/javascript">
-			VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').'},'.$postid.');
-		</script>';
-		echo $echo;	
-		if(get_option('vkapi_comm_show')==1)echo '<script type="text/javascript">window.onload=showVK;</script>'; else echo '<script type="text/javascript">window.onload=showComments;</script>';
-	}
-	
-	function add_buttons ($args) {
-		if(!is_feed() && !is_home()){
+		$vkapi_show_comm = get_option('vkapi_show_comm');
+		if($vkapi_show_comm=='true'){
 			global $post;
 			$postid = $post->ID;
-			$align = get_option('vkapi_align');
-			$type = get_option('vkapi_like_type');
-			$verb = get_option('vkapi_like_verb');
-			$args.="<div style=\"float: $align;\"><div id=\"vkapi_like\"></div></div>
-			<script type=\"text/javascript\">
-				VK.Widgets.Like('vkapi_like', {width: 200, type: '$type', verb: '$verb'}, $postid);
-			</script>";
+			$att;
+			$att2 = get_option('vkapi_comm_autoPublish');
+			if(get_option('vkapi_comm_graffiti')=='1')$att.= '"graffiti';
+			if(get_option('vkapi_comm_photo')=='1')$att.= (empty($att{0}))?'"photo':',photo';
+			if(get_option('vkapi_comm_audio')=='1')$att.= (empty($att{0}))?'"audio':',audio';
+			if(get_option('vkapi_comm_video')=='1')$att.= (empty($att{0}))?'"video':',video';
+			if(get_option('vkapi_comm_link')=='1')$att.= (empty($att{0}))?'"link':',link';	
+			if((empty($att{0})))$att='false';else $att .= '"';
+			if((empty($att2{0})))$att2='0';else $att2 = '1';
+			$echo='<script type="text/javascript">
+			jQuery(document).ready(function() {
+			jQuery("#comments-title").css("padding","0 0");
+			});
+			function showVK(){
+				jQuery("#vkapi").show(2000);
+				jQuery("#comments").hide(2500);
+				jQuery("#respond").hide(2500);
+				};
+			function showComments(){
+				jQuery("#comments").show(2000);
+				jQuery("#respond").show(2000);
+				jQuery("#vkapi").hide(2000);
+				};
+			</script>
+			<br />
+			<button id="submit" onclick="showVK()">Комментарии Vkontakte</button>
+			<button id="submit" onclick="showComments()">Комментарии Wordpress</button><br /><br /><br />
+			<div id="vkapi"></div>
+			<script type="text/javascript">
+				VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').'},'.$postid.');
+			</script>';
+			echo $echo;	
+			if(get_option('vkapi_comm_show')==1)echo '<script type="text/javascript">window.onload=showVK;</script>'; else echo '<script type="text/javascript">window.onload=showComments;</script>';
+		}
+	}
+
+	function add_buttons ($args) {
+		if(!is_feed() && !is_home()){
+			$like = get_option('vkapi_show_like');
+			if($like=='true'){
+				global $post;
+				$postid = $post->ID;
+				$align = get_option('vkapi_align');
+				$type = get_option('vkapi_like_type');
+				$verb = get_option('vkapi_like_verb');
+				$args.="<div float=\"$align\"><div id=\"vkapi_like\"></div></div>
+				<script type=\"text/javascript\">
+					VK.Widgets.Like('vkapi_like', {width: 200, type: '$type', verb: '$verb'}, $postid);
+				</script>";
+			}
 		}
 		return $args;
 	}
@@ -206,12 +217,13 @@ class VKAPI_Community extends WP_Widget {
 		$vkapi_divid = $args['widget_id'];
 		$vkapi_mode = 2;
 		$vkapi_gid = $instance['gid'];
+		$vkapi_width = $instance['width'];
 		if($instance['type']=='users')$vkapi_mode = 0;
 		if($instance['type']=='news')$vkapi_mode = 2;
 		if($instance['type']=='name')$vkapi_mode = 1;
-		echo '<div id="'.$vkapi_divid.'"></div>
+		echo '<br /><div id="'.$vkapi_divid.'"></div>
 		<script type="text/javascript">
-			VK.Widgets.Group("'.$vkapi_divid.'", {mode: '.$vkapi_mode.', height: "1"}, '.$vkapi_gid.');
+			VK.Widgets.Group("'.$vkapi_divid.'", {mode: '.$vkapi_mode.', width: "'.$vkapi_width.'", height: "1"}, '.$vkapi_gid.');
 		</script><br />';
 	}
 
@@ -220,16 +232,21 @@ class VKAPI_Community extends WP_Widget {
 	}
 
 	function form($instance) {
-		$instance = wp_parse_args( (array) $instance, array( 'type' => 'users', 'title' => '', 'gid' => '28197069') );
+		$instance = wp_parse_args( (array) $instance, array( 'type' => 'users', 'title' => '', 'width' => '0','gid' => '28197069') );
 		$title = esc_attr( $instance['title'] );
 		$gid = esc_attr( $instance['gid'] );
+		$width = esc_attr( $instance['width'] );
 
 		?><p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?>
 		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo $this->get_field_id('gid'); ?>"><?php _e('Title:'); ?>
+		<p><label for="<?php echo $this->get_field_id('gid'); ?>"><?php _e('ID группы (видно по ссылке на статистику):'); ?>
 		<input class="widefat" id="<?php echo $this->get_field_id('gid'); ?>" name="<?php echo $this->get_field_name('gid'); ?>" type="text" value="<?php echo $gid; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('ID группы (видно по ссылке на статистику):'); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id('width'); ?>" name="<?php echo $this->get_field_name('width'); ?>" type="text" value="<?php echo $width; ?>" />
 		</label></p>
 		
 		<p>
@@ -260,7 +277,7 @@ class VKAPI_Recommend extends WP_Widget {
 		$vkapi_limit = $instance['limit'];
 		$vkapi_period = $instance['period'];
 		$vkapi_verb = $instance['verb'];
-		echo '<div id="'.$vkapi_divid.'"></div>
+		echo '<br /><div id="'.$vkapi_divid.'"></div>
 		<script type="text/javascript">
 			VK.Widgets.Recommended("'.$vkapi_divid.'", {limit: '.$vkapi_limit.', period: \''.$vkapi_period.'\', verb: '.$vkapi_verb.'});
 		</script><br />';
@@ -271,7 +288,7 @@ class VKAPI_Recommend extends WP_Widget {
 	}
 
 	function form($instance) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'limit' => '5', 'period' => 'day', 'verb' => '') );
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'limit' => '5', 'period' => 'month', 'verb' => '0') );
 		$title = esc_attr( $instance['title'] );
 		$limit = esc_attr( $instance['limit'] );
 
