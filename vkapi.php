@@ -194,7 +194,7 @@ class VKAPI_Community extends WP_Widget {
 
 	function __construct() {
 		$widget_ops = array('classname' => 'vkapi_community', 'description' => __('Информация о группе вконтакте', $this->plugin_domain) );
-		parent::__construct('vkapi_community', $name = __('VK: Community Users', $this->plugin_domain, $widget_ops));
+		parent::__construct('vkapi_community', $name = __('VK: Community Users', 'vkapi'), $widget_ops);
 	}
 
 	function widget($args, $instance) {
@@ -247,7 +247,7 @@ class VKAPI_Recommend extends WP_Widget {
 
 	function __construct() {
 		$widget_ops = array('classname' => 'vkapi_recommend', 'description' => __('Топ сайта на основе "Мне нравиться"', $this->plugin_domain) );
-		parent::__construct('vkapi_recommend', $name = __('VK: Recommends (Beta)', $this->plugin_domain), $widget_ops);
+		parent::__construct('vkapi_recommend', $name = __('VK: Recommends (Beta)', 'vkapi'), $widget_ops);
 		}
 
 		function widget($args, $instance) {

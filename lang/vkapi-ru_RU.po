@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vkontakte API\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-22 03:00+0200\n"
-"PO-Revision-Date: 2011-06-22 03:00+0200\n"
+"POT-Creation-Date: 2011-06-24 04:07+0200\n"
+"PO-Revision-Date: 2011-06-24 04:07+0200\n"
 "Last-Translator: www.kowack.info <kowack@gmail.com>\n"
 "Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -78,6 +78,54 @@ msgid "Link :"
 msgstr "Ссылки :"
 
 #: ../vkapi-options.php:1
+msgid "Like button:"
+msgstr "Кнопка \"Мне нравиться\" :"
+
+#: ../vkapi-options.php:1
+msgid "Выравнивание :"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "справа"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "слева"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Тип кнопки :"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "кнопка с текстовым счётчиком"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "кнопка с миниатюрным счётчиком"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "миниатюрная кнопка"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "миниатюрная кнопка, счётчик сверху"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Формулировка :"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Мне нравится"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Это интересно"
+msgstr ""
+
+#: ../vkapi-options.php:1
 msgid "Support project"
 msgstr "Поддержка проекта"
 
@@ -105,16 +153,86 @@ msgstr " Сохранить настройки "
 msgid "VKontakte API plugin requires Wordpress 2.8 or newer. <a href=\"http://codex.wordpress.org/Upgrading_WordPress\">Please update!</a>"
 msgstr ""
 
-#: ../vkapi.php:85
+#: ../vkapi.php:100
 msgid "Vkontate API Plugin Settings"
 msgstr ""
 
-#: ../vkapi.php:85
+#: ../vkapi.php:100
 msgid "Vkontakte API"
 msgstr ""
 
-#: ../vkapi.php:150
+#: ../vkapi.php:182
 msgid "Class VK_api already declared!"
+msgstr ""
+
+#: ../vkapi.php:196
+msgid "Информация о группе вконтакте"
+msgstr ""
+
+#: ../vkapi.php:197
+msgid "VK: Community Users"
+msgstr "VK: Группа"
+
+#: ../vkapi.php:227
+#: ../vkapi.php:231
+#: ../vkapi.php:278
+msgid "Title:"
+msgstr ""
+
+#: ../vkapi.php:236
+msgid "Тип виджета:"
+msgstr ""
+
+#: ../vkapi.php:238
+msgid "Список пользователей"
+msgstr ""
+
+#: ../vkapi.php:239
+msgid "Новости группы"
+msgstr ""
+
+#: ../vkapi.php:240
+msgid "Только название"
+msgstr ""
+
+#: ../vkapi.php:249
+msgid "Топ сайта на основе \"Мне нравиться\""
+msgstr ""
+
+#: ../vkapi.php:250
+msgid "VK: Recommends (Beta)"
+msgstr "VK: Популярное (Beta)"
+
+#: ../vkapi.php:282
+msgid "Количество:"
+msgstr ""
+
+#: ../vkapi.php:287
+msgid "Период:"
+msgstr ""
+
+#: ../vkapi.php:289
+msgid "Сутки"
+msgstr ""
+
+#: ../vkapi.php:290
+msgid "Неделя"
+msgstr ""
+
+#: ../vkapi.php:291
+msgid "Месяц"
+msgstr ""
+
+#: ../vkapi.php:296
+msgid "Формулировка:"
+msgstr ""
+
+#: ../vkapi.php:298
+msgid "Понравилось ..."
+msgstr ""
+
+#: ../vkapi.php:299
+msgid "Интересно ..."
 msgstr ""
 
 #~ msgid "Tabs settings."
