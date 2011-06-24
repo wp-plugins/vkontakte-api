@@ -4,20 +4,20 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, vkontakte, ajax, plugin, posts, pages
 Requires at least: 2.7
 Tested up to: 3.1.3
-Stable tag: 1.2
+Stable tag: 1.3
 
 Описание: Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог.
 
 == Description ==
 
-*   На данный момент реализовано комментирование. 
-*   В разработке: кнопки "Сохранить" и "Мне нравиться", в планах голосование и статистика.
+*   На данный момент реализовано комментирование и кнопка "Мне нравиться". 
+*   В разработке: кнопка "Сохранить", в планах голосование и статистика.
 *   Требуеться актуальная версия PHP ( > 5.2.3)
 *   Версия WordpPress не ниже 2.7
 *   Тестировалось на актуальной на момент создания версии.
 
-*   Currently implemented "commenting".
-*   In development: the button "Save" and "I like", polls and statistics.
+*   Currently implemented "commenting" and button "I like".
+*   In development: the button "Save", polls and statistics.
 *   Require a valid version of PHP (> 5.2.3)
 *   Version WordPress 2.7 or higher
 *   Tested on "up to date" release.
@@ -26,10 +26,6 @@ Stable tag: 1.2
 
 1. Upload `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-
-== Screenshots ==
-
-1. Опции плагина. This is Options of plugin.
 
 == Frequently Asked Questions ==
 
@@ -62,6 +58,10 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 == Changelog ==
 
+= 1.3 = 
+* Add "I like" button.
+* Add Widgets "Groups" and "More popular of 'I like' button statistics"
+
 = 1.2 = 
 * Fix jQuery.
 
@@ -72,6 +72,10 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.3 =
+* Добавлена кнопка "Мне нравиться". 
+* Добавлены 2 виджета: первый показывает вашу группу вкнотакте (название, участники, новости), второй - самое популярное исходя из статистики кнопки "Мне нравиться".
 
 = 1.2 = 
 * Fix jQuery.
