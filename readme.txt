@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, vkontakte, ajax, plugin, posts, pages
 Requires at least: 3.0
 Tested up to: 3.1.3
-Stable tag: 1.5
+Stable tag: 1.4.1
 
 Описание: Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог.
 
