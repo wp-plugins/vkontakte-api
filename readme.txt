@@ -1,25 +1,23 @@
 === Vkontakte API ===
 Contributors: kowack
-Donate link: http://http://www.kowack.info/projects/vk_api/
+Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, vkontakte, ajax, plugin, posts, pages
-Requires at least: 2.7
+Requires at least: 3.0
 Tested up to: 3.1.3
-Stable tag: 3.1.3
+Stable tag: 1.5
 
-Описание: Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог.
+РћРїРёСЃР°РЅРёРµ: Р”РѕР±Р°РІР»СЏРµС‚ С„СѓРЅРєС†РёРѕРЅР°Р» API СЃР°Р№С‚Р° vkontakte.ru(vk.com) РЅР° РІР°С€ Р±Р»РѕРі.
 
 == Description ==
 
-*   На данный момент реализовано комментирование. 
-*   В разработке: кнопки "Сохранить" и "Мне нравиться", в планах голосование и статистика.
-*   Требуеться актуальная версия PHP ( > 5.2.3)
-*   Версия WordpPress не ниже 2.7
-*   Тестировалось на актуальной на момент создания версии.
+*   РќР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ СЂРµР°Р»РёР·РѕРІР°РЅРѕ РєРѕРјРјРµРЅС‚РёСЂРѕРІР°РЅРёРµ Рё РєРЅРѕРїРєР° "РњРЅРµ РЅСЂР°РІРёС‚СЊСЃСЏ" Рё 2 РІРёРґР¶РµС‚Р°. 
+*   РўСЂРµР±СѓРµС‚СЊСЃСЏ Р°РєС‚СѓР°Р»СЊРЅР°СЏ РІРµСЂСЃРёСЏ PHP (>= 5.2.3)
+*   Р’РµСЂСЃРёСЏ WordpPress РЅРµ РЅРёР¶Рµ 3.0
+*   РўРµСЃС‚РёСЂРѕРІР°Р»РѕСЃСЊ РЅР° Р°РєС‚СѓР°Р»СЊРЅРѕР№ РЅР° РјРѕРјРµРЅС‚ СЃРѕР·РґР°РЅРёСЏ РІРµСЂСЃРёРё.
 
-*   Currently implemented "commenting".
-*   In development: the button "Save" and "I like", polls and statistics.
-*   Require a valid version of PHP (> 5.2.3)
-*   Version WordPress 2.7 or higher
+*   Currently implemented "commenting" and button "I like" and 2 widget.
+*   Require a valid version of PHP (>= 5.2.3)
+*   Version WordPress 3.0 or higher
 *   Tested on "up to date" release.
 
 == Installation ==
@@ -27,21 +25,17 @@ Stable tag: 3.1.3
 1. Upload `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
-== Screenshots ==
-
-1. Опции плагина. This is Options of plugin.
-
 == Frequently Asked Questions ==
 
-= Настройка плагина =
+= РќР°СЃС‚СЂРѕР№РєР° РїР»Р°РіРёРЅР° =
 
-Для подключения каких либо функций к сайту у Вас должен быть <b>appID</b>.
-Если он у Вас уже есть укажите его в настройках плагина.
-Если нет - перейдите по этой <a href="http://vkontakte.ru/apps.php?act=add&site=1">ссылке</a> и зарегестрируйте ваш сайт(блог).
+Р”Р»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ РєР°РєРёС… Р»РёР±Рѕ С„СѓРЅРєС†РёР№ Рє СЃР°Р№С‚Сѓ Сѓ Р’Р°СЃ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ <b>appID</b>.
+Р•СЃР»Рё РѕРЅ Сѓ Р’Р°СЃ СѓР¶Рµ РµСЃС‚СЊ СѓРєР°Р¶РёС‚Рµ РµРіРѕ РІ РЅР°СЃС‚СЂРѕР№РєР°С… РїР»Р°РіРёРЅР°.
+Р•СЃР»Рё РЅРµС‚ - РїРµСЂРµР№РґРёС‚Рµ РїРѕ СЌС‚РѕР№ <a href="http://vkontakte.ru/apps.php?act=add&site=1">СЃСЃС‹Р»РєРµ</a> Рё Р·Р°СЂРµРіРµСЃС‚СЂРёСЂСѓР№С‚Рµ РІР°С€ СЃР°Р№С‚(Р±Р»РѕРі).
 
-= Плагин бесплатный ? =
+= РџР»Р°РіРёРЅ Р±РµСЃРїР»Р°С‚РЅС‹Р№ ? =
 
-Да, плагин абсолютно бесплатен, без какой либо рекламы. На веки вечные. 
+Р”Р°, РїР»Р°РіРёРЅ Р°Р±СЃРѕР»СЋС‚РЅРѕ Р±РµСЃРїР»Р°С‚РµРЅ, Р±РµР· РєР°РєРѕР№ Р»РёР±Рѕ СЂРµРєР»Р°РјС‹. РќР° РІРµРєРё РІРµС‡РЅС‹Рµ. 
 
 = Configure plugin =
 
@@ -55,18 +49,55 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 == Screenshots ==
 
-1. Screenshots
-2. Vkontakte comments.
-3. WordPress comments.
-4. Ajax in action.
-5. Admin panel.
+1. Vkontakte comments.
+2. WordPress comments.
+3. Animation in action.
 
 == Changelog ==
+
+= 1.5 =
+* Fix "closed" commenting on page plus decorations.
+
+= 1.4.1 = 
+* Translate fix.
+
+= 1.4 = 
+* Fix something and add somethis options ^^.
+
+= 1.3 = 
+* Add "I like" button.
+* Add Widgets "Groups" and "More popular of 'I like' button statistics"
+
+= 1.2 = 
+* Fix jQuery.
+
+= 1.0 =
+* Stable.
 
 = 0.9 =
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.5 =
+* Р’РёРґР¶РµС‚ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ РЅРµ РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ РµСЃР»Рё СЃС‚РѕРёС‚ Р·Р°РїСЂРµС‚ РЅР° РєРѕРјРјРµРЅС‚РёСЂРѕРІР°РЅРёРµ РІ РЅР°СЃС‚СЂРѕР№РєР°С… СЃС‚СЂР°РЅРёС†С‹ WordPress.
+* РџР»СЋС€РєРё =)
+
+= 1.4.1 =
+* РћС€РёР±РѕС‡РєР° РїРµСЂРµРІРѕРґР° ^_^.
+
+= 1.4 =
+* Р§СѓС‡СѓС‚СЊ РїРѕРґРїСЂР°РІРёР» Рё РїСЂРёР±Р°РІРёР» РїР°СЂСѓ РѕРїС†РёР№.
+
+= 1.3 =
+* Р”РѕР±Р°РІР»РµРЅР° РєРЅРѕРїРєР° "РњРЅРµ РЅСЂР°РІРёС‚СЊСЃСЏ". 
+* Р”РѕР±Р°РІР»РµРЅС‹ 2 РІРёРґР¶РµС‚Р°: РїРµСЂРІС‹Р№ РїРѕРєР°Р·С‹РІР°РµС‚ РІР°С€Сѓ РіСЂСѓРїРїСѓ РІРєРЅРѕС‚Р°РєС‚Рµ (РЅР°Р·РІР°РЅРёРµ, СѓС‡Р°СЃС‚РЅРёРєРё, РЅРѕРІРѕСЃС‚Рё), РІС‚РѕСЂРѕР№ - СЃР°РјРѕРµ РїРѕРїСѓР»СЏСЂРЅРѕРµ РёСЃС…РѕРґСЏ РёР· СЃС‚Р°С‚РёСЃС‚РёРєРё РєРЅРѕРїРєРё "РњРЅРµ РЅСЂР°РІРёС‚СЊСЃСЏ".
+
+= 1.2 = 
+* Fix jQuery.
+
+= 1.0 = 
+* Stable.
 
 = 0.9 = 
 * Firts release.

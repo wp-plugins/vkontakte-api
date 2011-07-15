@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vkontakte API\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-22 03:00+0200\n"
-"PO-Revision-Date: 2011-06-22 03:00+0200\n"
+"POT-Creation-Date: 2011-07-15 22:43+0200\n"
+"PO-Revision-Date: 2011-07-15 22:44+0200\n"
 "Last-Translator: www.kowack.info <kowack@gmail.com>\n"
 "Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -30,8 +30,16 @@ msgid "Your AppId :"
 msgstr "Ваш AppId :"
 
 #: ../vkapi-options.php:1
-msgid "Comments settings."
-msgstr "Настройки комментариев."
+msgid "Comments: "
+msgstr "Комментарии :"
+
+#: ../vkapi-options.php:1
+msgid "Show"
+msgstr "Показывать"
+
+#: ../vkapi-options.php:1
+msgid "Dont show"
+msgstr "Не показывать"
 
 #: ../vkapi-options.php:1
 msgid "Height of widget(0=unlimited):"
@@ -78,8 +86,76 @@ msgid "Link :"
 msgstr "Ссылки :"
 
 #: ../vkapi-options.php:1
-msgid "Support project"
-msgstr "Поддержка проекта"
+msgid "Like button: "
+msgstr "Кнопка \"Мне нравиться\" :"
+
+#: ../vkapi-options.php:1
+msgid "Выравнивание :"
+msgstr "Выравнивание :"
+
+#: ../vkapi-options.php:1
+msgid "справа"
+msgstr "справа"
+
+#: ../vkapi-options.php:1
+msgid "слева"
+msgstr "слева"
+
+#: ../vkapi-options.php:1
+msgid "Тип кнопки :"
+msgstr "Тип кнопки :"
+
+#: ../vkapi-options.php:1
+msgid "кнопка с текстовым счётчиком"
+msgstr "кнопка с текстовым счётчиком"
+
+#: ../vkapi-options.php:1
+msgid "кнопка с миниатюрным счётчиком"
+msgstr "кнопка с миниатюрным счётчиком"
+
+#: ../vkapi-options.php:1
+msgid "миниатюрная кнопка"
+msgstr "миниатюрная кнопка"
+
+#: ../vkapi-options.php:1
+msgid "миниатюрная кнопка, счётчик сверху"
+msgstr "миниатюрная кнопка, счётчик сверху"
+
+#: ../vkapi-options.php:1
+msgid "Формулировка :"
+msgstr "Формулировка :"
+
+#: ../vkapi-options.php:1
+msgid "Мне нравится"
+msgstr "Мне нравится"
+
+#: ../vkapi-options.php:1
+msgid "Это интересно"
+msgstr "Это интересно"
+
+#: ../vkapi-options.php:1
+msgid "Decorations: "
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Desktop notifications:"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Custom login logo :"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Path :"
+msgstr "Путь :"
+
+#: ../vkapi-options.php:1
+msgid "path to image..."
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Support project (I need some eating...)"
+msgstr "Поддержка проекта (Мне нужно немного еды ...)"
 
 #: ../vkapi-options.php:1
 msgid "Donate Webmoney(R)"
@@ -102,20 +178,112 @@ msgid "Save Changes"
 msgstr " Сохранить настройки "
 
 #: ../vkapi.php:42
-msgid "VKontakte API plugin requires Wordpress 2.8 or newer. <a href=\"http://codex.wordpress.org/Upgrading_WordPress\">Please update!</a>"
-msgstr ""
+msgid "VKontakte API plugin requires Wordpress 3.0 or newer. <a href=\"http://codex.wordpress.org/Upgrading_WordPress\">Please update!</a>"
+msgstr "VKontakte API plugin requires Wordpress 3.0 or newer. <a href=\"http://codex.wordpress.org/Upgrading_WordPress\">Please update!</a>"
 
-#: ../vkapi.php:85
+#: ../vkapi.php:114
 msgid "Vkontate API Plugin Settings"
 msgstr ""
 
-#: ../vkapi.php:85
+#: ../vkapi.php:114
 msgid "Vkontakte API"
 msgstr ""
 
-#: ../vkapi.php:150
+#: ../vkapi.php:260
 msgid "Class VK_api already declared!"
 msgstr ""
+
+#: ../vkapi.php:274
+msgid "Информация о группе вконтакте"
+msgstr "Информация о группе вконтакте"
+
+#: ../vkapi.php:275
+msgid "VK: Community Users"
+msgstr "VK: Группа"
+
+#: ../vkapi.php:306
+#: ../vkapi.php:360
+msgid "Title:"
+msgstr ""
+
+#: ../vkapi.php:310
+msgid "ID группы (видно по ссылке на статистику):"
+msgstr "ID группы (видно по ссылке на статистику):"
+
+#: ../vkapi.php:314
+msgid "Width:"
+msgstr "Ширина:"
+
+#: ../vkapi.php:319
+msgid "Тип виджета:"
+msgstr "Тип виджета:"
+
+#: ../vkapi.php:321
+msgid "Список пользователей"
+msgstr "Список пользователей"
+
+#: ../vkapi.php:322
+msgid "Новости группы"
+msgstr "Новости группы"
+
+#: ../vkapi.php:323
+msgid "Только название"
+msgstr "Только название"
+
+#: ../vkapi.php:332
+msgid "Топ сайта на основе \"Мне нравиться\""
+msgstr "Топ сайта на основе \"Мне нравиться\""
+
+#: ../vkapi.php:333
+msgid "VK: Recommends"
+msgstr "VK: Популярное"
+
+#: ../vkapi.php:364
+msgid "Количество:"
+msgstr "Количество:"
+
+#: ../vkapi.php:369
+msgid "Период:"
+msgstr "Период:"
+
+#: ../vkapi.php:371
+msgid "Сутки"
+msgstr "Сутки"
+
+#: ../vkapi.php:372
+msgid "Неделя"
+msgstr "Неделя"
+
+#: ../vkapi.php:373
+msgid "Месяц"
+msgstr "Месяц"
+
+#: ../vkapi.php:378
+msgid "Формулировка:"
+msgstr "Формулировка:"
+
+#: ../vkapi.php:380
+msgid "Понравилось ..."
+msgstr "Понравилось ..."
+
+#: ../vkapi.php:381
+msgid "Интересно ..."
+msgstr "Интересно ..."
+
+#~ msgid "Приветствие, иначе авторизация"
+#~ msgstr "Приветствие, иначе авторизация"
+
+#~ msgid "VK: Hello"
+#~ msgstr "VK: Приветствие"
+
+#~ msgid "Текст приветствия:"
+#~ msgstr "Текст приветствия:"
+
+#~ msgid "Стиль текста:"
+#~ msgstr "Стиль текста:"
+
+#~ msgid "Support project"
+#~ msgstr "Поддержка проекта"
 
 #~ msgid "Tabs settings."
 #~ msgstr "Настройки вкладок."
