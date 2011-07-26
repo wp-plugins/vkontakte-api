@@ -3,8 +3,8 @@ Contributors: kowack
 Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, vkontakte, ajax, plugin, posts, pages
 Requires at least: 3.0
-Tested up to: 3.1.3
-Stable tag: 1.5
+Tested up to: 3.2.1
+Stable tag: 1.6
 
 Описание: Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог.
 
@@ -55,6 +55,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 == Changelog ==
 
+= 1.6 =
+* Simple fix, better performance
+
 = 1.5 =
 * Fix "closed" commenting on page plus decorations.
 
@@ -78,6 +81,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.6 =
+* Доработки
 
 = 1.5 =
 * Виджет комментариев не отображается если стоит запрет на комментирование в настройках страницы WordPress.

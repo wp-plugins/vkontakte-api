@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vkontakte API\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-15 22:43+0200\n"
-"PO-Revision-Date: 2011-07-15 22:44+0200\n"
+"POT-Creation-Date: 2011-07-21 03:07+0200\n"
+"PO-Revision-Date: 2011-07-21 03:09+0200\n"
 "Last-Translator: www.kowack.info <kowack@gmail.com>\n"
 "Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,12 +26,12 @@ msgid "If you dont have appId go this<a href='http://vkontakte.ru/apps.php?act=a
 msgstr "Если у Вас нет appId перейдите по этой <a href=\"http://vkontakte.ru/apps.php?act=add&site=1\">ссылке</a> и зарегестрируйте ваш сайт(блог)."
 
 #: ../vkapi-options.php:1
-msgid "Your AppId :"
-msgstr "Ваш AppId :"
+msgid "Your AppId:"
+msgstr "Ваш AppId:"
 
 #: ../vkapi-options.php:1
 msgid "Comments: "
-msgstr "Комментарии :"
+msgstr "Комментарии:"
 
 #: ../vkapi-options.php:1
 msgid "Show"
@@ -66,44 +66,44 @@ msgid "Media in comments:"
 msgstr "Медиа в комментариях:"
 
 #: ../vkapi-options.php:1
-msgid "Graffiti :"
-msgstr "Графити :"
+msgid "Graffiti:"
+msgstr "Графити:"
 
 #: ../vkapi-options.php:1
-msgid "Photo :"
-msgstr "Фото :"
+msgid "Photo:"
+msgstr "Фото:"
 
 #: ../vkapi-options.php:1
-msgid "Audio :"
-msgstr "Аудио :"
+msgid "Audio:"
+msgstr "Аудио:"
 
 #: ../vkapi-options.php:1
-msgid "Video :"
-msgstr "Видео :"
+msgid "Video:"
+msgstr "Видео:"
 
 #: ../vkapi-options.php:1
-msgid "Link :"
-msgstr "Ссылки :"
+msgid "Link:"
+msgstr "Ссылки:"
 
 #: ../vkapi-options.php:1
 msgid "Like button: "
-msgstr "Кнопка \"Мне нравиться\" :"
+msgstr "Кнопка \"Мне нравиться\":"
 
 #: ../vkapi-options.php:1
-msgid "Выравнивание :"
-msgstr "Выравнивание :"
+msgid "Align :"
+msgstr "Позиция:"
 
 #: ../vkapi-options.php:1
-msgid "справа"
+msgid "right"
 msgstr "справа"
 
 #: ../vkapi-options.php:1
-msgid "слева"
+msgid "left"
 msgstr "слева"
 
 #: ../vkapi-options.php:1
-msgid "Тип кнопки :"
-msgstr "Тип кнопки :"
+msgid "Button style :"
+msgstr "Стиль кнопки:"
 
 #: ../vkapi-options.php:1
 msgid "кнопка с текстовым счётчиком"
@@ -122,35 +122,43 @@ msgid "миниатюрная кнопка, счётчик сверху"
 msgstr "миниатюрная кнопка, счётчик сверху"
 
 #: ../vkapi-options.php:1
-msgid "Формулировка :"
-msgstr "Формулировка :"
+msgid "Statement :"
+msgstr "Формулировка:"
 
 #: ../vkapi-options.php:1
-msgid "Мне нравится"
+msgid "I like"
 msgstr "Мне нравится"
 
 #: ../vkapi-options.php:1
-msgid "Это интересно"
+msgid "It's interesting"
 msgstr "Это интересно"
 
 #: ../vkapi-options.php:1
 msgid "Decorations: "
-msgstr ""
+msgstr "Декор:"
 
 #: ../vkapi-options.php:1
 msgid "Desktop notifications:"
-msgstr ""
+msgstr "Уведомления на рабочем столе:"
 
 #: ../vkapi-options.php:1
-msgid "Custom login logo :"
+msgid "No Plugin Options: "
+msgstr "Не связаное с плагином:"
+
+#: ../vkapi-options.php:1
+msgid "Custom login logo:"
 msgstr ""
 
 #: ../vkapi-options.php:1
 msgid "Path :"
-msgstr "Путь :"
+msgstr "Путь:"
 
 #: ../vkapi-options.php:1
 msgid "path to image..."
+msgstr "путь к изображению..."
+
+#: ../vkapi-options.php:1
+msgid "Disable Autosave Post Script:"
 msgstr ""
 
 #: ../vkapi-options.php:1
@@ -178,97 +186,119 @@ msgid "Save Changes"
 msgstr " Сохранить настройки "
 
 #: ../vkapi.php:42
-msgid "VKontakte API plugin requires Wordpress 3.0 or newer. <a href=\"http://codex.wordpress.org/Upgrading_WordPress\">Please update!</a>"
-msgstr "VKontakte API plugin requires Wordpress 3.0 or newer. <a href=\"http://codex.wordpress.org/Upgrading_WordPress\">Please update!</a>"
+#, php-format
+msgid "VKontakte API plugin requires Wordpress 3.0 or newer. <a href=\"%s\">Please update!</a>"
+msgstr "VKontakte API plugin работает начиная с версии Wordpress 3.0. <a href=\"%s\">Обновитесь, пожалуйста!</a>"
 
-#: ../vkapi.php:114
+#: ../vkapi.php:122
 msgid "Vkontate API Plugin Settings"
 msgstr ""
 
-#: ../vkapi.php:114
+#: ../vkapi.php:122
 msgid "Vkontakte API"
 msgstr ""
 
-#: ../vkapi.php:260
+#: ../vkapi.php:302
 msgid "Class VK_api already declared!"
 msgstr ""
 
-#: ../vkapi.php:274
+#: ../vkapi.php:316
 msgid "Информация о группе вконтакте"
 msgstr "Информация о группе вконтакте"
 
-#: ../vkapi.php:275
+#: ../vkapi.php:317
 msgid "VK: Community Users"
 msgstr "VK: Группа"
 
-#: ../vkapi.php:306
-#: ../vkapi.php:360
+#: ../vkapi.php:348
+#: ../vkapi.php:402
 msgid "Title:"
 msgstr ""
 
-#: ../vkapi.php:310
+#: ../vkapi.php:352
 msgid "ID группы (видно по ссылке на статистику):"
 msgstr "ID группы (видно по ссылке на статистику):"
 
-#: ../vkapi.php:314
+#: ../vkapi.php:356
 msgid "Width:"
 msgstr "Ширина:"
 
-#: ../vkapi.php:319
+#: ../vkapi.php:361
 msgid "Тип виджета:"
 msgstr "Тип виджета:"
 
-#: ../vkapi.php:321
+#: ../vkapi.php:363
 msgid "Список пользователей"
 msgstr "Список пользователей"
 
-#: ../vkapi.php:322
+#: ../vkapi.php:364
 msgid "Новости группы"
 msgstr "Новости группы"
 
-#: ../vkapi.php:323
+#: ../vkapi.php:365
 msgid "Только название"
 msgstr "Только название"
 
-#: ../vkapi.php:332
+#: ../vkapi.php:374
 msgid "Топ сайта на основе \"Мне нравиться\""
 msgstr "Топ сайта на основе \"Мне нравиться\""
 
-#: ../vkapi.php:333
+#: ../vkapi.php:375
 msgid "VK: Recommends"
 msgstr "VK: Популярное"
 
-#: ../vkapi.php:364
+#: ../vkapi.php:406
 msgid "Количество:"
 msgstr "Количество:"
 
-#: ../vkapi.php:369
+#: ../vkapi.php:411
 msgid "Период:"
 msgstr "Период:"
 
-#: ../vkapi.php:371
+#: ../vkapi.php:413
 msgid "Сутки"
 msgstr "Сутки"
 
-#: ../vkapi.php:372
+#: ../vkapi.php:414
 msgid "Неделя"
 msgstr "Неделя"
 
-#: ../vkapi.php:373
+#: ../vkapi.php:415
 msgid "Месяц"
 msgstr "Месяц"
 
-#: ../vkapi.php:378
+#: ../vkapi.php:420
 msgid "Формулировка:"
 msgstr "Формулировка:"
 
-#: ../vkapi.php:380
+#: ../vkapi.php:422
 msgid "Понравилось ..."
 msgstr "Понравилось ..."
 
-#: ../vkapi.php:381
+#: ../vkapi.php:423
 msgid "Интересно ..."
 msgstr "Интересно ..."
+
+#~ msgid "Выравнивание :"
+#~ msgstr "Выравнивание :"
+
+#~ msgid "справа"
+#~ msgstr "справа"
+
+#~ msgid "слева"
+#~ msgstr "слева"
+
+#~ msgid "Тип кнопки :"
+#~ msgstr "Тип кнопки :"
+
+#~ msgid "Формулировка :"
+#~ msgstr "Формулировка :"
+
+#~ msgid "Мне нравится"
+#~ msgstr "Мне нравится"
+
+#~ msgid "Это интересно"
+#~ msgstr "Это интересно"
 
 #~ msgid "Приветствие, иначе авторизация"
 #~ msgstr "Приветствие, иначе авторизация"
