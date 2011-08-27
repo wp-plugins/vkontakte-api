@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Vkontakte API
-Plugin URI: http://http://www.kowack.info/projects/vk_api
-Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkontakte-api/vkapi.php">Settings!</a></strong>
-Version: 1.6
+Plugin URI: http://www.kowack.info/projects/vk_api
+Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi">Settings!</a></strong>
+Version: 1.7
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -26,8 +26,6 @@ Author URI: http://www.kowack.info/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-// Need PHP >= 5.2.3
-
 if (!class_exists('VK_api')) :
 
 class VK_api {
@@ -42,19 +40,43 @@ class VK_api {
 			$exit_msg = printf( __( 'VKontakte API plugin requires Wordpress 3.0 or newer. <a href="%s">Please update!</a>', $this->plugin_domain), bloginfo('url').'wp-admin/update-core.php' );
 			exit ($exit_msg);
 	}
-	if ( is_admin() ) $this->load_domain();
 	
-	register_activation_hook( __FILE__, array( &$this, 'install') );
-	register_deactivation_hook( __FILE__, array( &$this, 'pause') );
-	register_uninstall_hook( __FILE__, array( &$this, 'deinstall') );
-	add_action( 'admin_menu', array( &$this, 'create_menu'), 1 );
-	add_action( 'wp_print_scripts', array( &$this, 'add_head') ); 
-	add_action( 'init', array( &$this, 'widget_init') );
-	add_action( 'comments_template', array( &$this, 'add_tabs') );
-	add_action( 'wp_dashboard_setup', array( &$this,'add_dashboard_widgets') );
+	if ( is_admin() ) {
+		$this->load_domain();
+	}
+	
+	register_activation_hook( __FILE__, array( &$this, 'install' ) );
+	register_deactivation_hook( __FILE__, array( &$this, 'pause' ) );
+	register_uninstall_hook( __FILE__, array( &$this, 'deinstall' ) );
+	add_action( 'admin_menu', array( &$this, 'create_menu' ), 1 );
+	add_action( 'wp_print_scripts', array( &$this, 'add_head' ) ); 
+	add_action( 'init', array( &$this, 'widget_init' ) );
+	add_action( 'wp_dashboard_setup', array( &$this, 'add_dashboard_widgets' ) );
+	add_action( 'admin_init', array( &$this, 'add_css' ) );
+	add_action( 'wp_print_styles', array( &$this, 'add_css_admin' ) );
 	add_filter( 'the_content', array( &$this, 'add_buttons'), 88 );
 	add_filter( 'contextual_help', array( &$this, 'vkapi_contextual_help' ), 1, 3 );
+	add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'own_actions_links' ) );
 	wp_enqueue_script( 'jquery' );
+	
+	function close_wp ( $file ) {
+		global $post;
+		if ( !( is_singular() && ( have_comments() || comments_open() ) ) ) {
+			return;
+		}
+		return dirname(__FILE__) . '/close_wp.php';
+	}
+	
+	function do_empty ( $args ) {
+		return;
+	}
+
+	$vkapi_close_wp = get_option( 'vkapi_close_wp' );
+	if ( $vkapi_close_wp ) {
+		add_filter( 'comments_template', 'close_wp' );
+		add_filter( 'comments_number', 'do_empty' );
+		}
+	else add_action( 'comments_template', array( &$this, 'add_tabs') );
 	
 	$logo_e = get_option( 'vkapi_some_logo_e' );
 	if ( $logo_e ) add_action( 'login_head', array(&$this, 'change_login_logo') );
@@ -86,6 +108,7 @@ class VK_api {
 		add_option( 'vkapi_comm_show', '0' );
 		add_option( 'vkapi_like_type', 'full' );
 		add_option( 'vkapi_like_verb', '0' );
+		add_option( 'vkapi_like_cat', '0' );
 		add_option( 'vkapi_align', 'left' );
 		add_option( 'vkapi_show_comm', 'true' );
 		add_option( 'vkapi_show_like', 'true' );
@@ -93,6 +116,7 @@ class VK_api {
 		add_option( 'vkapi_some_logo', $this->plugin_url.'images/wordpress-logo.jpg' );
 		add_option( 'vkapi_some_desktop', '1' );
 		add_option( 'vkapi_some_autosave_d', '1' );
+		add_option( 'vkapi_close_wp', '1' );
 	}
 	
 	function deinstall() {
@@ -109,6 +133,7 @@ class VK_api {
 		delete_option( 'vkapi_comm_show' );
 		delete_option( 'vkapi_like_type' );
 		delete_option( 'vkapi_like_verb' );
+		delete_option( 'vkapi_like_cat' );
 		delete_option( 'vkapi_align' );
 		delete_option( 'vkapi_show_comm' );
 		delete_option( 'vkapi_show_like' );
@@ -116,26 +141,11 @@ class VK_api {
 		delete_option( 'vkapi_some_logo' );
 		delete_option( 'vkapi_some_desktop' );
 		delete_option( 'vkapi_some_autosave_d' );
-	}
-	
-	function create_menu() {
-		global $vkapi_contextual_help;
-		$vkapi_contextual_help = add_options_page(__( 'Vkontate API Plugin Settings', $this->plugin_domain), __('Vkontakte API', $this->plugin_domain), 'manage_options', 'vkapi', array( &$this, 'settings_page') );	
+		delete_option( 'vkapi_close_wp' );
 	}
 	
 	function settings_page() {		
 		include( 'vkapi-options.php' );
-	}
-	
-	function vkapi_contextual_help( $contextual_help, $screen_id, $screen ) {
-		global $vkapi_contextual_help;
-		if ( $screen_id == $vkapi_contextual_help ) {
-			$contextual_help = '
-			<strong>"Disable Autosave Post Script"</strong> - Выключает астосохранение при редактировании/добавлении новой записи(поста).<br />
-			Это полезно тем, что теперь не будет тучи бесполезных черновиков(ведь зачем заполнять ими нашу базу данных?)<br /><br />
-			Все вопросики и пожелания <strong><a href="http://www.kowack.info/projects/vk_api/" title="Vkontakte API">сюдатачки</a></strong> или <strong><a href="http://vkontakte.ru/vk_wp" title="Vkontakte API Club">тутачки</a></strong>.';
-		}
-		return $contextual_help;
 	}
 	
 	function add_head() {
@@ -144,6 +154,31 @@ class VK_api {
 			echo '<meta property="vk:app_id" content="'.$appId.'" />';
 			echo '<script type="text/javascript" src="http://userapi.com/js/api/openapi.js"></script>';
 		}
+	}
+	
+	function create_menu() {
+		global $vkapi_page;
+		$vkapi_page = add_options_page(__( 'Vkontate API Plugin Settings', $this->plugin_domain), __('Vkontakte API', $this->plugin_domain), 'manage_options', 'vkapi', array( &$this, 'settings_page') );
+		add_action( 'admin_print_styles-' . $vkapi_page, array( &$this, 'add_css_admin' ) );
+	}
+	
+	function add_css () {
+		wp_register_style( 'vkapi_admin', plugins_url('css/admin.css', __FILE__) );
+	}
+	
+	function add_css_admin () {
+		wp_enqueue_style( 'vkapi_admin' );
+	}
+	
+	function vkapi_contextual_help( $contextual_help, $screen_id, $screen ) {
+		global $vkapi_page;
+		if ( $screen_id == $vkapi_page ) {
+			$contextual_help = '
+			<strong>"Disable Autosave Post Script"</strong> - Выключает астосохранение при редактировании/добавлении новой записи(поста).<br />
+			Это полезно тем, что теперь не будет тучи бесполезных черновиков(ведь зачем заполнять ими нашу базу данных?)<br /><br />
+			Все вопросики и пожелания <strong><a href="http://www.kowack.info/projects/vk_api/" title="Vkontakte API Home">сюдатачки</a></strong> или <strong><a href="http://vkontakte.ru/vk_wp" title="Vkontakte API Club">тутачки</a></strong>.';
+		}
+		return $contextual_help;
 	}
 	
 	function add_tabs() {
@@ -221,26 +256,41 @@ class VK_api {
 				<script type="text/javascript">
 					VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').', onChange: onChange},'.$postid.');
 				</script>';
-				if ( get_option( 'vkapi_comm_show' ) == 1 ) echo '<script type="text/javascript">window.onload=showVK;</script>'; else echo '<script type="text/javascript">window.onload=showComments;</script>';
+				add_action ( 'wp_footer', array( &$this, 'add_footer' ) );
 			}
 		}
 	}
 
+	function add_footer () {
+		if ( get_option( 'vkapi_comm_show' ) == 1 ) 
+			echo '<script type="text/javascript">window.onload=showVK;</script>';
+		else echo '<script type="text/javascript">window.onload=showComments;</script>';
+	}
+	
 	function add_buttons ( $args ) {
-		if ( !is_feed() && !is_home() && !is_category() && !is_archive() ) {
-			$like = get_option( 'vkapi_show_like' );
+		if ( !is_feed() ) { 
+			$like_cat = get_option( 'vkapi_like_cat' );
+			if ( $like_cat ) $this->vkapi_buttons( &$args ); 
+			else if ( !is_home() && !is_category() && !is_archive() ) {
+				$this->vkapi_buttons( &$args );
+			}
+		}
+		return $args;
+	}
+	
+	function vkapi_buttons ( $args ) {
+		$like = get_option( 'vkapi_show_like' );
 			if( $like == 'true' ) {
 				global $post;
 				$postid = $post->ID;
 				$align = get_option( 'vkapi_align' );
 				$type = get_option( 'vkapi_like_type' );
 				$verb = get_option( 'vkapi_like_verb' );
-				$args .= "<div float=\"$align\"><div id=\"vkapi_like\"></div></div><br />
+				$args .= "<div float=\"$align\"><div id=\"vkapi_like_$postid\"></div></div><br />
 				<script type=\"text/javascript\">
-					VK.Widgets.Like('vkapi_like', {width: 200, type: '$type', verb: '$verb'}, $postid);
+					VK.Widgets.Like('vkapi_like_$postid', {width: 200, type: '$type', verb: '$verb'}, $postid);
 				</script>";
 			}
-		}
 		return $args;
 	}
 	
@@ -290,6 +340,12 @@ class VK_api {
 			  }
 			}).render().setUser('kowackinfo').start();
 			</script>";
+	}
+	
+	function own_actions_links( $links ) {
+		$settings_link = '&nbsp;<a href="options-general.php?page=vkapi"><img src="'.$this->plugin_url.'images/set.png" width="20" />&nbsp;</a>';
+		array_push( $links, $settings_link ); 
+		return $links;
 	}
 
 	function add_dashboard_widgets() {
