@@ -10,10 +10,18 @@ textarea.mid-text {
     margin:0; padding:0;
 }
 
+.widefat, input {
+	border-color: #999 !important;
+}
+
+.wrap {
+	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/admin-bg.jpg) no-repeat right top;
+}
+
 .form-table .section-title h3 {
     margin:0; padding:5px 10px;
-    background:#F1F1F1 url(../../../wp-admin/images/menu-bits.gif) repeat-x scroll left -379px;
-    border:1px solid #E3E3E3;
+    background:#DFDFDF url(../../../../wp-admin/images/menu-bits.gif) repeat-x scroll left -379px !important; 
+    border:1px solid #999 !important;
     font-family:font-size:14px; font-weight:700; line-height:18px; color:#464646; text-shadow:#fff 0 1px 0;
     -moz-border-radius:6px;
     -khtml-border-radius:6px;

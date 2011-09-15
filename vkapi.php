@@ -37,52 +37,58 @@ class VK_api {
 		$this->plugin_url = trailingslashit( WP_PLUGIN_URL.'/'.dirname(plugin_basename(__FILE__)) );
 		global $wp_version;
 		if ( version_compare( $wp_version, "3.0", "<" ) ) {
-			$exit_msg = printf( __( 'VKontakte API plugin requires Wordpress 3.0 or newer. <a href="%s">Please update!</a>', $this->plugin_domain), bloginfo('url').'wp-admin/update-core.php' );
+			$exit_msg = printf( __( 'VKontakte API plugin requires Wordpress 3.0 or newer. <a href="%s">Please update!</a>', $this->plugin_domain ), bloginfo('url').'wp-admin/update-core.php' );
 			exit ($exit_msg);
-	}
-	
-	if ( is_admin() ) {
+		}
+		
 		$this->load_domain();
-	}
-	
-	register_activation_hook( __FILE__, array( &$this, 'install' ) );
-	register_deactivation_hook( __FILE__, array( &$this, 'pause' ) );
-	register_uninstall_hook( __FILE__, array( &$this, 'deinstall' ) );
-	add_action( 'admin_menu', array( &$this, 'create_menu' ), 1 );
-	add_action( 'wp_print_scripts', array( &$this, 'add_head' ) ); 
-	add_action( 'init', array( &$this, 'widget_init' ) );
-	add_action( 'wp_dashboard_setup', array( &$this, 'add_dashboard_widgets' ) );
-	add_action( 'admin_init', array( &$this, 'add_css' ) );
-	add_action( 'wp_print_styles', array( &$this, 'add_css_admin' ) );
-	add_filter( 'the_content', array( &$this, 'add_buttons'), 88 );
-	add_filter( 'contextual_help', array( &$this, 'vkapi_contextual_help' ), 1, 3 );
-	add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'own_actions_links' ) );
-	wp_enqueue_script( 'jquery' );
-	
-	function close_wp ( $file ) {
-		global $post;
-		if ( !( is_singular() && ( have_comments() || comments_open() ) ) ) {
+		
+		register_activation_hook( __FILE__, array( &$this, 'install' ) );
+		register_deactivation_hook( __FILE__, array( &$this, 'pause' ) );
+		register_uninstall_hook( __FILE__, array( &$this, 'deinstall' ) );
+		add_action( 'admin_menu', array( &$this, 'create_menu' ), 1 );
+		add_action( 'wp_print_scripts', array( &$this, 'add_head' ) ); 
+		add_action( 'init', array( &$this, 'widget_init' ) );
+		add_action( 'wp_dashboard_setup', array( &$this, 'add_dashboard_widgets' ) );
+		add_action( 'admin_init', array( &$this, 'add_css' ) );
+		add_action( 'wp_print_styles', array( &$this, 'add_css_admin' ) );
+		add_filter( 'the_content', array( &$this, 'add_buttons'), 88 );
+		add_filter( 'contextual_help', array( &$this, 'vkapi_contextual_help' ), 1, 3 );
+		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'own_actions_links' ) );
+		wp_enqueue_script( 'jquery' );
+		wp_register_script( 'vkapi_callback', $this->plugin_url . '/js/callback.js');
+		if ( !is_admin() ) wp_enqueue_script ( 'vkapi_callback' );
+		
+		function close_wp ( $file ) {
+			global $post;
+			if ( !( is_singular() && ( have_comments() || comments_open() ) ) ) {
+				return;
+			}
+			return dirname(__FILE__) . '/close-wp.php';
+		}
+		
+		function do_empty ( $args ) {
 			return;
 		}
-		return dirname(__FILE__) . '/close_wp.php';
-	}
-	
-	function do_empty ( $args ) {
-		return;
-	}
 
-	$vkapi_close_wp = get_option( 'vkapi_close_wp' );
-	if ( $vkapi_close_wp ) {
-		add_filter( 'comments_template', 'close_wp' );
-		add_filter( 'comments_number', 'do_empty' );
+		$vkapi_close_wp = get_option( 'vkapi_close_wp' );
+		if ( $vkapi_close_wp ) {
+			add_filter( 'comments_template', 'close_wp' );
+			add_filter( 'comments_number', 'do_empty' );
+			}
+		else add_action( 'comments_template', array( &$this, 'add_tabs') );
+		
+		$logo_e = get_option( 'vkapi_some_logo_e' );
+		if ( $logo_e ) add_action( 'login_head', array(&$this, 'change_login_logo') );
+		
+		$autosave_d = get_option( 'vkapi_some_autosave_d' );
+		if ( $autosave_d ) add_action( 'wp_print_scripts', array(&$this, 'disable_autosave') );
+		
+		$vkapi_some_revision_d = get_option( 'vkapi_some_revision_d' );
+		if ( $vkapi_some_revision_d ) {
+			define ( 'WP_POST_REVISIONS', 0 );
+			remove_action( 'pre_post_update', 'wp_save_post_revision' );
 		}
-	else add_action( 'comments_template', array( &$this, 'add_tabs') );
-	
-	$logo_e = get_option( 'vkapi_some_logo_e' );
-	if ( $logo_e ) add_action( 'login_head', array(&$this, 'change_login_logo') );
-	
-	$autosave_d = get_option( 'vkapi_some_autosave_d' );
-	if ( $autosave_d ) add_action( 'wp_print_scripts', array(&$this, 'disable_autosave') );
 	}
 	
 	function disable_autosave() {
@@ -95,7 +101,8 @@ class VK_api {
 	}
 	
 	function install(){
-		add_option( 'vkapi_appid', 'Need Your AppId !!!' );
+		add_option( 'vkapi_appid', '' );
+		add_option( 'vkapi_api_secret', '' );
 		add_option( 'vkapi_comm_width', '600' );
 		add_option( 'vkapi_comm_limit', '15' );
 		add_option( 'vkapi_comm_graffiti', '1' );
@@ -116,18 +123,20 @@ class VK_api {
 		add_option( 'vkapi_some_logo', $this->plugin_url.'images/wordpress-logo.jpg' );
 		add_option( 'vkapi_some_desktop', '1' );
 		add_option( 'vkapi_some_autosave_d', '1' );
-		add_option( 'vkapi_close_wp', '1' );
+		add_option( 'vkapi_some_revision_d', '1' );
+		add_option( 'vkapi_close_wp', '0' );
 	}
 	
 	function deinstall() {
 		delete_option( 'vkapi_appId' );
+		delete_option( 'vkapi_api_secret' );
 		delete_option( 'vkapi_comm_width' );
 		delete_option( 'vkapi_comm_limit' );
-		delete_option( 'vkapi_comm_graffiti', '1' );
-		delete_option( 'vkapi_comm_photo', '1' );
-		delete_option( 'vkapi_comm_audio', '1' );
-		delete_option( 'vkapi_comm_video', '1' );
-		delete_option( 'vkapi_comm_link', '1' );
+		delete_option( 'vkapi_comm_graffiti' );
+		delete_option( 'vkapi_comm_photo' );
+		delete_option( 'vkapi_comm_audio' );
+		delete_option( 'vkapi_comm_video' );
+		delete_option( 'vkapi_comm_link' );
 		delete_option( 'vkapi_comm_autoPublish' );
 		delete_option( 'vkapi_comm_height' );
 		delete_option( 'vkapi_comm_show' );
@@ -141,6 +150,7 @@ class VK_api {
 		delete_option( 'vkapi_some_logo' );
 		delete_option( 'vkapi_some_desktop' );
 		delete_option( 'vkapi_some_autosave_d' );
+		delete_option( 'vkapi_some_revision_d' );
 		delete_option( 'vkapi_close_wp' );
 	}
 	
@@ -163,7 +173,7 @@ class VK_api {
 	}
 	
 	function add_css () {
-		wp_register_style( 'vkapi_admin', plugins_url('css/admin.css', __FILE__) );
+		wp_register_style( 'vkapi_admin', plugins_url('css/admin.css?ver=3.2.3', __FILE__) );
 	}
 	
 	function add_css_admin () {
@@ -175,7 +185,8 @@ class VK_api {
 		if ( $screen_id == $vkapi_page ) {
 			$contextual_help = '
 			<strong>"Disable Autosave Post Script"</strong> - Выключает астосохранение при редактировании/добавлении новой записи(поста).<br />
-			Это полезно тем, что теперь не будет тучи бесполезных черновиков(ведь зачем заполнять ими нашу базу данных?)<br /><br />
+			Это полезно тем, что теперь не будет тучи бесполезных черновиков(ведь зачем заполнять ими нашу базу данных?)<br />
+			<strong>Disable Revision Post Save:</strong> - устанавливает количество выше упомянутых черновиков в ноль.<br /><br />
 			Все вопросики и пожелания <strong><a href="http://www.kowack.info/projects/vk_api/" title="Vkontakte API Home">сюдатачки</a></strong> или <strong><a href="http://vkontakte.ru/vk_wp" title="Vkontakte API Club">тутачки</a></strong>.';
 		}
 		return $contextual_help;
@@ -190,6 +201,7 @@ class VK_api {
 				$postid = $post->ID;
 				$att;
 				$att2 = get_option( 'vkapi_comm_autoPublish' );
+				$vkapi_button = __('Vkontakte comments', $this->plugin_domain);
 				if ( get_option( 'vkapi_comm_graffiti' ) ) $att .= '"graffiti';
 				if ( get_option( 'vkapi_comm_photo' ) ) $att .= ( empty( $att{0} ) ) ? '"photo' : ',photo';
 				if ( get_option( 'vkapi_comm_audio' ) ) $att .= ( empty( $att{0} ) ) ? '"audio' : ',audio';
@@ -198,9 +210,6 @@ class VK_api {
 				if ( ( empty( $att{0} ) ) ) $att = 'false'; else $att .= '"';
 				if ( ( empty( $att2{0} ) ) ) $att2 = '0'; else $att2 = '1';
 				echo '<script type="text/javascript">
-				jQuery(document).ready(function() {
-				jQuery("#comments-title").css("padding","0 0");
-				});
 				function showVK(){
 					jQuery("#vkapi").show(2000);
 					jQuery("#comments").hide(2500);
@@ -229,6 +238,11 @@ class VK_api {
 				};
 				function onChange(num,last_comment,data,hash){
 					if (window.webkitNotifications.checkPermission() == 0) {
+							last_comment = last_comment.replace(new RegExp("&#33;",\'g\'),"!");
+							last_comment = last_comment.replace(new RegExp("&#39;",\'g\'),"\'");
+							last_comment = last_comment.replace(new RegExp("&#036;",\'g\'),"$");
+							last_comment = last_comment.replace(new RegExp("&#092;",\'g\'),"\\\");
+							last_comment = last_comment.replace(new RegExp("&quot;",\'g\'),\'"\');
 						Time = new Date();
 						Hour = Time.getHours();
 						Min = Time.getMinutes();
@@ -241,20 +255,20 @@ class VK_api {
 					} else {
 						jQuery("#vkapi").append(\'<button id="submit" class="vkapi_remove" onclick="vkapi_requestPermission()">Разрешить всплывающие сообщения</button>\');
 					};
-					jQuery("button.vkapi_vk").html(\'Комментарии Vkontakte (\'+num+\')\'); 
+					jQuery("button.vkapi_vk").html(\''.$vkapi_button.' (\'+num+\')\'); 
 				};';
 				} else {
 				echo 'function onChange(num,last_comment,data,hash){
-					jQuery("button.vkapi_vk").html(\'Комментарии Vkontakte (\'+num+\')\');
+					jQuery("button.vkapi_vk").html(\''.$vkapi_button.' (\'+num+\')\');
 					}';
 				};
 				echo '</script>
 				<br />
-				<button id="submit" onclick="showVK()" class="vkapi_vk">Комментарии Vkontakte</button>
-				<button id="submit" onclick="showComments()">Комментарии Wordpress ('.get_comments_number().') </button><br /><br /><br />
+				<button id="submit" onclick="showVK()" class="vkapi_vk" vkapi_notify="'.$postid.'">'.$vkapi_button.'</button>
+				<button id="submit" onclick="showComments()">'.__('WordPress comments', $this->plugin_domain).' ('.get_comments_number().') </button><br /><br /><br />
 				<div id="vkapi" onclick="showNotification()"></div>
 				<script type="text/javascript">
-					VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').', onChange: onChange},'.$postid.');
+					VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').'},'.$postid.');
 				</script>';
 				add_action ( 'wp_footer', array( &$this, 'add_footer' ) );
 			}
@@ -359,9 +373,9 @@ class VK_api {
 	}
 	
 	function load_domain() {
-		$mofile = dirname( __FILE__ ) . '/lang/' . $this->plugin_domain . '-' . get_locale() . '.mo';
-		load_textdomain( $this->plugin_domain, $mofile );
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 	}
+	
 }
 
 else :
@@ -380,10 +394,12 @@ endif;
 class VKAPI_Community extends WP_Widget {
 
 	function __construct() {
-		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Информация о группе вконтакте', $this->plugin_domain ) );
-		parent::__construct( 'vkapi_community', $name = __( 'VK: Community Users', $this->plugin_domain ), $widget_ops );
+		$plugin_domain = 'vkapi';
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Information about VKontakte group', $this->plugin_domain ) );
+		parent::__construct( 'vkapi_community', $name = __( 'VKAPI: Community Users', $this->plugin_domain ), $widget_ops );
 	}
-
+	
 	function widget($args, $instance) {
 		extract( $args );
 		$vkapi_divid = $args['widget_id'];
@@ -416,20 +432,20 @@ class VKAPI_Community extends WP_Widget {
 		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo $this->get_field_id( 'gid' ); ?>"><?php _e( 'ID группы (видно по ссылке на статистику):' ); ?>
+		<p><label for="<?php echo $this->get_field_id( 'gid' ); ?>"><?php _e( 'ID of group (can be seen by reference to statistics):', $this->plugin_domain ); ?>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'gid' ); ?>" name="<?php echo $this->get_field_name( 'gid' ); ?>" type="text" value="<?php echo $gid; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo $this->get_field_id( 'width' ); ?>"><?php _e( 'Width:' ); ?>
+		<p><label for="<?php echo $this->get_field_id( 'width' ); ?>"><?php _e( 'Width:', $this->plugin_domain ); ?>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'width' ); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
 		</label></p>
 		
 		<p>
-        <label for="<?php echo $this->get_field_id( 'type' ); ?>"><?php _e( 'Тип виджета:' ); ?></label>
+        <label for="<?php echo $this->get_field_id( 'type' ); ?>"><?php _e( 'Layout:', $this->plugin_domain ); ?></label>
         <select name="<?php echo $this->get_field_name( 'type' ); ?>" id="<?php echo $this->get_field_id( 'type' ); ?>" class="widefat">
-        <option value="users"<?php selected( $instance['type'], 'users' ); ?>><?php _e( 'Список пользователей' ); ?></option>
-	    <option value="news"<?php selected( $instance['type'], 'news' ); ?>><?php _e( 'Новости группы' ); ?></option>	                                
-		<option value="name"<?php selected( $instance['type'], 'name' ); ?>><?php _e( 'Только название' ); ?></option>
+        <option value="users"<?php selected( $instance['type'], 'users' ); ?>><?php _e( 'Members', $this->plugin_domain ); ?></option>
+	    <option value="news"<?php selected( $instance['type'], 'news' ); ?>><?php _e( 'News', $this->plugin_domain ); ?></option>	                                
+		<option value="name"<?php selected( $instance['type'], 'name' ); ?>><?php _e( 'Only Name', $this->plugin_domain ); ?></option>
         </select>
 		</p>
 		<?php }
@@ -438,8 +454,10 @@ class VKAPI_Community extends WP_Widget {
 class VKAPI_Recommend extends WP_Widget {
 
 	function __construct() {
-		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Топ сайта на основе "Мне нравиться"', $this->plugin_domain ) );
-		parent::__construct( 'vkapi_recommend', $name = __( 'VK: Recommends' , $this->plugin_domain), $widget_ops);
+		$plugin_domain = 'vkapi';
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Top site on basis of "I like" statistics', $this->plugin_domain ) );
+		parent::__construct( 'vkapi_recommend', $name = __( 'VKAPI: Recommends' , $this->plugin_domain), $widget_ops);
 		}
 
 		function widget( $args, $instance ) {
@@ -470,26 +488,27 @@ class VKAPI_Recommend extends WP_Widget {
 		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo $this->get_field_id( 'limit' ); ?>"><?php _e( 'Количество:' ); ?>
+		<p><label for="<?php echo $this->get_field_id( 'limit' ); ?>"><?php _e( 'Number of posts:', $this->plugin_domain ); ?>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'limit' ); ?>" name="<?php echo $this->get_field_name( 'limit' ); ?>" type="text" value="<?php echo $limit; ?>" />
 		</label></p>
 		
 		<p>
-        <label for="<?php echo $this->get_field_id( 'period' ); ?>"><?php _e( 'Период:' ); ?></label>
+        <label for="<?php echo $this->get_field_id( 'period' ); ?>"><?php _e( 'Selection period:', $this->plugin_domain ); ?></label>
         <select name="<?php echo $this->get_field_name( 'period' ); ?>" id="<?php echo $this->get_field_id( 'period' ); ?>" class="widefat">
-        <option value="day"<?php selected( $instance['period'], 'day' ); ?>><?php _e( 'Сутки' ); ?></option>
-	    <option value="week"<?php selected( $instance['period'], 'week' ); ?>><?php _e( 'Неделя' ); ?></option>	                                
-		<option value="month"<?php selected( $instance['period'], 'month' ); ?>><?php _e( 'Месяц' ); ?></option>
+        <option value="day"<?php selected( $instance['period'], 'day' ); ?>><?php _e( 'Day', $this->plugin_domain ); ?></option>
+	    <option value="week"<?php selected( $instance['period'], 'week' ); ?>><?php _e( 'Week', $this->plugin_domain ); ?></option>	                                
+		<option value="month"<?php selected( $instance['period'], 'month' ); ?>><?php _e( 'Month', $this->plugin_domain ); ?></option>
         </select>
 		</p>
 		
 		<p>
-        <label for="<?php echo $this->get_field_id( 'verb' ); ?>"><?php _e( 'Формулировка:' ); ?></label>
+        <label for="<?php echo $this->get_field_id( 'verb' ); ?>"><?php _e( 'Formulation:', $this->plugin_domain ); ?></label>
         <select name="<?php echo $this->get_field_name( 'verb' ); ?>" id="<?php echo $this->get_field_id( 'verb' ); ?>" class="widefat">
-        <option value="0"<?php selected( $instance['verb'], '0' ); ?>><?php _e( 'Понравилось ...' ); ?></option>
-	    <option value="1"<?php selected( $instance['verb'], '1' ); ?>><?php _e( 'Интересно ...' ); ?></option>	                                
+        <option value="0"<?php selected( $instance['verb'], '0' ); ?>><?php _e( '... people like this', $this->plugin_domain ); ?></option>
+	    <option value="1"<?php selected( $instance['verb'], '1' ); ?>><?php _e( '... people find it intersting', $this->plugin_domain ); ?></option>	                                
         </select>
 		</p>
 		<?php 
 	}
 }
+?>

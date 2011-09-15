@@ -4,18 +4,18 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, comments, vkontakte, ajax, plugin, posts, pages, share
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.7
+Stable tag: 1.8
 
-Описание: Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог.
+Описание: Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...
 
 == Description ==
 
-*   На данный момент реализовано комментирование и кнопка "Мне нравиться" и 2 виджета. 
+*   На данный момент реализовано комментирование и кнопка "Мне нравиться" и 2 виджета и оповещение на почту. 
 *   Требуеться актуальная версия PHP (>= 5.2.3)
 *   Версия WordpPress не ниже 3.0
 *   Тестировалось на актуальной на момент создания версии.
 
-*   Currently implemented "commenting" and button "I like" and 2 widget.
+*   Currently implemented "commenting" and button "I like" and 2 widget and admin mail-notification.
 *   Require a valid version of PHP (>= 5.2.3)
 *   Version WordPress 3.0 or higher
 *   Tested on "up to date" release.
@@ -29,9 +29,9 @@ Stable tag: 1.7
 
 = Настройка плагина =
 
-Для подключения каких либо функций к сайту у Вас должен быть <b>appID</b>.
-Если он у Вас уже есть укажите его в настройках плагина.
-Если нет - перейдите по этой <a href="http://vkontakte.ru/apps.php?act=add&site=1">ссылке</a> и зарегестрируйте ваш сайт(блог).
+Для подключения каких либо функций к сайту у Вас должен быть <b>ID приложения</b> и <b>Защищенный ключ<b>.
+Если они у Вас уже есть укажите его в настройках плагина.
+Если нет - перейдите по этой ссылке <a href="http://vkontakte.ru/apps.php?act=add&site=1">http://vkontakte.ru/apps.php?act=add&site=1</a> и зарегестрируйте ваш сайт(блог).
 
 = Плагин бесплатный ? =
 
@@ -39,7 +39,7 @@ Stable tag: 1.7
 
 = Configure plugin =
 
-To connect any features to the site You should have <b>appID</b>.
+To connect any features to the site You should have <b>Application ID</b> and <b>Secure key<b>.
 If you have this already, specify it in the plugin settings.
 If not - click on this <a href="http://vkontakte.ru/apps.php?act=add&site=1">link</a> and register your website (blog).
 
@@ -54,6 +54,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 3. Animation in action.
 
 == Changelog ==
+
+= 1.8 =
+* Admin mail-notification
 
 = 1.7 =
 * Add more options, hide wordpress comments if you wish
@@ -84,6 +87,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.8 =
+* Сообщения админу о новых комментариях. Продолжение следует =)
 
 = 1.7 =
 * Больше опций, скрытие комментариев Wordpress-a по желанию.
