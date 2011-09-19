@@ -155,7 +155,7 @@ class VK_api {
 	}
 	
 	function settings_page() {		
-		include( 'vkapi-options.php' );
+		require_once( 'vkapi-options.php' );
 	}
 	
 	function add_head() {
@@ -262,13 +262,14 @@ class VK_api {
 					jQuery("button.vkapi_vk").html(\''.$vkapi_button.' (\'+num+\')\');
 					}';
 				};
+				$vkapi_url = get_bloginfo('wpurl');
 				echo '</script>
 				<br />
-				<button id="submit" onclick="showVK()" class="vkapi_vk" vkapi_notify="'.$postid.'">'.$vkapi_button.'</button>
+				<button id="submit" onclick="showVK()" class="vkapi_vk" vkapi_notify="'.$postid.'" vkapi_url="'.$vkapi_url.'">'.$vkapi_button.'</button>
 				<button id="submit" onclick="showComments()">'.__('WordPress comments', $this->plugin_domain).' ('.get_comments_number().') </button><br /><br /><br />
 				<div id="vkapi" onclick="showNotification()"></div>
 				<script type="text/javascript">
-					VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').'},'.$postid.');
+					VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').', onChange: onChange},'.$postid.');
 				</script>';
 				add_action ( 'wp_footer', array( &$this, 'add_footer' ) );
 			}

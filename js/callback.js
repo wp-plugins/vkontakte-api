@@ -7,7 +7,8 @@ function vkapi_callback(id,num,last_comment,datee,sign) {
 			date: datee,
 			sign: sign
 		};
-		jQuery.post('/wp-content/plugins/vkontakte-api/vkapi-mail.php', vkdata, function(d) {alert(d)});
+		var wpurl = jQuery("button.vkapi_vk").attr("vkapi_url");
+		jQuery.post(wpurl+'/wp-content/plugins/vkontakte-api/vkapi-mail.php', vkdata, function() {});
 	});
 };
 

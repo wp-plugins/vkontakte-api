@@ -5,10 +5,10 @@
 		$last_comment = $_POST['last_comment'];
 		$date = $_POST['date'];
 		$sign = $_POST['sign'];
-		require_once('../../../wp-load.php');
+		require_once('../../../wp-blog-header.php');
 		$api_secret = get_option('vkapi_api_secret');
 		if ( $sign == md5(trim($api_secret.$date.$num.$last_comment)) ) {
-			$email = get_option('admin_email');
+			$email = get_bloginfo('admin_email');
 			$blogurl = site_url();
 			if (substr($blogurl,0,7)=='http://') $blogurl = substr($blogurl,7);
 			if (substr($blogurl,0,8)=='https://') $blogurl = substr($blogurl,8);
@@ -23,9 +23,5 @@
 			$subject .=  '"';
 			@wp_mail( $email, $subject, $notify_message );
 		}
-		else echo $sign  
-			. "\n\r" . md5($api_secret.$date.$num.$last_comment)
-			. "\n\r\n\r" . $api_secret." ".$date
-			. "\n\r" .$num." ".$last_comment;
 	}
 ?>
