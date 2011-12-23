@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vkontakte API\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-15 23:42+0200\n"
-"PO-Revision-Date: 2011-09-15 23:50+0200\n"
+"POT-Creation-Date: 2011-12-18 21:51+0200\n"
+"PO-Revision-Date: 2011-12-18 21:51+0200\n"
 "Last-Translator: www.kowack.info <kowack@gmail.com>\n"
 "Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,15 +17,18 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 "X-Poedit-SearchPath-1: .\n"
 
-#: ../vkapi-mail.php:17
+#: ../vkapi-mail.php:18
+#: ../vkapi-mail.php:33
 msgid "VKAPI: Page has just commented!"
 msgstr "VKAPI: Страницу только что прокомментировали."
 
-#: ../vkapi-mail.php:19
+#: ../vkapi-mail.php:20
+#: ../vkapi-mail.php:35
 msgid "Comment: "
 msgstr "Комментарии:"
 
-#: ../vkapi-mail.php:20
+#: ../vkapi-mail.php:21
+#: ../vkapi-mail.php:36
 msgid "[VKAPI] Website:"
 msgstr "[VKAPI] Сайт:"
 
@@ -110,6 +113,18 @@ msgid "Like button: "
 msgstr "Кнопка \"Мне нравиться\":"
 
 #: ../vkapi-options.php:1
+msgid "Valign :"
+msgstr "Вертикальная позиция:"
+
+#: ../vkapi-options.php:1
+msgid "top"
+msgstr "вверху"
+
+#: ../vkapi-options.php:1
+msgid "bottom"
+msgstr "внизу"
+
+#: ../vkapi-options.php:1
 msgid "Align :"
 msgstr "Позиция:"
 
@@ -156,6 +171,14 @@ msgstr "Это интересно"
 #: ../vkapi-options.php:1
 msgid "Show in Categories page and Home:"
 msgstr "Показывать в Категориях и на Главной:"
+
+#: ../vkapi-options.php:1
+msgid "Profile: "
+msgstr "Профиль:"
+
+#: ../vkapi-options.php:1
+msgid "Login Widget:"
+msgstr "Виджет входа:"
 
 #: ../vkapi-options.php:1
 msgid "Decorations: "
@@ -213,107 +236,148 @@ msgstr "Пасибки..."
 msgid "Save Changes"
 msgstr " Сохранить настройки "
 
-#: ../vkapi.php:40
-#, php-format
-msgid "VKontakte API plugin requires Wordpress 3.0 or newer. <a href=\"%s\">Please update!</a>"
-msgstr "VKontakte API plugin работает начиная с версии Wordpress 3.0. <a href=\"%s\">Обновитесь, пожалуйста!</a>"
-
-#: ../vkapi.php:171
+#: ../vkapi.php:192
 msgid "Vkontate API Plugin Settings"
-msgstr ""
+msgstr "Vkontate API Plugin - Настройки"
 
-#: ../vkapi.php:171
+#: ../vkapi.php:192
 msgid "Vkontakte API"
 msgstr ""
 
-#: ../vkapi.php:204
+#: ../vkapi.php:226
 msgid "Vkontakte comments"
 msgstr "Комментарии Vkontakte"
 
-#: ../vkapi.php:268
+#: ../vkapi.php:290
 msgid "WordPress comments"
 msgstr "Комментарии сайта"
 
-#: ../vkapi.php:383
-msgid "Class VK_api already declared!"
+#: ../vkapi.php:403
+#: ../vkapi.php:404
+msgid "VK.com comments"
+msgstr "VK.com комментарии"
+
+#: ../vkapi.php:414
+msgid "Enable"
 msgstr ""
 
-#: ../vkapi.php:399
+#: ../vkapi.php:416
+msgid "Disable"
+msgstr ""
+
+#: ../vkapi.php:452
 msgid "Information about VKontakte group"
 msgstr "Информация о группе Вконтакте"
 
-#: ../vkapi.php:400
+#: ../vkapi.php:453
 msgid "VKAPI: Community Users"
 msgstr "VKAPI: Группа"
 
-#: ../vkapi.php:431
-#: ../vkapi.php:487
+#: ../vkapi.php:485
+#: ../vkapi.php:547
 msgid "Title:"
 msgstr ""
 
-#: ../vkapi.php:435
+#: ../vkapi.php:489
 msgid "ID of group (can be seen by reference to statistics):"
 msgstr "ID группы (видно по ссылке на статистику):"
 
-#: ../vkapi.php:439
+#: ../vkapi.php:493
 msgid "Width:"
 msgstr "Ширина:"
 
-#: ../vkapi.php:444
+#: ../vkapi.php:497
+msgid "Height:"
+msgstr "Высота:"
+
+#: ../vkapi.php:502
 msgid "Layout:"
 msgstr "Тип виджета:"
 
-#: ../vkapi.php:446
+#: ../vkapi.php:504
 msgid "Members"
 msgstr "Список пользователей"
 
-#: ../vkapi.php:447
+#: ../vkapi.php:505
 msgid "News"
 msgstr "Новости группы"
 
-#: ../vkapi.php:448
+#: ../vkapi.php:506
 msgid "Only Name"
 msgstr "Только название"
 
-#: ../vkapi.php:459
+#: ../vkapi.php:519
 msgid "Top site on basis of \"I like\" statistics"
 msgstr "Топ сайта на основе \"Мне нравиться\""
 
-#: ../vkapi.php:460
+#: ../vkapi.php:520
 msgid "VKAPI: Recommends"
 msgstr "VKAPI: Популярное"
 
-#: ../vkapi.php:491
+#: ../vkapi.php:551
 msgid "Number of posts:"
 msgstr "Количество:"
 
-#: ../vkapi.php:496
+#: ../vkapi.php:556
 msgid "Selection period:"
 msgstr "Период:"
 
-#: ../vkapi.php:498
+#: ../vkapi.php:558
 msgid "Day"
 msgstr "Сутки"
 
-#: ../vkapi.php:499
+#: ../vkapi.php:559
 msgid "Week"
 msgstr "Неделя"
 
-#: ../vkapi.php:500
+#: ../vkapi.php:560
 msgid "Month"
 msgstr "Месяц"
 
-#: ../vkapi.php:505
+#: ../vkapi.php:565
 msgid "Formulation:"
 msgstr "Формулировка:"
 
-#: ../vkapi.php:507
+#: ../vkapi.php:567
 msgid "... people like this"
 msgstr "Понравилось ..."
 
-#: ../vkapi.php:508
+#: ../vkapi.php:568
 msgid "... people find it intersting"
 msgstr "Интересно ..."
+
+#: ../vkapi.php:581
+msgid "Login widget"
+msgstr "Виджет входа"
+
+#: ../vkapi.php:582
+msgid "VKAPI: Login"
+msgstr "VKAPI: Вход"
+
+#: ../vkapi.php:597
+#: ../vkapi.php:602
+msgid "Profile"
+msgstr "Профиль"
+
+#: ../vkapi.php:598
+#: ../vkapi.php:603
+msgid "Logout"
+msgstr "Выход"
+
+#: ../vkapi.php:604
+msgid "You can add VK.com account in Profile for more simple log in:"
+msgstr ""
+
+#: ../vkapi.php:629
+msgid "Message:"
+msgstr ""
+
+#~ msgid ""
+#~ "VKontakte API plugin requires Wordpress 3.0 or newer. <a href=\"%s"
+#~ "\">Please update!</a>"
+#~ msgstr ""
+#~ "VKontakte API plugin работает начиная с версии Wordpress 3.0. <a href=\"%s"
+#~ "\">Обновитесь, пожалуйста!</a>"
 
 #~ msgid "Your AppId:"
 #~ msgstr "Ваш AppId:"

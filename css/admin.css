@@ -18,6 +18,12 @@ textarea.mid-text {
 	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/admin-bg.jpg) no-repeat right top;
 }
 
+.webmoney {
+	width:16px;
+	float:left;
+	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/webmoney.png) no-repeat;
+}
+
 .form-table .section-title h3 {
     margin:0; padding:5px 10px;
     background:#DFDFDF url(../../../../wp-admin/images/menu-bits.gif) repeat-x scroll left -379px !important; 

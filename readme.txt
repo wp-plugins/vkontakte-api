@@ -1,21 +1,21 @@
 === Vkontakte API ===
 Contributors: kowack
 Donate link: http://www.kowack.info/projects/vk_api/
-Tags: social, comment, comments, vkontakte, ajax, plugin, posts, pages, share
+Tags: social, comment, comments, vkontakte, ajax, plugin, posts, pages, share, vk, vk.com
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.9
+Stable tag: 1.10
 
 Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
 
 == Description ==
 
-*   На данный момент реализовано комментирование и кнопка "Мне нравиться" и 2 виджета и оповещение на почту. 
+*   На данный момент реализовано комментирование и кнопка "Мне нравиться" и 2 виджета и оповещение на почту и вход\регистрация. 
 *   Требуеться актуальная версия PHP (>= 5.2.3)
 *   Версия WordpPress не ниже 3.0
 *   Тестировалось на актуальной на момент создания версии.
 
-*   Currently implemented "commenting" and button "I like" and 2 widget and admin mail-notification.
+*   Currently implemented "commenting" and button "I like" and 2 widget and admin mail-notification and login\register.
 *   Require a valid version of PHP (>= 5.2.3)
 *   Version WordPress 3.0 or higher
 *   Tested on "up to date" release.
@@ -55,6 +55,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 == Changelog ==
 
+= 1.10 =
+* Added login\register widget. Can be enabled from options page.
+
 = 1.9 =
 * Fixed (if WP installed in sub directory)
 
@@ -90,6 +93,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.10 =
+* Добавлен виджет авторизации\регистрации. Включается в настройках плагина.
 
 = 1.9 =
 * Исправления (одно из них: если ВП установлен не в корневую директорию)
