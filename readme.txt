@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, comments, vkontakte, ajax, plugin, posts, pages, share, vk, vk.com
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.10
+Stable tag: 1.13
 
 Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
 
@@ -55,6 +55,10 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 == Changelog ==
 
+= 1.13 =
+* Вывод количества комментриев вконтакта.
+* Отдельные настройки для каждой страницы.
+
 = 1.10 =
 * Added login\register widget. Can be enabled from options page.
 
@@ -93,6 +97,10 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.13 =
+* Вывод количества комментриев вконтакта.
+* Отдельные настройки для каждой страницы.
 
 = 1.10 =
 * Добавлен виджет авторизации\регистрации. Включается в настройках плагина.
