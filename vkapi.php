@@ -3,7 +3,7 @@
 Plugin Name: Vkontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi">Settings!</a></strong>
-Version: 1.14
+Version: 1.15
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -190,7 +190,7 @@ class VK_api {
 	
 	function create_menu() {
 		$this->vkapi_page = add_options_page(__( 'Vkontate API Plugin Settings', $this->plugin_domain), __('Vkontakte API', $this->plugin_domain), 'manage_options', 'vkapi', array( &$this, 'settings_page') );
-		add_action( 'admin_print_styles-' . $vkapi_page, array( &$this, 'add_css_admin' ) );
+		add_action( 'admin_print_styles-' . $this->vkapi_page, array( &$this, 'add_css_admin' ) );
 	}
 	
 	function add_css () {
@@ -328,7 +328,9 @@ class VK_api {
 				$verb = get_option( 'vkapi_like_verb' );
 				$vkapi_args = "<div float=\"$align\"><div id=\"vkapi_like_$postid\"></div></div><br />
 				<script type=\"text/javascript\">
-					<! - VK.Widgets.Like('vkapi_like_$postid', {width: 200, type: '$type', verb: '$verb'}, $postid); //->
+					<!-- 
+					VK.Widgets.Like('vkapi_like_$postid', {width: 200, type: '$type', verb: '$verb'}, $postid); 
+					-->
 				</script>";
 				if ( $valign ) $args .= $vkapi_args; 
 				else {

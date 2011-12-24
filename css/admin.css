@@ -14,7 +14,7 @@ textarea.mid-text {
 	border-color: #999 !important;
 }
 
-.wrap {
+#wpbody{
 	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/admin-bg.jpg) no-repeat right top;
 }
 
