@@ -3,7 +3,7 @@ Contributors: kowack
 Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, comments, vkontakte, ajax, plugin, posts, pages, share, vk, vk.com
 Requires at least: 3.0
-Tested up to: 3.2.1
+Tested up to: 3.3
 Stable tag: 1.13
 
 Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
@@ -29,7 +29,7 @@ Stable tag: 1.13
 
 = Настройка плагина =
 
-Для подключения каких либо функций к сайту у Вас должен быть <strong>ID приложения</strong> и <strong>Защищенный ключ<strong>.
+Для подключения каких либо функций к сайту у Вас должен быть <strong>ID приложения</strong> и <strong>Защищенный ключ</strong>.
 Если они у Вас уже есть укажите их в настройках плагина.
 Если нет - перейдите по этой ссылке <a href="http://vkontakte.ru/apps.php?act=add&site=1">http://vkontakte.ru/apps.php?act=add&site=1</a> и зарегестрируйте ваш сайт(блог).
 

@@ -183,8 +183,8 @@ class VK_api {
 	function add_head() {
 		if ( !is_admin() ) {
 			$appId = get_option( 'vkapi_appId' );
-			echo '<meta property="vk:app_id" content="'.$appId.'" />\n';
-			echo '<script type="text/javascript" src="http://userapi.com/js/api/openapi.js"></script>\n';
+			echo "<meta property='vk:app_id' content='$appId' />\n";
+			echo "<script type='text/javascript' src='http://userapi.com/js/api/openapi.js'></script>\n";
 		}
 	}
 	
