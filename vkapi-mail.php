@@ -1,13 +1,15 @@
 <?php
 	if ( isset( $_POST['id'] ) ) {
+		header('HTTP/1.1 200 OK');
 		$post_id = $_POST['id'];
 		$num = (string) $_POST['num'];
-		$last_comment = $_POST['last_comment'];
+		$last_comment = urldecode ( $_POST['last_comment'] );
 		$date = $_POST['date'];
 		$sign = $_POST['sign'];
 		require_once('../../../wp-blog-header.php');
 		$api_secret = get_option('vkapi_api_secret');
-		if ( $sign == md5(trim($api_secret.$date.$num.$last_comment)) ) {
+		$hash = md5($api_secret.$date.$num.$last_comment);
+		if ( strcmp($hash, $sign) == 0  ) {
 			update_post_meta($post_id, 'vkapi_comm', $num, FALSE);
 			$email = get_bloginfo('admin_email');
 			$blogurl = site_url();
@@ -23,7 +25,7 @@
 			$subject .= $blogurl;
 			$subject .=  '"';
 			@wp_mail( $email, $subject, $notify_message );
-		} else {
+		} /* else {
 			$email = get_bloginfo('admin_email');
 			$blogurl = site_url();
 			if (substr($blogurl,0,7)=='http://') $blogurl = substr($blogurl,7);
@@ -39,6 +41,6 @@
 			$subject .=  '"';
 			$notify_message .= "\r\n\r\n\r\nsign not true";
 			@wp_mail( $email, $subject, $notify_message );
-		}
+		} */
 	}
 ?>

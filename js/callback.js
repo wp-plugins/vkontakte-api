@@ -36,25 +36,34 @@ jQuery(document).ready(function() {
 // On add comment 
 function onChangePlus (num,last_comment,datee,sign) {
 	var id = jQuery("button.vkapi_vk").attr("vkapi_notify");
+	last_comment = html_entity_decode ( last_comment );
 	vkapi_comm_plus (id,num,last_comment,datee,sign);
 };
 
 // On del comment
 function onChangeMinus (num,last_comment,datee,sign) {
 	var id = jQuery("button.vkapi_vk").attr("vkapi_notify");
+	last_comment = html_entity_decode ( last_comment );
 	vkapi_comm_minus (id,num,last_comment,datee,sign);
 };
 
-// On log in
+// On log in 
 function onSignon (response) {
 	if (response.session) {
 		var vkdata = {
-			method: 'getProfiles',
-			id: response.session.mid,
-			params: 'uid,first_name,nickname,last_name,screen_name,photo_medium_rec'
+			mid: response.session.mid
 		};
-		var wpurl = jQuery("button.vkapi_vk").attr("vkapi_url");
-		jQuery.post(wpurl+'/wp-content/plugins/vkontakte-api/vkapi-connect.php', vkdata, function() {});
+		var wpurl = jQuery("button.vkapi_vk_widget").attr("vkapi_url");
+		jQuery.post(wpurl+'/wp-content/plugins/vkontakte-api/vkapi-connect.php', vkdata, function( text ) {
+			if ( text == 'Ok' ) {
+				jQuery("#vkapi_status").html("<span style='color:green'>Result: ✔ "+text+"</span>");
+				location.reload(true);
+			} else {
+				jQuery("#vkapi_status").html("<span style='color:red'>Result: "+text+"</span>");
+			};
+		});
+	} else {
+	VK.Auth.login(onSignon);
 	};
 };
 

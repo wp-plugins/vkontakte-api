@@ -3,7 +3,7 @@
 Plugin Name: Vkontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi">Settings!</a></strong>
-Version: 1.15
+Version: 1.16
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -36,18 +36,10 @@ class VK_api {
 		
 	function __construct() {
 	
-		function vkapi_notice() {
-			echo '<div class="error">
-			<p>VKontakte API plugin requires Wordpress 3.0 or newer. <a href="'.bloginfo('url').'wp-admin/update-core.php'.'">Please update!</a></p>
-			</div>';
-		}
-	
 		if( !defined('DB_NAME') )
 			die('Error: Plugin does not support standalone calls, damned hacker.');
 
 		$this->plugin_url = trailingslashit( WP_PLUGIN_URL.'/'.dirname(plugin_basename(__FILE__)) );
-		global $wp_version;
-		if ( version_compare( $wp_version, "3.0", "<" ) ) add_action( 'admin_notices', 'vkapi_notice' );
 		
 		$this->load_domain();
 		
@@ -100,11 +92,6 @@ class VK_api {
 		if ( $vkapi_some_revision_d ) {
 			define ( 'WP_POST_REVISIONS', 0 );
 			remove_action( 'pre_post_update', 'wp_save_post_revision' );
-		}
-		
-		$vkapi_login = get_option( 'vkapi_login' );
-		if ( $vkapi_login ) { 
-			require_once( 'vkapi-connect.php' );
 		}
 	}
 	
@@ -194,7 +181,7 @@ class VK_api {
 	}
 	
 	function add_css () {
-		wp_register_style( 'vkapi_admin', plugins_url('css/admin.css?ver=3.2.3', __FILE__) );
+		wp_register_style( 'vkapi_admin', plugins_url('css/admin.css', __FILE__) );
 	}
 	
 	function add_css_admin () {
@@ -410,7 +397,7 @@ class VK_api {
 		global $post;
 		echo '<input type="hidden" name="vkapi_noncename" id="vkapi_noncename" value="' . wp_create_nonce( plugin_basename(__FILE__) ) . '" />';
 		$vkapi_comments = get_post_meta( $post->ID, 'vkapi_comments', true );
-		if ( $vkapi_comments === '' ) $vkapi_comments = 0;
+		if ( $vkapi_comments === '' ) $vkapi_comments = 1;
 		echo '<input type="radio" name="vkapi_comments" value="1"';
 		if ( $vkapi_comments == 1 ) echo ' checked ';
 		echo'/>' . __( 'Enable', $this->plugin_domain ).'<br /><input type="radio" name="vkapi_comments" value="0"';
@@ -423,27 +410,35 @@ class VK_api {
 else :
 
 	{
-	function vkapi_notice(){
+	function vkapi_notice_declared(){
 		echo '<div class="error">
 		<p>Class VK_api already declared!.</p>
 		</div>';
 	}
-	add_action( 'admin_notices', 'vkapi_notice' );
+	add_action( 'admin_notices', 'vkapi_notice_declared' );
 	}
 	
 endif;
 
-
-if ( class_exists( 'VK_api' ) ) :
-	
+global $wp_version;
+if ( version_compare( $wp_version, "3.3", "<" ) ) { 
+	function vkapi_notice_update() {
+		echo '
+		<div class="error">
+		<p>VKontakte API plugin requires Wordpress 3.3 or newer. <a href="'.bloginfo('url').'wp-admin/update-core.php'.'">Please update!</a></p>
+		<p>Plugin not activated!</p>
+		</div>
+		';
+	}
+	add_action( 'admin_notices', 'vkapi_notice_update' );
+}
+elseif ( class_exists( 'VK_api' ) )
 	$VK_api = new VK_api();
 
-endif;
+/* =Vkapi Widgets 
+-------------------------------------------------------------- */
 
-/************************************************************************************************/
-/**************************************** Vkapi Widgets *****************************************/
-/************************************************************************************************/
-// Community Widget
+/* Community Widget */
 class VKAPI_Community extends WP_Widget {
 
 	var $plugin_domain = 'vkapi';
@@ -510,7 +505,7 @@ class VKAPI_Community extends WP_Widget {
 		</p>
 		<?php }
 }
-// Recommend Widget
+/* Recommend Widget */
 class VKAPI_Recommend extends WP_Widget {
 
 	var $plugin_domain = 'vkapi';
@@ -573,7 +568,7 @@ class VKAPI_Recommend extends WP_Widget {
 		<?php 
 	}
 }
-// Login Widget 
+/* Login Widget */
 class VKAPI_Login extends WP_Widget {
 
 	var $plugin_domain = 'vkapi';
@@ -581,7 +576,7 @@ class VKAPI_Login extends WP_Widget {
 	function __construct() {
 		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Login widget', $this->plugin_domain ) );
-		parent::__construct( 'vkapi_login', $name = __( 'Don\'t WORK!!!' , $this->plugin_domain), $widget_ops);
+		parent::__construct( 'vkapi_login', $name = __( 'VKAPI: Login' , $this->plugin_domain), $widget_ops);
 		}
 
 	function widget( $args, $instance ) {
@@ -594,15 +589,15 @@ class VKAPI_Login extends WP_Widget {
 				$vkapi_meta_uid = get_user_meta($vkapi_wp_id, 'vkapi_uid', TRUE);
 				if ( !empty( $vkapi_meta_uid{0} ) ) {
 					$vkapi_meta_ava = get_user_meta($vkapi_wp_id, 'vkapi_ava', TRUE);
-					echo "<img alt='' src='$vkapi_meta_ava' class='avatar avatar-75' height='75' width='75' />";
-					echo '<br />';
-					echo '<a href="' . site_url('/wp-admin/profile.php') . '" title="">' . __( 'Profile' , $this->plugin_domain ) . '</a>';
-					echo '<a href="' . wp_logout_url( get_permalink() ) . '" title="">' . __( 'Logout' , $this->plugin_domain ) . '</a>';
+					echo "<div style='float:left; padding-right:20px'><img alt='' src='$vkapi_meta_ava' class='avatar avatar-75' height='75' width='75' /></div>";
+					echo "<br />\r\n<div>";
+					echo "<a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , $this->plugin_domain ) . "</a><br /><br />";
+					echo "<a href='" . wp_logout_url( get_permalink() ) . "' title=''>" . __( 'Logout' , $this->plugin_domain ) . "</a><br /><br /></div>";
 				} else {
-					echo get_avatar( $vkapi_wp_id, 75, $default = '<path_to_url>' );
-					echo '<br />';
-					echo '<a href="' . site_url('/wp-admin/profile.php') . '" title="">' . __( 'Profile' , $this->plugin_domain ) . '</a><br />';
-					echo '<a href="' . wp_logout_url( get_permalink() ) . '" title="">' . __( 'Logout' , $this->plugin_domain ) . '</a>';
+					echo "<div style='float:left; padding-right:20px'>" . get_avatar( $vkapi_wp_id, 75 ) . "</div>";          
+					echo "<br />\r\n<div>";
+					echo "<a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , $this->plugin_domain ) . "</a><br /><br />";
+					echo "<a href='" . wp_logout_url( get_permalink() ) . "' title=''>" . __( 'Logout' , $this->plugin_domain ) . "</a><br /><br /></div>";
 				}
 		} else {
 			$this->vkapi_link_vk();
@@ -611,8 +606,12 @@ class VKAPI_Login extends WP_Widget {
 	}
 	
 	function vkapi_link_vk () {
-		echo '<br />
-		<div id="login_button" onclick="VK.Auth.login(onSignon)"></div>
+		$vkapi_url = get_bloginfo('wpurl');
+		echo '<button style="display: none" id="submit" class="vkapi_vk_widget" vkapi_url="'.$vkapi_url.'"></button>';
+		echo '<a href="' . wp_login_url( get_permalink() ) . '" title="">' . __( 'Login' , $this->plugin_domain ) . '</a>';
+		echo '<br /><br />
+		<div id="vkapi_status"></div>
+		<div id="login_button" onclick="VK.Auth.getLoginStatus(onSignon)"></div>
 		<script language="javascript">
 			VK.UI.button(\'login_button\');
 		</script>';
