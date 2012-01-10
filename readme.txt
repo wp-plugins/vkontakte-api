@@ -1,8 +1,8 @@
 === Vkontakte API ===
 Contributors: kowack
 Donate link: http://www.kowack.info/projects/vk_api/
-Tags: social, comment, comments, vkontakte, ajax, plugin, posts, pages, share, vk, vk.com
-Requires at least: 3.0
+Tags: social, comment, comments, vkontakte, vkontakte.ru, plugin, posts, pages, share, vk, vk.com
+Requires at least: 3.3
 Tested up to: 3.3
 Stable tag: 1.16
 
@@ -12,12 +12,12 @@ Stable tag: 1.16
 
 *   На данный момент реализовано комментирование и кнопка "Мне нравиться" и 2 виджета и оповещение на почту и вход\регистрация. 
 *   Требуеться актуальная версия PHP (>= 5.2.3)
-*   Версия WordpPress не ниже 3.0
+*   Версия WordpPress не ниже 3.3
 *   Тестировалось на актуальной на момент создания версии.
 
 *   Currently implemented "commenting" and button "I like" and 2 widget and admin mail-notification and login\register.
 *   Require a valid version of PHP (>= 5.2.3)
-*   Version WordPress 3.0 or higher
+*   Version WordPress 3.3 or higher
 *   Tested on "up to date" release.
 
 == Installation ==
@@ -29,9 +29,9 @@ Stable tag: 1.16
 
 = Настройка плагина =
 
-Для подключения каких либо функций к сайту у Вас должен быть <strong>ID приложения</strong> и <strong>Защищенный ключ</strong>.
+Для подключения каких либо функций к сайту у Вас должен быть **ID приложения** и **Защищенный ключ**.
 Если они у Вас уже есть укажите их в настройках плагина.
-Если нет - перейдите по этой ссылке <a href="http://vkontakte.ru/apps.php?act=add&site=1">http://vkontakte.ru/apps.php?act=add&site=1</a> и зарегестрируйте ваш сайт(блог).
+Если нет - перейдите по этой ссылке [http://vkontakte.ru/apps.php?act=add&site=1](http://vkontakte.ru/apps.php?act=add&site=1) и зарегестрируйте ваш сайт(блог).
 
 = Плагин бесплатный ? =
 
@@ -39,9 +39,9 @@ Stable tag: 1.16
 
 = Configure plugin =
 
-To connect any features to the site You should have <b>Application ID</b> and <b>Secure key<b>.
+To connect any features to the site You should have **Application ID** and **Secure key**.
 If you have this already, specify it in the plugin settings.
-If not - click on this <a href="http://vkontakte.ru/apps.php?act=add&site=1">link</a> and register your website (blog).
+If not - click on this [http://vk.com/apps.php?act=add&site=1](http://vk.com/apps.php?act=add&site=1) and register your website (blog).
 
 = Plugin is free? =
 
@@ -165,7 +165,7 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 = 1.3 =
 * Добавлена кнопка "Мне нравиться". 
-* Добавлены 2 виджета: первый показывает вашу группу вкнотакте (название, участники, новости), второй - самое популярное исходя из статистики кнопки "Мне нравиться".
+* Добавлены 2 виджета: первый показывает вашу группу вконтакте (название, участники, новости), второй - самое популярное исходя из статистики кнопки "Мне нравиться".
 
 = 1.2 = 
 * Fix jQuery.

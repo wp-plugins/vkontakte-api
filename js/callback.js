@@ -1,6 +1,8 @@
 // Mail callback + count plus
 function vkapi_comm_plus(id,num,last_comment,datee,sign) {
 	jQuery(document).ready(function() {
+		onChange(num,last_comment,datee,sign);
+		onChangeRecalc(num,last_comment,datee,sign);
 		var vkdata = {
 			id: id,
 			num: num,
@@ -16,6 +18,7 @@ function vkapi_comm_plus(id,num,last_comment,datee,sign) {
 // Count minus
 function vkapi_comm_minus(id,num,last_comment,datee,sign) {
 	jQuery(document).ready(function() {
+		onChangeRecalc(num,last_comment,datee,sign);
 		var vkdata = {
 			id: id,
 			num: num,
