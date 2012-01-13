@@ -56,17 +56,30 @@ function onSignon (response) {
 		var vkdata = {
 			mid: response.session.mid
 		};
+		
+			var parts = window.location.search.substr(1).split("&");
+			var $_GET = {};
+			for (var i = 0; i < parts.length; i++) {
+				var temp = parts[i].split("=");
+				$_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+			}
+
 		var wpurl = jQuery("button.vkapi_vk_widget").attr("vkapi_url");
 		jQuery.post(wpurl+'/wp-content/plugins/vkontakte-api/vkapi-connect.php', vkdata, function( text ) {
 			if ( text == 'Ok' ) {
 				jQuery("#vkapi_status").html("<span style='color:green'>Result: ✔ "+text+"</span>");
-				location.reload(true);
+				if ( $_GET['redirect_to'] ) {
+					document.location.replace($_GET['redirect_to']);
+				} else {
+					document.location.replace(location.host);
+				};
 			} else {
 				jQuery("#vkapi_status").html("<span style='color:red'>Result: "+text+"</span>");
 			};
 		});
 	} else {
 	VK.Auth.login(onSignon);
+	alert('test 2');
 	};
 };
 

@@ -14,14 +14,23 @@ textarea.mid-text {
 	border-color: #999 !important;
 }
 
-#wpbody{
+#wpbody {
 	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/admin-bg.jpg) no-repeat right top;
+}
+
+#vkapi_icon32 {
+	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/set.png) no-repeat;
 }
 
 .webmoney {
 	width:16px;
 	float:left;
-	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/webmoney.png) no-repeat;
+}
+
+.contextual-help-tabs .active a,
+.contextual-help-tabs .active a:hover ,
+.contextual-help-tabs a:hover {
+	color:red;
 }
 
 .form-table .section-title h3 {

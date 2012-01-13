@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vkontakte API\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-18 21:51+0200\n"
-"PO-Revision-Date: 2011-12-18 21:51+0200\n"
+"POT-Creation-Date: 2012-01-13 15:47+0200\n"
+"PO-Revision-Date: 2012-01-13 15:47+0200\n"
 "Last-Translator: www.kowack.info <kowack@gmail.com>\n"
 "Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,28 +17,32 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 "X-Poedit-SearchPath-1: .\n"
 
-#: ../vkapi-mail.php:18
-#: ../vkapi-mail.php:33
-msgid "VKAPI: Page has just commented!"
-msgstr "VKAPI: Страницу только что прокомментировали."
+#: ../vkapi-mail.php:22
+#: ../vkapi-mail.php:38
+msgid "VKapi: Page has just commented!"
+msgstr "VKapi: Страницу только что прокомментировали."
 
-#: ../vkapi-mail.php:20
-#: ../vkapi-mail.php:35
+#: ../vkapi-mail.php:24
+#: ../vkapi-mail.php:40
 msgid "Comment: "
-msgstr "Комментарии:"
+msgstr "Комментарий:"
 
-#: ../vkapi-mail.php:21
-#: ../vkapi-mail.php:36
-msgid "[VKAPI] Website:"
-msgstr "[VKAPI] Сайт:"
-
-#: ../vkapi-options.php:1
-msgid "VKontakte API Plugin Settings"
-msgstr "Vkontate API Plugin - Настройки "
+#: ../vkapi-mail.php:25
+#: ../vkapi-mail.php:41
+msgid "[VKapi] Website:"
+msgstr "[VKapi] Сайт:"
 
 #: ../vkapi-options.php:1
-msgid "If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href='http://vkontakte.ru/apps.php?act=add&site=1'>link</a> and register your site(blog)."
-msgstr "Если у Вас нет <b>ID приложения</b> и <b>Защищенного ключа</b> : перейдите по этой <a href='http://vkontakte.ru/apps.php?act=add&site=1'>ссылке</a> и зарегестрируйте ваш сайт(блог)."
+msgid "VKontakte API Plugin - Settings"
+msgstr "Vkontakte API Plugin - Настройки"
+
+#: ../vkapi-options.php:1
+msgid "If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href='http://vkontakte.ru/apps.php?act=add&site=1'>link</a> and register your site(blog). It's easy."
+msgstr "Если у Вас нет <b>ID приложения</b> и <b>Защищенного ключа</b> : перейдите по этой <a href='http://vkontakte.ru/apps.php?act=add&site=1'>ссылке</a> и зарегестрируйте ваш сайт(блог). Это просто!"
+
+#: ../vkapi-options.php:1
+msgid "If don't remember : go this <a href='http://vkontakte.ru/apps?act=settings'>link</a> and choose need application."
+msgstr "Если не помните : перейдите по этой <a href='http://vkontakte.ru/apps?act=settings'>ссылке</a> и выбирите нужное приложение."
 
 #: ../vkapi-options.php:1
 msgid "Application ID:"
@@ -173,14 +177,6 @@ msgid "Show in Categories page and Home:"
 msgstr "Показывать в Категориях и на Главной:"
 
 #: ../vkapi-options.php:1
-msgid "Profile: "
-msgstr "Профиль:"
-
-#: ../vkapi-options.php:1
-msgid "Login Widget:"
-msgstr "Виджет входа:"
-
-#: ../vkapi-options.php:1
 msgid "Decorations: "
 msgstr "Декор:"
 
@@ -236,148 +232,209 @@ msgstr "Пасибки..."
 msgid "Save Changes"
 msgstr " Сохранить настройки "
 
-#: ../vkapi.php:192
-msgid "Vkontate API Plugin Settings"
-msgstr "Vkontate API Plugin - Настройки"
+#: ../vkapi.php:106
+#, php-format
+msgid "Vkontakte API Plugin needs <a href=\"%s\">configuration</a>."
+msgstr "Vkontakte API Plugin нуждается в <a href=\"%s\">настройке</a>."
 
-#: ../vkapi.php:192
+#: ../vkapi.php:186
+#: ../vkapi.php:222
+msgid "Vkontakte API Plugin - Comments"
+msgstr "Vkontakte API Plugin - Комментарии"
+
+#: ../vkapi.php:205
+#: ../vkapi.php:206
 msgid "Vkontakte API"
-msgstr ""
+msgstr "Vkontakte API"
 
-#: ../vkapi.php:226
+#: ../vkapi.php:214
+msgid "Vkontakte API Plugin - Settings"
+msgstr "Vkontakte API Plugin - Настройки"
+
+#: ../vkapi.php:215
+msgid "Settings"
+msgstr "Настройки"
+
+#: ../vkapi.php:223
+msgid "Last Comments"
+msgstr "Последнии комментарии"
+
+#: ../vkapi.php:254
+msgid "Main"
+msgstr "Обзор"
+
+#: ../vkapi.php:263
+msgid "Comments"
+msgstr "Комментарии"
+
+#: ../vkapi.php:271
+msgid "Like button"
+msgstr "Кнопка \"Мне нравиться\""
+
+#: ../vkapi.php:279
+msgid "Decor"
+msgstr "Декор"
+
+#: ../vkapi.php:288
+msgid "No Plugin Options"
+msgstr "Не связаное с плагином"
+
+#: ../vkapi.php:295
+msgid "Help"
+msgstr "Помощь"
+
+#: ../vkapi.php:313
 msgid "Vkontakte comments"
 msgstr "Комментарии Vkontakte"
 
-#: ../vkapi.php:290
+#: ../vkapi.php:380
 msgid "WordPress comments"
 msgstr "Комментарии сайта"
 
-#: ../vkapi.php:403
-#: ../vkapi.php:404
+#: ../vkapi.php:493
+#: ../vkapi.php:494
 msgid "VK.com comments"
 msgstr "VK.com комментарии"
 
-#: ../vkapi.php:414
+#: ../vkapi.php:504
 msgid "Enable"
-msgstr ""
+msgstr "Включено"
 
-#: ../vkapi.php:416
+#: ../vkapi.php:506
 msgid "Disable"
-msgstr ""
+msgstr "Выключено"
 
-#: ../vkapi.php:452
+#: ../vkapi.php:533
+msgid "Vkontakte"
+msgstr "Вконтакте"
+
+#: ../vkapi.php:555
+msgid "Connected User Id : "
+msgstr "Присоединённый User Id : "
+
+#: ../vkapi.php:556
+msgid "Disconnect from Vkontakte"
+msgstr "Отсоединить аккаунт Vkontakte"
+
+#: ../vkapi.php:706
+msgid "Vkontakte Profile"
+msgstr "Профиль Vkontakte"
+
+#: ../vkapi.php:756
 msgid "Information about VKontakte group"
 msgstr "Информация о группе Вконтакте"
 
-#: ../vkapi.php:453
-msgid "VKAPI: Community Users"
+#: ../vkapi.php:757
+msgid "VKapi: Community Users"
 msgstr "VKAPI: Группа"
 
-#: ../vkapi.php:485
-#: ../vkapi.php:547
+#: ../vkapi.php:789
+#: ../vkapi.php:851
 msgid "Title:"
-msgstr ""
+msgstr "Название:"
 
-#: ../vkapi.php:489
+#: ../vkapi.php:793
 msgid "ID of group (can be seen by reference to statistics):"
 msgstr "ID группы (видно по ссылке на статистику):"
 
-#: ../vkapi.php:493
+#: ../vkapi.php:797
 msgid "Width:"
 msgstr "Ширина:"
 
-#: ../vkapi.php:497
+#: ../vkapi.php:801
 msgid "Height:"
 msgstr "Высота:"
 
-#: ../vkapi.php:502
+#: ../vkapi.php:806
 msgid "Layout:"
 msgstr "Тип виджета:"
 
-#: ../vkapi.php:504
+#: ../vkapi.php:808
 msgid "Members"
 msgstr "Список пользователей"
 
-#: ../vkapi.php:505
+#: ../vkapi.php:809
 msgid "News"
 msgstr "Новости группы"
 
-#: ../vkapi.php:506
+#: ../vkapi.php:810
 msgid "Only Name"
 msgstr "Только название"
 
-#: ../vkapi.php:519
+#: ../vkapi.php:823
 msgid "Top site on basis of \"I like\" statistics"
 msgstr "Топ сайта на основе \"Мне нравиться\""
 
-#: ../vkapi.php:520
-msgid "VKAPI: Recommends"
+#: ../vkapi.php:824
+msgid "VKapi: Recommends"
 msgstr "VKAPI: Популярное"
 
-#: ../vkapi.php:551
+#: ../vkapi.php:855
 msgid "Number of posts:"
 msgstr "Количество:"
 
-#: ../vkapi.php:556
+#: ../vkapi.php:860
 msgid "Selection period:"
 msgstr "Период:"
 
-#: ../vkapi.php:558
+#: ../vkapi.php:862
 msgid "Day"
 msgstr "Сутки"
 
-#: ../vkapi.php:559
+#: ../vkapi.php:863
 msgid "Week"
 msgstr "Неделя"
 
-#: ../vkapi.php:560
+#: ../vkapi.php:864
 msgid "Month"
 msgstr "Месяц"
 
-#: ../vkapi.php:565
+#: ../vkapi.php:869
 msgid "Formulation:"
 msgstr "Формулировка:"
 
-#: ../vkapi.php:567
+#: ../vkapi.php:871
 msgid "... people like this"
 msgstr "Понравилось ..."
 
-#: ../vkapi.php:568
+#: ../vkapi.php:872
 msgid "... people find it intersting"
 msgstr "Интересно ..."
 
-#: ../vkapi.php:581
+#: ../vkapi.php:885
 msgid "Login widget"
 msgstr "Виджет входа"
 
-#: ../vkapi.php:582
-msgid "VKAPI: Login"
+#: ../vkapi.php:886
+msgid "VKapi: Login"
 msgstr "VKAPI: Вход"
 
-#: ../vkapi.php:597
-#: ../vkapi.php:602
+#: ../vkapi.php:900
+#: ../vkapi.php:905
 msgid "Profile"
 msgstr "Профиль"
 
-#: ../vkapi.php:598
-#: ../vkapi.php:603
+#: ../vkapi.php:901
+#: ../vkapi.php:906
 msgid "Logout"
 msgstr "Выход"
 
-#: ../vkapi.php:604
-msgid "You can add VK.com account in Profile for more simple log in:"
-msgstr ""
+#: ../vkapi.php:917
+msgid "Login"
+msgstr "Вход"
 
-#: ../vkapi.php:629
+#: ../vkapi.php:934
 msgid "Message:"
-msgstr ""
+msgstr "Сообщение:"
 
-#~ msgid ""
-#~ "VKontakte API plugin requires Wordpress 3.0 or newer. <a href=\"%s"
-#~ "\">Please update!</a>"
-#~ msgstr ""
-#~ "VKontakte API plugin работает начиная с версии Wordpress 3.0. <a href=\"%s"
-#~ "\">Обновитесь, пожалуйста!</a>"
+#~ msgid "Add Vkontakte account."
+#~ msgstr "Присоеденить аккаунт Vkontakte."
+
+#~ msgid "Profile: "
+#~ msgstr "Профиль:"
+
+#~ msgid "Login Widget:"
+#~ msgstr "Виджет входа:"
 
 #~ msgid "Your AppId:"
 #~ msgstr "Ваш AppId:"
@@ -480,9 +537,6 @@ msgstr ""
 
 #~ msgid "Support project"
 #~ msgstr "Поддержка проекта"
-
-#~ msgid "Tabs settings."
-#~ msgstr "Настройки вкладок."
 
 #~ msgid "Your theme background :"
 #~ msgstr "Цвет фона вашей страницы :"
