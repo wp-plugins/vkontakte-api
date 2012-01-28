@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, comments, vkontakte, vkontakte.ru, plugin, posts, pages, share, vk.com
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 1.19
+Stable tag: 1.20
 
 Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
 
@@ -12,17 +12,13 @@ Stable tag: 1.19
 
 * На данный момент реализовано комментирование.
 * А так же оповещение на почту о новых комментариях.
-
 * А так же кнопка "Мне нравится".
 * А так же кнопка "Сохранить".
-
 * А так же виджет "Сообщества".
 * А так же виджет "Популярного" по статистике кнокпи "Мне нравится".
 * А так же виджет "Последнии комментарии".
 * А так же виджет "Вход\регистрация".
-
 * А так же вход\регистрация и привязка аккаунта Вконтакте.
-
 * Для переводчиков: поддерживает перевод.
 * Требуеться актуальная версия PHP (>= 5.2.3)
 * Версия WordpPress не ниже 3.3
@@ -69,6 +65,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 10. Виджеты.
 
 == Changelog ==
+
+= 1.20 =
+* Исправление отображения в некоторых темах.
 
 = 1.19 =
 * Исправление ограничения Вконтактом длины строки.
@@ -140,6 +139,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.20 =
+* Исправление отображения в некоторых темах.
 
 = 1.19 =
 * Исправление ограничения Вконтактом длины строки.
