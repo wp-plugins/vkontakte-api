@@ -3,7 +3,7 @@
 Plugin Name: Vkontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 1.17
+Version: 1.18
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -56,18 +56,22 @@ class VK_api {
 		add_action( 'wp_print_styles', array( &$this, 'add_css_admin' ) ); /* admin css enqueue */
 		add_action(	'save_post', array( &$this, 'save_postdata' ) ); /* check meta_box */
 		add_action(	'do_meta_boxes', array( &$this, 'add_custom_box' ), 15, 2); /* add meta_box */
-		add_action( 'profile_personal_options', array( &$this, 'vkapi_personal_options' ) ); /* profile echo */
-		add_action( 'admin_footer', array( &$this, 'add_profile_js' ), 88 ); /* profile js */
-		add_action( 'login_form', array( &$this, 'add_login_form' ) ); /* login */
-		add_action( 'wp_ajax_update_vkapi_user_meta', array( &$this, 'update_vkapi_user_meta' ) ); /* update_vkapi_user_meta */
+		$vkapi_login = get_option( 'vkapi_login' );
+		if ( $vkapi_login == 'true' ) {
+			add_action( 'profile_personal_options', array( &$this, 'vkapi_personal_options' ) ); /* profile echo */
+			add_action( 'admin_footer', array( &$this, 'add_profile_js' ), 88 ); /* profile js */
+			add_action( 'login_form', array( &$this, 'add_login_form' ) ); /* login */
+			add_action( 'wp_ajax_update_vkapi_user_meta', array( &$this, 'update_vkapi_user_meta' ) ); /* update_vkapi_user_meta */
+		};
 		add_action( 'admin_bar_menu', array( &$this, 'user_links' ) ); /* admin bar */
-		add_action( 'login_form_login', array( &$this, 'fix_login_reauth' ) ); /* fix the reauth redirect problem */
 		add_filter( 'the_content', array( &$this, 'add_buttons' ), 88 ); /* buttons */
 		add_filter( 'contextual_help', array( &$this, 'vkapi_contextual_help' ), 1, 3 ); /* help */
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'own_actions_links' ) ); /* plugin links */
+		add_filter( 'plugin_row_meta', array( &$this, 'plugin_meta' ), 10, 2); /* plugin meta */
 		wp_enqueue_script ( 'jquery' );
 		wp_register_script ( 'vkapi_callback', $this->plugin_url . 'js/callback.js');
 		wp_register_script ( 'userapi', 'http://userapi.com/js/api/openapi.js' );
+		wp_register_script ( 'share', 'http://vk.com/js/api/share.js' );
 		if ( !is_admin() ) wp_enqueue_script ( 'vkapi_callback' );
 		
 		function close_wp ( $file ) {
@@ -134,9 +138,13 @@ class VK_api {
 		add_option( 'vkapi_like_verb', '0' );
 		add_option( 'vkapi_like_cat', '0' );
 		add_option( 'vkapi_like_bottom', '1' );
+		add_option( 'vkapi_share_cat' );
+		add_option( 'vkapi_share_type', 'round' );
+		add_option( 'vkapi_share_text', 'Сохранить' );
 		add_option( 'vkapi_align', 'left' );
 		add_option( 'vkapi_show_comm', 'true' );
 		add_option( 'vkapi_show_like', 'true' );
+		add_option( 'vkapi_show_share', 'false' );
 		add_option( 'vkapi_some_logo_e', '1' );
 		add_option( 'vkapi_some_logo', $this->plugin_url.'images/wordpress-logo.jpg' );
 		add_option( 'vkapi_some_desktop', '1' );
@@ -163,9 +171,13 @@ class VK_api {
 		delete_option( 'vkapi_like_verb' );
 		delete_option( 'vkapi_like_cat' );
 		delete_option( 'vkapi_like_bottom' );
+		delete_option( 'vkapi_share_cat' );
+		delete_option( 'vkapi_share_type' );
+		delete_option( 'vkapi_share_text' );
 		delete_option( 'vkapi_align' );
 		delete_option( 'vkapi_show_comm' );
 		delete_option( 'vkapi_show_like' );
+		delete_option( 'vkapi_show_share' );
 		delete_option( 'vkapi_some_logo_e' );
 		delete_option( 'vkapi_some_logo' );
 		delete_option( 'vkapi_some_desktop' );
@@ -198,6 +210,9 @@ class VK_api {
 			echo "<meta property='vk:app_id' content='$appId' />\n";
 			wp_enqueue_script ( 'userapi' );
 		}
+		$share = get_option( 'vkapi_show_share' );
+		if ( !is_admin() && $share == 'true' ) 
+			wp_enqueue_script ( 'share' );
 	}
 	
 	function create_menu() {
@@ -207,7 +222,7 @@ class VK_api {
 				'manage_options',
 				'vkapi_settings',
 				array( &$this, 'settings_page'),
-				'http://vkontakte.ru/favicon.ico'
+				'http://vk.com/favicon.ico'
 			);
 		$this->vkapi_page_settings = add_submenu_page( 
 				'vkapi_settings', 
@@ -256,7 +271,7 @@ class VK_api {
 				) );
 			/* comments */
 			$help = '<p>Появляется возможность переключения между комментариями WordPress-a и Вконтакта.<br />
-				"Прячутся" и "показываються" блоки <b>div</b> с <b>id=comments</b> ( блок комментариев ) и <b>id=respond</b> ( блок формы ответа ) ( <i>по спецификации Wordpress-a</i> )<br /> 
+				"Прячутся" и "показываются" блоки <b>div</b> с <b>id=comments</b> ( блок комментариев ) и <b>id=respond</b> ( блок формы ответа ) ( <i>по спецификации Wordpress-a</i> )<br /> 
 				В наличии вся нужная настройка, а также возможность вовсе оставить лишь комментарии Вконтакта.</p>';
 			$screen->add_help_tab( array(
 				'id'	=> 'vkapi_comments',
@@ -289,7 +304,7 @@ class VK_api {
 				'content'	=> $help
 				) );
 			/* help */
-			$help = '<p>Все вопросики и пожелания <strong><a href="http://www.kowack.info/projects/vk_api/" title="Vkontakte API Home">сюдатачки</a></strong> или <strong><a href="http://vkontakte.ru/vk_wp" title="Vkontakte API Club">тутачки</a></strong>.</p>';
+			$help = '<p>Все вопросики и пожелания <strong><a href="http://www.kowack.info/projects/vk_api/" title="Vkontakte API Home">сюдатачки</a></strong> или <strong><a href="http://vk.com/vk_wp" title="Vkontakte API Club">тутачки</a></strong>.</p>';
 			$screen->add_help_tab( array(
 				'id'	=> 'vkapi_help',
 				'title'	=> __( 'Help', $this->plugin_domain ),
@@ -333,7 +348,7 @@ class VK_api {
 					echo 'function vkapi_checkPermission() {
 					if(window.webkitNotifications.checkPermission()==0){
 						window.webkitNotifications.createNotification(
-							"http://vkontakte.ru/images/lnkinner32.gif", "Успех",
+							"http://vk.com/images/lnkinner32.gif", "Успех",
 							"Сообщения разрешены").show();
 						clearInterval(vkapi_interval);
 					}
@@ -356,7 +371,7 @@ class VK_api {
 						Min = Time.getMinutes();
 						Sec = Time.getSeconds();
 						var notification = window.webkitNotifications.createNotification(
-						"http://vkontakte.ru/images/lnkinner32.gif", "Время "+Hour+":"+Min+":"+Sec,
+						"http://vk.com/images/lnkinner32.gif", "Время "+Hour+":"+Min+":"+Sec,
 						last_comment);
 						notification.show();
 						document.getElementById(\'vkapi_sound\').play();
@@ -380,7 +395,7 @@ class VK_api {
 				<button id="submit" onclick="showComments()">'.__('WordPress comments', $this->plugin_domain).' ('.$comm_wp.') </button><br /><br /><br />
 				<div id="vkapi" onclick="showNotification()"></div>
 				<script type="text/javascript">
-					VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').', mini:1},'.$postid.');
+					VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').', mini:1, pageUrl: "'.get_permalink().'"},'.$postid.');
 				</script>';
 				add_action ( 'wp_footer', array( &$this, 'add_footer' ) );
 			}
@@ -392,37 +407,106 @@ class VK_api {
 			echo '<script type="text/javascript">window.onload=showVK;</script>';
 		else echo '<script type="text/javascript">window.onload=showComments;</script>';
 		echo '<audio id="vkapi_sound" preload="auto" style="display: none">
-				<source src="http://vkontakte.ru/mp3/bb2.mp3">
+				<source src="http://vk.com/mp3/bb2.mp3">
 			</audio>';
 	}
 	
 	function add_buttons ( $args ) {
 		if ( !is_feed() ) { 
-			$like_cat = get_option( 'vkapi_like_cat' );
-			if ( $like_cat ) $this->vkapi_buttons( &$args ); 
+			// share
+			$share_cat = get_option( 'vkapi_share_cat' );
+			if ( $share_cat ) $this->vkapi_button_share( &$args ); 
 			else if ( !is_home() && !is_category() && !is_archive() ) {
-				$this->vkapi_buttons( &$args );
-			}
+				$this->vkapi_button_share( &$args );
+			};
+			// like
+			$like_cat = get_option( 'vkapi_like_cat' );
+			if ( $like_cat ) $this->vkapi_button_like( &$args ); 
+			else if ( !is_home() && !is_category() && !is_archive() ) {
+				$this->vkapi_button_like( &$args );
+			};
 		}
 		return $args;
 	}
 	
-	function vkapi_buttons ( $args ) {
+	function vkapi_button_like ( $args ) {
+		// like button
 		$like = get_option( 'vkapi_show_like' );
 			if( $like == 'true' ) {
 				global $post;
 				$postid = $post->ID;
 				$valign = get_option( 'vkapi_like_bottom' );
 				$align = get_option( 'vkapi_align' );
+				$vkapi_args = "<div style=\"float:$align\"><div id=\"vkapi_like_$postid\"></div></div>";
 				$type = get_option( 'vkapi_like_type' );
 				$verb = get_option( 'vkapi_like_verb' );
-				$vkapi_args = "<div float=\"$align\"><div id=\"vkapi_like_$postid\"></div></div><br />
-				<script type=\"text/javascript\">
-					<!-- 
-					VK.Widgets.Like('vkapi_like_$postid', {width: 200, type: '$type', verb: '$verb'}, $postid); 
-					-->
-				</script>";
+				$vkapi_title = $post->post_title;
+				$vkapi_descr = str_replace( "\r\n", "<br />", $post->post_excerpt );
+				$vkapi_url = get_permalink();
+				$vkapi_text = str_replace( "\r\n", "<br />", $post->post_content );
+				// pageImage
+				echo "
+						<script type=\"text/javascript\">
+							<!-- 
+								VK.Widgets.Like('vkapi_like_$postid', {
+								width: 1, 
+								type: '$type', 
+								verb: '$verb',
+								pageTitle: '$vkapi_title',
+								pageDescription: '$vkapi_descr',
+								pageUrl: '$vkapi_url',
+								text: '$vkapi_text'						
+							}, $postid); 
+							-->
+						</script>";
 				if ( $valign ) $args .= $vkapi_args; 
+				else {
+					$vkapi_args .= $args;
+					$args = $vkapi_args;
+				}
+			}
+		return $args;
+	}
+	
+	function vkapi_button_share ( $args ) {
+		$share = get_option( 'vkapi_show_share' );
+			if( $share == 'true' ) {
+				global $post;
+				$postid = $post->ID;
+				$valign = get_option( 'vkapi_like_bottom' );
+				$align = get_option( 'vkapi_align' );
+				$vkapi_args = "<div style=\"float:$align\"><div id=\"vkapi_share_$postid\"></div></div>";
+				$vkapi_url = get_permalink();
+				$vkapi_title = $post->post_title;
+				$vkapi_descr = str_replace( "\r\n", "<br />", $post->post_content );
+				$vkapi_type = get_option( 'vkapi_share_type' );
+				$vkapi_text = get_option( 'vkapi_share_text' );
+				echo "
+							<style type=\"text/css\">
+								#vkapi_share_$postid {
+									padding:0px 3px 0px 0px;
+								}
+								#vkapi_share_$postid td {
+									border:0px !important;
+									padding:0px !important;
+									margin:0px !important;
+								}
+							</style>
+							<script type=\"text/javascript\">
+								<!--
+								jQuery(document).ready(function() {
+									document.getElementById('vkapi_share_$postid').innerHTML = VK.Share.button({
+										url: '$vkapi_url',
+										title: '$vkapi_title',
+										description: '$vkapi_descr'
+									},{
+										type: '$vkapi_type',
+										text: '$vkapi_text'
+									});
+								});
+								-->
+							</script>";
+			if ( $valign ) $args .= $vkapi_args; 
 				else {
 					$vkapi_args .= $args;
 					$args = $vkapi_args;
@@ -440,9 +524,11 @@ class VK_api {
 	}
 	
 	function widget_init() {
+		$vkapi_login = get_option( 'vkapi_login' );
 		register_widget( 'VKAPI_Community' );
 		register_widget( 'VKAPI_Recommend' );
-		register_widget( 'VKAPI_Login' );
+		if ( $vkapi_login ) register_widget( 'VKAPI_Login' );
+		register_widget( 'VKAPI_Comments' );
 		do_action( 'widgets_init' );
 	}
 
@@ -450,7 +536,7 @@ class VK_api {
 		echo '<script type="text/javascript" src="http://userapi.com/js/api/openapi.js"></script>
 			<div id="vkapi_groups"></div>
 			<script type="text/javascript">
-			VK.Widgets.Group("vkapi_groups", {mode: 2, width: "auto", height: "290"}, 28197069);
+				VK.Widgets.Group("vkapi_groups", {mode: 2, width: "auto", height: "290"}, 28197069);
 			</script>';
 	}
 	
@@ -512,7 +598,6 @@ class VK_api {
 		global $post;
 		$postid = $post->ID;
 		$vkapi_comm = get_post_meta ( $postid, 'vkapi_comm', TRUE );
-		if ( !$vkapi_comm ) return $args;
 		return $vkapi_comm;
 	}
 	
@@ -536,8 +621,14 @@ class VK_api {
 			if (empty($conn)) {
 		?>
 				<td>
-					<div id="vkapi_login_button" onclick="VK.Auth.getLoginStatus(onSignonProfile)"></div>
+					<div id="vkapi_login_button" style="padding:0px;border:0px" onclick="VK.Auth.getLoginStatus(onSignonProfile)"></div>
 					<div id="vkapi_status"></div>
+			<style type="text/css">
+				.form-table td #vkapi_login_button td {
+					padding:0px !important;
+					margin:0px !important;
+				}
+			</style>
 			<script language="javascript">
 				VK.UI.button('vkapi_login_button');
 			</script>
@@ -660,7 +751,7 @@ class VK_api {
 				exit();
 			};
 			$return = add_user_meta( $user->ID, 'vkapi_uid', $member['id'], TRUE );
-			if ( $return != FALSE ) { 
+			if ( $return ) { 
 				echo 'Ok';
 			} else {
 				echo 'False add meta';
@@ -673,7 +764,7 @@ class VK_api {
 	/* start login */
 	function add_login_form() {
 		global $action;
-		if ( $action == 'login' || $action == 'register' )
+		if ( $action == 'login' || $action == 'register' ) {
 			$vkapi_url = get_bloginfo('wpurl');
 			echo '
 			<button style="display: none" class="vkapi_vk_widget" vkapi_url="'.$vkapi_url.'"></button>
@@ -688,10 +779,12 @@ class VK_api {
 					alert("user "+data["uid"]+" authorized");
 				} });
 			</script><br />';
-	}
-	
-	function fix_login_reauth() {
-		$_REQUEST['reauth'] = FALSE;
+		};
+		if ( $action == 'login' && is_user_logged_in() ) {
+			$vkapi_url = get_bloginfo('wpurl');
+			wp_redirect( $vkapi_url );
+			exit;
+		};
 	}
 	/* end login */
 	
@@ -704,7 +797,7 @@ class VK_api {
 					'id'     => 'vkapi-profile',
 					'parent' => 'user-actions',
 					'title'  => __( 'Vkontakte Profile', $this->plugin_domain ),
-					'href'   => "http://vkontakte.ru/id$vkapi_user",
+					'href'   => "http://vk.com/id$vkapi_user",
 					'meta'   => array(
 						'target' => '_blank',
 		)
@@ -712,6 +805,16 @@ class VK_api {
 		};
 	}
 	/* end bar menu */
+	
+	/* start plugin meta */
+	function plugin_meta( $links, $file ) {
+		if ( $file == plugin_basename(__FILE__) ) {
+			$links[] = '<a href="'.admin_url('options-general.php?page=vkapi_settings').'">'.__( 'Settings', $this->plugin_domain ).'</a>';
+			$links[] = 'Code is poetry!';
+		}
+		return $links;
+	}
+	/* end plugin meta*/
 }
 
 else :
@@ -822,9 +925,9 @@ class VKAPI_Recommend extends WP_Widget {
 		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Top site on basis of "I like" statistics', $this->plugin_domain ) );
 		parent::WP_Widget( 'vkapi_recommend', $name = __( 'VKapi: Recommends' , $this->plugin_domain), $widget_ops);
-		}
+	}
 
-		function widget( $args, $instance ) {
+	function widget( $args, $instance ) {
 		extract( $args );
 		$vkapi_divid = $args['widget_id'];
 		$vkapi_limit = $instance['limit'];
@@ -917,7 +1020,13 @@ class VKAPI_Login extends WP_Widget {
 		echo '<a href="' . wp_login_url( get_permalink() ) . '" title="">' . __( 'Login' , $this->plugin_domain ) . '</a>';
 		echo '<br /><br />
 		<div id="vkapi_status"></div>
-		<div id="login_button" onclick="VK.Auth.getLoginStatus(onSignon)"></div>
+		<div id="login_button" style="padding:0px;border:0px" onclick="VK.Auth.getLoginStatus(onSignon)"></div>
+		<style type="text/css">
+				.form-table td #login_button td {
+					padding:0px !important;
+					margin:0px !important;
+				}
+		</style>
 		<script language="javascript">
 			VK.UI.button(\'login_button\');
 		</script>';
@@ -933,6 +1042,71 @@ class VKAPI_Login extends WP_Widget {
 		
 		?><p><label for="<?php echo $this->get_field_id( 'Message' ); ?>"><?php _e( 'Message:' ); ?>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'Message' ); ?>" name="<?php echo $this->get_field_name( 'Message' ); ?>" type="text" value="<?php echo $title; ?>" />
+		</label></p>
+		<?php 
+	}
+}
+/* Comments Widget */
+class VKAPI_Comments extends WP_Widget {
+
+	var $plugin_domain = 'vkapi';
+
+	function __construct() {
+		$plugin_domain = 'vkapi';
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Last Comments', $this->plugin_domain ) );
+		parent::WP_Widget( 'vkapi_comments', $name = __( 'VKapi: Last Comments' , $this->plugin_domain), $widget_ops);
+	}
+
+	function widget( $args, $instance ) {
+		extract( $args );
+		$vkapi_divid = $args['widget_id'];
+		$vkapi_width = $instance['width'];
+		$vkapi_height = $instance['height'];
+		$vkapi_limit = $instance['limit'];
+		echo $before_widget . $before_title . $instance['title'] . $after_title . '<div id="'.$vkapi_divid.'_wrapper">';
+		$vkapi_divid .= "_wrapper";
+		echo "
+			<div class=\"wrap\">
+				<div id=\"vkapi_comments\"></div>
+				<script type=\"text/javascript\">
+				VK.Widgets.CommentsBrowse('vkapi_comments', {
+					width: '$vkapi_width',
+					limit: '$vkapi_limit', 
+					height: '$vkapi_height',
+					mini: 1
+				});
+				</script>
+			</div>
+			";
+		echo '</div>' . $after_widget;
+	}
+
+	function update( $new_instance, $old_instance ) {
+		return $new_instance;
+	}
+
+	function form( $instance ) {
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'limit' => '5', 'width' => '0', 'height' => '1' ) );
+		$title = esc_attr( $instance['title'] );
+		$limit = esc_attr( $instance['limit'] );
+		$width = esc_attr( $instance['width'] );
+		$height = esc_attr( $instance['height'] );
+
+		?><p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'limit' ); ?>"><?php _e( 'Number of comments:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'limit' ); ?>" name="<?php echo $this->get_field_name( 'limit' ); ?>" type="text" value="<?php echo $limit; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'width' ); ?>"><?php _e( 'Width:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'width' ); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'height' ); ?>"><?php _e( 'Height:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'height' ); ?>" name="<?php echo $this->get_field_name( 'height' ); ?>" type="text" value="<?php echo $height; ?>" />
 		</label></p>
 		<?php 
 	}

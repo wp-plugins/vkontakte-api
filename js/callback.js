@@ -1,14 +1,12 @@
 // Mail callback + count plus
 function vkapi_comm_plus(id,num,last_comment,datee,sign) {
 	jQuery(document).ready(function() {
-		onChange(num,last_comment,datee,sign);
-		onChangeRecalc(num,last_comment,datee,sign);
 		var vkdata = {
-			id: id,
-			num: num,
-			last_comment: last_comment,
-			date: datee,
-			sign: sign
+			id: encodeURIComponent(id),
+			num: encodeURIComponent(num),
+			last_comment: encodeURIComponent(last_comment),
+			date: encodeURIComponent(datee),
+			sign: encodeURIComponent(sign)
 		};
 		var wpurl = jQuery("button.vkapi_vk").attr("vkapi_url");
 		jQuery.post(wpurl+'/wp-content/plugins/vkontakte-api/vkapi-mail.php', vkdata, function() {});
@@ -20,11 +18,11 @@ function vkapi_comm_minus(id,num,last_comment,datee,sign) {
 	jQuery(document).ready(function() {
 		onChangeRecalc(num,last_comment,datee,sign);
 		var vkdata = {
-			id: id,
-			num: num,
-			last_comment: last_comment,
-			date: datee,
-			sign: sign
+			id: encodeURIComponent(id),
+			num: encodeURIComponent(num),
+			last_comment: encodeURIComponent(last_comment),
+			date: encodeURIComponent(datee),
+			sign: encodeURIComponent(sign)
 		};
 		var wpurl = jQuery("button.vkapi_vk").attr("vkapi_url");
 		jQuery.post(wpurl+'/wp-content/plugins/vkontakte-api/vkapi-count.php', vkdata, function() {});
@@ -39,8 +37,10 @@ jQuery(document).ready(function() {
 // On add comment 
 function onChangePlus (num,last_comment,datee,sign) {
 	var id = jQuery("button.vkapi_vk").attr("vkapi_notify");
-	last_comment = html_entity_decode ( last_comment );
 	vkapi_comm_plus (id,num,last_comment,datee,sign);
+		last_comment = html_entity_decode ( last_comment );
+	onChange(num,last_comment,datee,sign);
+	onChangeRecalc(num,last_comment,datee,sign);
 };
 
 // On del comment
@@ -69,9 +69,9 @@ function onSignon (response) {
 			if ( text == 'Ok' ) {
 				jQuery("#vkapi_status").html("<span style='color:green'>Result: ✔ "+text+"</span>");
 				if ( $_GET['redirect_to'] ) {
-					document.location.replace($_GET['redirect_to']);
+					document.location.href = $_GET['redirect_to'];
 				} else {
-					document.location.replace(location.host);
+					document.location.href = document.location.href;
 				};
 			} else {
 				jQuery("#vkapi_status").html("<span style='color:red'>Result: "+text+"</span>");
@@ -79,7 +79,6 @@ function onSignon (response) {
 		});
 	} else {
 	VK.Auth.login(onSignon);
-	alert('test 2');
 	};
 };
 

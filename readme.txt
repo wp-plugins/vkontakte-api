@@ -1,24 +1,32 @@
 === Vkontakte API ===
 Contributors: kowack
 Donate link: http://www.kowack.info/projects/vk_api/
-Tags: social, comment, comments, vkontakte, vkontakte.ru, plugin, posts, pages, share, vk, vk.com
+Tags: social, comment, comments, vkontakte, vkontakte.ru, plugin, posts, pages, share, vk.com
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 1.17
+Stable tag: 1.18
 
 Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
 
 == Description ==
 
-*   На данный момент реализовано комментирование и кнопка "Мне нравиться" и 2 виджета и оповещение на почту и вход\регистрация. 
+*   На данный момент реализовано комментирование.
+*   А так же оповещение на почту о новых комментариях.
+
+*   А так же кнопка "Мне нравится".
+*   А так же кнопка "Сохранить".
+
+*   А так же виджет "Сообщества".
+*   А так же виджет "Популярного" по статистике кнокпи "Мне нравится".
+*   А так же виджет "Последнии комментарии".
+*   А так же виджет "Вход\регистрация".
+
+*   А так же вход\регистрация и привязка аккаунта Вконтакте.
+
+*   Для переводчиков: поддерживает перевод.
 *   Требуеться актуальная версия PHP (>= 5.2.3)
 *   Версия WordpPress не ниже 3.3
 *   Тестировалось на актуальной на момент создания версии.
-
-*   Currently implemented "commenting" and button "I like" and 2 widget and admin mail-notification and login\register.
-*   Require a valid version of PHP (>= 5.2.3)
-*   Version WordPress 3.3 or higher
-*   Tested on "up to date" release.
 
 == Installation ==
 
@@ -31,7 +39,7 @@ Stable tag: 1.17
 
 Для подключения каких либо функций к сайту у Вас должен быть **ID приложения** и **Защищенный ключ**.
 Если они у Вас уже есть укажите их в настройках плагина.
-Если нет - перейдите по этой ссылке [http://vkontakte.ru/apps.php?act=add&site=1](http://vkontakte.ru/apps.php?act=add&site=1) и зарегестрируйте ваш сайт(блог).
+Если нет - перейдите по этой ссылке [http://vk.com/apps.php?act=add&site=1](http://vk.com/apps.php?act=add&site=1) и зарегестрируйте ваш сайт(блог).
 
 = Плагин бесплатный ? =
 
@@ -49,12 +57,24 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 == Screenshots ==
 
-1. Vkontakte comments.
-2. WordPress comments.
-3. Animation in action.
-4. Post settings.
+1. Комментарии Vkontakte.
+2. Комментарии WordPress.
+3. Анимация переключения.
+4. Настройки записи.
+5. Привязка аккаунта Vkontakte.
+6. Отсоединение аккаунта Vkontakte.
+7. Страница настроек.
+8. Кнопка входа через Vkontakte.
+9. Виджеты.
+10. Виджеты.
 
 == Changelog ==
+
+= 1.18 =
+* Мелкое исправление редиректа при входе на сайт через ВК.
+* Опцию включения/отключения входа через ВК.
+* Так же по просьбам кнопка "Сохранить" ( Share ). 
+* Виджет "Последние комментарии Вконтакте".
 
 = 1.17 =
 * Добавлена привязка аккаунта Вконтакте.
@@ -117,6 +137,12 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.18 =
+* Мелкое исправление редиректа при входе на сайт через ВК.
+* Опцию включения/отключения входа через ВК.
+* Так же по просьбам кнопка "Сохранить" ( Share ). 
+* Виджет "Последние комментарии Вконтакте".
 
 = 1.17 =
 * Добавлена привязка аккаунта Вконтакте.
