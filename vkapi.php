@@ -3,7 +3,7 @@
 Plugin Name: Vkontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 1.20
+Version: 1.21
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -45,9 +45,9 @@ class VK_api {
 		
 		$this->load_domain();
 		
-		register_activation_hook( __FILE__, array( &$this, 'install' ) );
-		register_deactivation_hook( __FILE__, array( &$this, 'pause' ) );
-		register_uninstall_hook( __FILE__, array( &$this, 'deinstall' ) );
+		register_activation_hook( __FILE__, array( 'VK_api', 'install' ) );
+		register_deactivation_hook( __FILE__, array( 'VK_api', 'pause' ) );
+		register_uninstall_hook( __FILE__, array( 'VK_api', 'deinstall' ) );
 		add_action( 'admin_menu', array( &$this, 'create_menu' ), 1 ); /* menu */
 		add_action( 'wp_print_scripts', array( &$this, 'add_head' ) ); /* head */
 		add_action( 'init', array( &$this, 'widget_init' ) ); /* widget */
@@ -440,12 +440,16 @@ class VK_api {
 				$vkapi_args = "<div style=\"float:$align\"><div id=\"vkapi_like_$postid\"></div></div>";
 				$type = get_option( 'vkapi_like_type' );
 				$verb = get_option( 'vkapi_like_verb' );
-				$vkapi_title = $post->post_title;
+				$vkapi_title = addslashes ( $post->post_title );
 				$vkapi_descr = str_replace( "\r\n", "<br />", $post->post_excerpt );
+				$vkapi_descr = strip_tags( $vkapi_descr );
 				$vkapi_descr = substr( $vkapi_descr, 0, 130 );
+				$vkapi_descr = addslashes ( $vkapi_descr );
 				$vkapi_url = get_permalink();
 				$vkapi_text = str_replace( "\r\n", "<br />", $post->post_content );
+				$vkapi_text = strip_tags( $vkapi_text );
 				$vkapi_text = substr( $vkapi_text, 0, 130 );
+				$vkapi_text = addslashes ( $vkapi_text );
 				// pageImage
 				$echo = "
 						<script type=\"text/javascript\">
@@ -479,17 +483,21 @@ class VK_api {
 				$align = get_option( 'vkapi_align' );
 				$vkapi_args = "<div style=\"float:$align\"><div id=\"vkapi_share_$postid\"></div></div>";
 				$vkapi_url = get_permalink();
-				$vkapi_title = $post->post_title;
+				$vkapi_title = addslashes ( $post->post_title );
 				$vkapi_descr = str_replace( "\r\n", "<br />", $post->post_content );
+				$vkapi_descr = strip_tags( $vkapi_descr );
 				$vkapi_descr = substr( $vkapi_descr, 0, 130 );
+				$vkapi_descr = addslashes ( $vkapi_descr );
 				$vkapi_type = get_option( 'vkapi_share_type' );
 				$vkapi_text = get_option( 'vkapi_share_text' );
+				$vkapi_text = addslashes ( $vkapi_text );
 				$echo = "
 							<style type=\"text/css\">
 								#vkapi_share_$postid {
 									padding:0px 3px 0px 0px;
 								}
-								#vkapi_share_$postid td {
+								#vkapi_share_$postid td,
+								#vkapi_share_$postid tr {
 									border:0px !important;
 									padding:0px !important;
 									margin:0px !important;
@@ -530,8 +538,9 @@ class VK_api {
 		$vkapi_login = get_option( 'vkapi_login' );
 		register_widget( 'VKAPI_Community' );
 		register_widget( 'VKAPI_Recommend' );
-		if ( $vkapi_login ) register_widget( 'VKAPI_Login' );
+		if ( $vkapi_login == 'true' ) register_widget( 'VKAPI_Login' );
 		register_widget( 'VKAPI_Comments' );
+		register_widget( 'VKAPI_Cloud' );
 		do_action( 'widgets_init' );
 	}
 
@@ -869,17 +878,22 @@ class VKAPI_Community extends WP_Widget {
 		$vkapi_mode = 2;
 		$vkapi_gid = $instance['gid'];
 		$vkapi_width = $instance['width'];
+		if ( $vkapi_width < 1 ) { 
+			$vkapi_width = '';
+		} else {
+			$vkapi_width = "width: \"$vkapi_width\",";
+		};
 		$vkapi_height = $instance['height'];
 		if( $instance['type'] == 'users' ) $vkapi_mode = 0;
 		if( $instance['type'] == 'news' ) $vkapi_mode = 2;
 		if( $instance['type'] == 'name' ) $vkapi_mode = 1;
 		echo $before_widget . $before_title . $instance['title'] . $after_title . '<div id="'.$vkapi_divid.'_wrapper">';
 		$vkapi_divid .= "_wrapper";
-		echo '<br /><div id="'.$vkapi_divid.'"></div>
+		echo '</div>
 		<script type="text/javascript">
-			VK.Widgets.Group("'.$vkapi_divid.'", {mode: '.$vkapi_mode.', width: "'.$vkapi_width.'", height: "'.$vkapi_height.'"}, '.$vkapi_gid.');
-		</script><br />';
-		echo '</div>' . $after_widget;
+			VK.Widgets.Group("'.$vkapi_divid.'", {mode: '.$vkapi_mode.', '.$vkapi_width.' height: "'.$vkapi_height.'"}, '.$vkapi_gid.');
+		</script>';
+		echo $after_widget;
 	}
 
 	function update( $new_instance, $old_instance ) {
@@ -938,11 +952,11 @@ class VKAPI_Recommend extends WP_Widget {
 		$vkapi_verb = $instance['verb'];
 		echo $before_widget . $before_title . $instance['title'] . $after_title . '<div id="'.$vkapi_divid.'_wrapper">';
 		$vkapi_divid .= "_wrapper";
-		echo '<br /><div id="'.$vkapi_divid.'"></div>
+		echo '</div>
 		<script type="text/javascript">
 			VK.Widgets.Recommended("'.$vkapi_divid.'", {limit: '.$vkapi_limit.', period: \''.$vkapi_period.'\', verb: '.$vkapi_verb.', target: "blank"});
-		</script><br />';
-		echo '</div>' . $after_widget;
+		</script>';
+		echo $after_widget;
 	}
 
 	function update( $new_instance, $old_instance ) {
@@ -1025,10 +1039,10 @@ class VKAPI_Login extends WP_Widget {
 		<div id="vkapi_status"></div>
 		<div id="login_button" style="padding:0px;border:0px" onclick="VK.Auth.getLoginStatus(onSignon)"></div>
 		<style type="text/css">
-				.form-table td #login_button td {
-					padding:0px !important;
-					margin:0px !important;
-				}
+			#login_button td, #login_button tr {
+				padding:0px !important;
+				margin:0px !important;
+			}
 		</style>
 		<script language="javascript">
 			VK.UI.button(\'login_button\');
@@ -1065,6 +1079,11 @@ class VKAPI_Comments extends WP_Widget {
 		extract( $args );
 		$vkapi_divid = $args['widget_id'];
 		$vkapi_width = $instance['width'];
+		if ( $vkapi_width = '0' ) { 
+			$vkapi_width = '';
+		} else {
+			$vkapi_width = "width: '$vkapi_width',";
+		};
 		$vkapi_height = $instance['height'];
 		$vkapi_limit = $instance['limit'];
 		echo $before_widget . $before_title . $instance['title'] . $after_title . '<div id="'.$vkapi_divid.'_wrapper">';
@@ -1074,7 +1093,7 @@ class VKAPI_Comments extends WP_Widget {
 				<div id=\"vkapi_comments\"></div>
 				<script type=\"text/javascript\">
 				VK.Widgets.CommentsBrowse('vkapi_comments', {
-					width: '$vkapi_width',
+					$vkapi_width
 					limit: '$vkapi_limit', 
 					height: '$vkapi_height',
 					mini: 1
@@ -1111,6 +1130,148 @@ class VKAPI_Comments extends WP_Widget {
 		<p><label for="<?php echo $this->get_field_id( 'height' ); ?>"><?php _e( 'Height:', $this->plugin_domain ); ?>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'height' ); ?>" name="<?php echo $this->get_field_name( 'height' ); ?>" type="text" value="<?php echo $height; ?>" />
 		</label></p>
+		<?php 
+	}
+}
+/* Cloud Widget */
+class VKAPI_Cloud extends WP_Widget {
+
+	var $plugin_domain = 'vkapi';
+
+	function __construct() {
+		$plugin_domain = 'vkapi';
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Flash cloud of tags and cats', $this->plugin_domain ) );
+		parent::WP_Widget( 'vkapi_tag_cloud', $name = __( 'VKapi: Tags Cloud' , $this->plugin_domain), $widget_ops);
+	}
+
+	function widget( $args, $instance ) {
+		extract( $args );
+		$vkapi_divid = $args['widget_id'];
+		$vkapi_width = $instance['width'];
+		$vkapi_height = $instance['height'];
+		$vkapi_color1 = $instance['color1'];
+		$vkapi_color2 = $instance['color2'];
+		$vkapi_color3 = $instance['color3'];
+		$vkapi_speed = $instance['speed'];
+		// tags
+		ob_start();
+		if ( $instance['tags'] == 1 ) {
+			wp_tag_cloud();
+			$vkapi_mode = 'tags';
+		};
+		$vkapi_tags = urlencode( str_replace( "&nbsp;", " ", ob_get_clean() ) );
+		$vkapi_tags = urlencode( '<tags>' ) . $vkapi_tags . urlencode( '</tags>' );
+		// cats
+		ob_start();
+		if ( $instance['cats'] == 1 ) {
+			wp_list_categories('title_li=&show_count=1&hierarchical=0&style=none');
+			if ( $vkapi_mode == 'tags' ) {
+				$vkapi_mode = 'both';
+			} else {
+				$vkapi_mode = 'tags';
+			};
+		};
+		$vkapi_cats = urlencode( ob_get_clean() );
+		// end
+		echo $before_widget . $before_title . $instance['title'] . $after_title . '<div id="'.$vkapi_divid.'_wrapper">';
+		$vkapi_divid .= "_wrapper";
+		$path = WP_PLUGIN_URL . '/' . dirname(plugin_basename(__FILE__)) . '/swf';
+		
+		echo '</div>';
+		$rnumber = '?r=' . rand(0,9999999);
+		echo '
+			<script type="text/javascript" src="'.$path.'/swfobject.js"></script>
+			<script type="text/javascript">
+				var rnumber = Math.floor(Math.random()*9999999);
+				var so = new SWFObject("'.$path.'/tagcloud.swf'.$rnumber.'", "tagcloudflash", "'.$vkapi_width.'", "'.$vkapi_height.'", "9", "#000000");
+				so.addParam("allowScriptAccess", "always");
+				so.addParam("wmode", "transparent");
+				so.addVariable("tspeed", "'.$vkapi_speed.'");
+				so.addVariable("distr", "true");
+				so.addVariable("mode", "'.$vkapi_mode.'");
+				so.addVariable("tcolor", "'.$vkapi_color1.'");
+				so.addVariable("tcolor2", "'.$vkapi_color2.'");
+				so.addVariable("hicolor", "'.$vkapi_color3.'");
+				so.addVariable("tagcloud", "'.$vkapi_tags.'");
+				so.addVariable("categories", "'.$vkapi_cats.'");
+				so.write("'.$vkapi_divid.'");
+			</script> 
+			';
+		echo $after_widget;
+	}
+
+	function update( $new_instance, $old_instance ) {
+		if ( $old_instance['tags'] == 0 && $old_instance['cats'] == 0 )
+			$new_instance['tags'] = 1;
+		return $new_instance;
+	}
+
+	function form( $instance ) {
+		$instance = wp_parse_args( (array) $instance, array( 
+				'title' => '',
+				'width' => '400',
+				'height' => '300',
+				'color1' => '0xFF141C',
+				'color2' => '0x4659FF',
+				'color3' => '0x255613',
+				'speed' => '88',
+				'tags' => '1',
+				'cats' => '1'
+		) );
+		$title = esc_attr( $instance['title'] );
+		$width = esc_attr( $instance['width'] );
+		$height = esc_attr( $instance['height'] );
+		$color1 = esc_attr( $instance['color1'] );
+		$color2 = esc_attr( $instance['color2'] );
+		$color3 = esc_attr( $instance['color3'] );
+		$speed = esc_attr( $instance['speed'] );
+		$tags = esc_attr( $instance['tags'] );
+		$cats = esc_attr( $instance['cats'] );
+
+		?><p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'width' ); ?>"><?php _e( 'Width:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'width' ); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'height' ); ?>"><?php _e( 'Height:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'height' ); ?>" name="<?php echo $this->get_field_name( 'height' ); ?>" type="text" value="<?php echo $height; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'color1' ); ?>"><?php _e( 'Tag color:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'color1' ); ?>" name="<?php echo $this->get_field_name( 'color1' ); ?>" type="text" value="<?php echo $color1; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'color2' ); ?>"><?php _e( 'Gradient color:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'color2' ); ?>" name="<?php echo $this->get_field_name( 'color2' ); ?>" type="text" value="<?php echo $color2; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'color3' ); ?>"><?php _e( 'Highlight color:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'color3' ); ?>" name="<?php echo $this->get_field_name( 'color3' ); ?>" type="text" value="<?php echo $color3; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'speed' ); ?>"><?php _e( 'Speed:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'speed' ); ?>" name="<?php echo $this->get_field_name( 'speed' ); ?>" type="text" value="<?php echo $speed; ?>" />
+		</label></p>
+		
+		<p>
+        <label for="<?php echo $this->get_field_id( 'tags' ); ?>"><?php _e( 'Show tags:', $this->plugin_domain ); ?></label>
+        <select name="<?php echo $this->get_field_name( 'tags' ); ?>" id="<?php echo $this->get_field_id( 'tags' ); ?>" class="widefat">
+			<option value="1"<?php selected( $instance['tags'], '1' ); ?>><?php _e( 'Show', $this->plugin_domain ); ?></option>
+			<option value="0"<?php selected( $instance['tags'], '0' ); ?>><?php _e( 'Dont show', $this->plugin_domain ); ?></option>
+        </select>
+		</p>
+		
+		<p>
+        <label for="<?php echo $this->get_field_id( 'cats' ); ?>"><?php _e( 'Show categories:', $this->plugin_domain ); ?></label>
+        <select name="<?php echo $this->get_field_name( 'cats' ); ?>" id="<?php echo $this->get_field_id( 'cats' ); ?>" class="widefat">
+			<option value="1"<?php selected( $instance['cats'], '1' ); ?>><?php _e( 'Show', $this->plugin_domain ); ?></option>
+			<option value="0"<?php selected( $instance['cats'], '0' ); ?>><?php _e( 'Dont show', $this->plugin_domain ); ?></option>	                                
+        </select>
+		</p>
 		<?php 
 	}
 }

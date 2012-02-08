@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, comments, vkontakte, vkontakte.ru, plugin, posts, pages, share, vk.com
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 1.20
+Stable tag: 1.21
 
 Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
 
@@ -15,14 +15,14 @@ Stable tag: 1.20
 * А так же кнопка "Мне нравится".
 * А так же кнопка "Сохранить".
 * А так же виджет "Сообщества".
-* А так же виджет "Популярного" по статистике кнокпи "Мне нравится".
+* А так же виджет "Популярного" по статистике кнопки "Мне нравится".
 * А так же виджет "Последнии комментарии".
 * А так же виджет "Вход\регистрация".
 * А так же вход\регистрация и привязка аккаунта Вконтакте.
+* А так же облако тегов ( многие плагины облака тегов не поддерживают версию WordPress-a 3.3 ).
 * Для переводчиков: поддерживает перевод.
 * Требуеться актуальная версия PHP (>= 5.2.3)
 * Версия WordpPress не ниже 3.3
-* Тестировалось на актуальной на момент создания версии.
 
 == Installation ==
 
@@ -65,6 +65,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 10. Виджеты.
 
 == Changelog ==
+
+= 1.21 =
+* Облако тегов ( многие плагины тегов не поддерживают версию WordPress-a 3.3 ).
 
 = 1.20 =
 * Исправление отображения в некоторых темах.
@@ -139,6 +142,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.21 =
+* Облако тегов ( многие плагины тегов не поддерживают версию WordPress-a 3.3 ).
 
 = 1.20 =
 * Исправление отображения в некоторых темах.
