@@ -3,7 +3,7 @@
 Plugin Name: Vkontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 1.21
+Version: 1.22
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -30,11 +30,11 @@ if (!class_exists('VK_api')) :
 
 class VK_api {
 
-	var $plugin_domain = 'vkapi';
-	var $plugin_url;
-	var $vkapi_page_menu;
-	var $vkapi_page_settings;
-	var $vkapi_page_comments;
+	static $plugin_domain = 'vkapi';
+	static $plugin_url;
+	static $vkapi_page_menu;
+	static $vkapi_page_settings;
+	static $vkapi_page_comments;
 		
 	function __construct() {
 	
@@ -146,7 +146,7 @@ class VK_api {
 		add_option( 'vkapi_show_like', 'true' );
 		add_option( 'vkapi_show_share', 'false' );
 		add_option( 'vkapi_some_logo_e', '1' );
-		add_option( 'vkapi_some_logo', $this->plugin_url.'images/wordpress-logo.jpg' );
+		add_option( 'vkapi_some_logo', self::$plugin_url.'images/wordpress-logo.jpg' );
 		add_option( 'vkapi_some_desktop', '1' );
 		add_option( 'vkapi_some_autosave_d', '1' );
 		add_option( 'vkapi_some_revision_d', '1' );
