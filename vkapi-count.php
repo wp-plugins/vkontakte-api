@@ -1,6 +1,5 @@
 <?php
 	if ( isset( $_POST['id'] ) ) {
-		header('HTTP/1.1 200 OK');
 		$post_id = urldecode ( $_POST['id'] );
 		$num = urldecode ( $_POST['num'] );
 		$last_comment = urldecode ( $_POST['last_comment'] );
