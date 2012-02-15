@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vkontakte API\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-10 12:12+0200\n"
-"PO-Revision-Date: 2012-02-10 12:14+0200\n"
+"POT-Creation-Date: 2012-02-15 12:02+0200\n"
+"PO-Revision-Date: 2012-02-15 12:05+0200\n"
 "Last-Translator: www.kowack.info <kowack@gmail.com>\n"
 "Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -59,16 +59,16 @@ msgstr "Комментарии:"
 #: ../vkapi-options.php:27
 #: ../vkapi-options.php:81
 #: ../vkapi-options.php:127
-#: ../vkapi.php:1259
-#: ../vkapi.php:1267
+#: ../vkapi.php:1299
+#: ../vkapi.php:1307
 msgid "Show"
 msgstr "Показывать"
 
 #: ../vkapi-options.php:28
 #: ../vkapi-options.php:82
 #: ../vkapi-options.php:128
-#: ../vkapi.php:1260
-#: ../vkapi.php:1268
+#: ../vkapi.php:1300
+#: ../vkapi.php:1308
 msgid "Dont show"
 msgstr "Не показывать"
 
@@ -125,12 +125,14 @@ msgid "Sign On: "
 msgstr "Вход:"
 
 #: ../vkapi-options.php:71
-#: ../vkapi.php:602
+#: ../vkapi.php:609
+#: ../vkapi.php:621
 msgid "Enable"
 msgstr "Включено"
 
 #: ../vkapi-options.php:72
-#: ../vkapi.php:604
+#: ../vkapi.php:611
+#: ../vkapi.php:623
 msgid "Disable"
 msgstr "Выключено"
 
@@ -308,12 +310,12 @@ msgid "Vkontakte API Plugin - Settings"
 msgstr "Vkontakte API Plugin - Настройки"
 
 #: ../vkapi.php:230
-#: ../vkapi.php:824
+#: ../vkapi.php:843
 msgid "Settings"
 msgstr "Настройки"
 
 #: ../vkapi.php:238
-#: ../vkapi.php:1071
+#: ../vkapi.php:1100
 msgid "Last Comments"
 msgstr "Последнии комментарии"
 
@@ -349,180 +351,195 @@ msgstr "Комментарии Vkontakte"
 msgid "WordPress comments"
 msgstr "Комментарии сайта"
 
-#: ../vkapi.php:591
-#: ../vkapi.php:592
+#: ../vkapi.php:596
+#: ../vkapi.php:597
 msgid "VK.com comments"
 msgstr "VK.com комментарии"
 
-#: ../vkapi.php:630
+#: ../vkapi.php:598
+#: ../vkapi.php:599
+msgid "VK.com buttons"
+msgstr "VK.com кнопки"
+
+#: ../vkapi.php:649
 msgid "Vkontakte"
 msgstr "Вконтакте"
 
-#: ../vkapi.php:658
+#: ../vkapi.php:677
 msgid "Connected User Id : "
 msgstr "Присоединённый User Id : "
 
-#: ../vkapi.php:659
+#: ../vkapi.php:678
 msgid "Disconnect from Vkontakte"
 msgstr "Отсоединить аккаунт Vkontakte"
 
-#: ../vkapi.php:811
+#: ../vkapi.php:830
 msgid "Vkontakte Profile"
 msgstr "Профиль Vkontakte"
 
-#: ../vkapi.php:870
+#: ../vkapi.php:889
 msgid "Information about VKontakte group"
 msgstr "Информация о группе Вконтакте"
 
-#: ../vkapi.php:871
+#: ../vkapi.php:890
 msgid "VKapi: Community Users"
-msgstr "VKAPI: Группа"
+msgstr "VKapi: Сообщество"
 
-#: ../vkapi.php:908
-#: ../vkapi.php:969
-#: ../vkapi.php:1115
-#: ../vkapi.php:1228
+#: ../vkapi.php:927
+#: ../vkapi.php:994
+#: ../vkapi.php:1144
+#: ../vkapi.php:1260
 msgid "Title:"
 msgstr "Название:"
 
-#: ../vkapi.php:912
+#: ../vkapi.php:931
 msgid "ID of group (can be seen by reference to statistics):"
 msgstr "ID группы (видно по ссылке на статистику):"
 
-#: ../vkapi.php:916
-#: ../vkapi.php:1123
-#: ../vkapi.php:1232
+#: ../vkapi.php:935
+#: ../vkapi.php:1002
+#: ../vkapi.php:1152
+#: ../vkapi.php:1264
 msgid "Width:"
 msgstr "Ширина:"
 
-#: ../vkapi.php:920
-#: ../vkapi.php:1127
-#: ../vkapi.php:1236
+#: ../vkapi.php:939
+#: ../vkapi.php:1156
+#: ../vkapi.php:1268
 msgid "Height:"
 msgstr "Высота:"
 
-#: ../vkapi.php:925
+#: ../vkapi.php:944
 msgid "Layout:"
 msgstr "Тип виджета:"
 
-#: ../vkapi.php:927
+#: ../vkapi.php:946
 msgid "Members"
 msgstr "Список пользователей"
 
-#: ../vkapi.php:928
+#: ../vkapi.php:947
 msgid "News"
 msgstr "Новости группы"
 
-#: ../vkapi.php:929
+#: ../vkapi.php:948
 msgid "Only Name"
 msgstr "Только название"
 
-#: ../vkapi.php:941
+#: ../vkapi.php:960
 msgid "Top site on basis of \"I like\" statistics"
 msgstr "Топ сайта на основе \"Мне нравиться\""
 
-#: ../vkapi.php:942
+#: ../vkapi.php:961
 msgid "VKapi: Recommends"
-msgstr "VKAPI: Популярное"
+msgstr "VKapi: Популярное"
 
-#: ../vkapi.php:973
+#: ../vkapi.php:998
 msgid "Number of posts:"
 msgstr "Количество:"
 
-#: ../vkapi.php:978
+#: ../vkapi.php:1007
 msgid "Selection period:"
 msgstr "Период:"
 
-#: ../vkapi.php:980
+#: ../vkapi.php:1009
 msgid "Day"
 msgstr "Сутки"
 
-#: ../vkapi.php:981
+#: ../vkapi.php:1010
 msgid "Week"
 msgstr "Неделя"
 
-#: ../vkapi.php:982
+#: ../vkapi.php:1011
 msgid "Month"
 msgstr "Месяц"
 
-#: ../vkapi.php:987
+#: ../vkapi.php:1016
 msgid "Formulation:"
 msgstr "Формулировка:"
 
-#: ../vkapi.php:989
+#: ../vkapi.php:1018
 msgid "... people like this"
 msgstr "Понравилось ..."
 
-#: ../vkapi.php:990
+#: ../vkapi.php:1019
 msgid "... people find it intersting"
 msgstr "Интересно ..."
 
-#: ../vkapi.php:1003
+#: ../vkapi.php:1032
 msgid "Login widget"
 msgstr "Виджет входа"
 
-#: ../vkapi.php:1004
+#: ../vkapi.php:1033
 msgid "VKapi: Login"
-msgstr "VKAPI: Вход"
+msgstr "VKapi: Вход"
 
-#: ../vkapi.php:1018
-#: ../vkapi.php:1023
+#: ../vkapi.php:1047
+#: ../vkapi.php:1052
 msgid "Profile"
 msgstr "Профиль"
 
-#: ../vkapi.php:1019
-#: ../vkapi.php:1024
+#: ../vkapi.php:1048
+#: ../vkapi.php:1053
 msgid "Logout"
 msgstr "Выход"
 
-#: ../vkapi.php:1035
+#: ../vkapi.php:1064
 msgid "Login"
 msgstr "Вход"
 
-#: ../vkapi.php:1058
+#: ../vkapi.php:1087
 msgid "Message:"
 msgstr "Сообщение:"
 
-#: ../vkapi.php:1072
+#: ../vkapi.php:1101
 msgid "VKapi: Last Comments"
 msgstr "VKapi: Последние комментарии"
 
-#: ../vkapi.php:1119
+#: ../vkapi.php:1148
 msgid "Number of comments:"
 msgstr "Количество комментариев:"
 
-#: ../vkapi.php:1140
+#: ../vkapi.php:1169
 msgid "Flash cloud of tags and cats"
-msgstr ""
+msgstr "Флеш-облако тегов и категорий"
 
-#: ../vkapi.php:1141
+#: ../vkapi.php:1170
 msgid "VKapi: Tags Cloud"
 msgstr "VKapi: Облако тегов"
 
-#: ../vkapi.php:1240
-#, fuzzy
+#: ../vkapi.php:1272
 msgid "Tag color:"
-msgstr "Цветовая схема"
+msgstr ""
 
-#: ../vkapi.php:1244
-#, fuzzy
+#: ../vkapi.php:1276
 msgid "Gradient color:"
-msgstr "Цветовая схема"
+msgstr ""
 
-#: ../vkapi.php:1248
-#, fuzzy
+#: ../vkapi.php:1280
 msgid "Highlight color:"
-msgstr "Цветовая схема"
+msgstr ""
 
-#: ../vkapi.php:1252
+#: ../vkapi.php:1284
 msgid "Speed:"
 msgstr "Скорость:"
 
-#: ../vkapi.php:1257
+#: ../vkapi.php:1289
+msgid "Distribute on sphere:"
+msgstr "Распределение по сфере:"
+
+#: ../vkapi.php:1291
+msgid "Evenly"
+msgstr "Равномерно"
+
+#: ../vkapi.php:1292
+msgid "Dont evenly"
+msgstr "Неравномерно"
+
+#: ../vkapi.php:1297
 msgid "Show tags:"
 msgstr "Показывать теги:"
 
-#: ../vkapi.php:1265
+#: ../vkapi.php:1305
 msgid "Show categories:"
 msgstr "Показывать категории:"
 

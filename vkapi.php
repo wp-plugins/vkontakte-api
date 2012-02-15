@@ -3,7 +3,7 @@
 Plugin Name: Vkontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 1.23
+Version: 1.24
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -412,7 +412,9 @@ class VK_api {
 	}
 	
 	function add_buttons ( $args ) {
-		if ( !is_feed() ) { 
+		global $post;
+		$vkapi_get_butt = get_post_meta($post->ID, vkapi_buttons, true);		
+		if ( !is_feed() && !( in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) ) ) && ( $vkapi_get_butt == '1' || $vkapi_get_butt === '' ) ) { 
 			// share
 			$share_cat = get_option( 'vkapi_share_cat' );
 			if ( $share_cat ) self::vkapi_button_share( &$args ); 
@@ -574,25 +576,30 @@ class VK_api {
 	
 	
 	/* start meta_box */
-		function save_postdata( $post_id ) {
-	if ( !wp_verify_nonce( $_REQUEST['vkapi_noncename'], plugin_basename(__FILE__) )) 
-		return $post_id;
-	if ( 'page' == $_REQUEST['post_type'] ) {
-		if ( !current_user_can( 'edit_page', $post_id ))
+	function save_postdata( $post_id ) {
+		// check
+		if ( !wp_verify_nonce( $_REQUEST['vkapi_noncename'], plugin_basename(__FILE__) )) 
 			return $post_id;
-	} else {
-		if ( !current_user_can( 'edit_post', $post_id ))
-			return $post_id;
-	}
-	update_post_meta($post_id, 'vkapi_comments', $_REQUEST['vkapi_comments']);
+		if ( 'page' == $_REQUEST['post_type'] ) {
+			if ( !current_user_can( 'edit_page', $post_id ))
+				return $post_id;
+		} else {
+			if ( !current_user_can( 'edit_post', $post_id ))
+				return $post_id;
+		}
+		// do
+		update_post_meta($post_id, 'vkapi_comments', $_REQUEST['vkapi_comments']);
+		update_post_meta($post_id, 'vkapi_buttons', $_REQUEST['vkapi_buttons']);
 	}
 
 	function add_custom_box($page,$context) {
-		add_meta_box( 'vkapi_meta_box', __('VK.com comments',self::$plugin_domain),array($this,'vkapi_inner_custom_box'), 'post', 'advanced' );
-		add_meta_box( 'vkapi_meta_box', __('VK.com comments',self::$plugin_domain),array($this,'vkapi_inner_custom_box'), 'page', 'advanced' );
+		add_meta_box( 'vkapi_meta_box_comm', __('VK.com comments',self::$plugin_domain),array($this,'vkapi_inner_custom_box_comm'), 'post', 'advanced' );
+		add_meta_box( 'vkapi_meta_box_comm', __('VK.com comments',self::$plugin_domain),array($this,'vkapi_inner_custom_box_comm'), 'page', 'advanced' );
+		add_meta_box( 'vkapi_meta_box_butt', __('VK.com buttons',self::$plugin_domain),array($this,'vkapi_inner_custom_box_butt'), 'post', 'advanced' );
+		add_meta_box( 'vkapi_meta_box_butt', __('VK.com buttons',self::$plugin_domain),array($this,'vkapi_inner_custom_box_butt'), 'page', 'advanced' );
 	}
 
-	function vkapi_inner_custom_box() {
+	function vkapi_inner_custom_box_comm() {
 		global $post;
 		echo '<input type="hidden" name="vkapi_noncename" id="vkapi_noncename" value="' . wp_create_nonce( plugin_basename(__FILE__) ) . '" />';
 		$vkapi_comments = get_post_meta( $post->ID, 'vkapi_comments', true );
@@ -601,6 +608,18 @@ class VK_api {
 		if ( $vkapi_comments == 1 ) echo ' checked ';
 		echo'/>' . __( 'Enable', self::$plugin_domain ).'<br /><input type="radio" name="vkapi_comments" value="0"';
 		if ( $vkapi_comments == 0 ) echo ' checked ';
+		echo '/>' . __( 'Disable', self::$plugin_domain );
+	}
+	
+	function vkapi_inner_custom_box_butt() {
+		global $post;
+		echo '<input type="hidden" name="vkapi_noncename" id="vkapi_noncename" value="' . wp_create_nonce( plugin_basename(__FILE__) ) . '" />';
+		$vkapi_buttons = get_post_meta( $post->ID, 'vkapi_buttons', true );
+		if ( $vkapi_buttons === '' ) $vkapi_buttons = 1;
+		echo '<input type="radio" name="vkapi_buttons" value="1"';
+		if ( $vkapi_buttons == 1 ) echo ' checked ';
+		echo'/>' . __( 'Enable', self::$plugin_domain ).'<br /><input type="radio" name="vkapi_buttons" value="0"';
+		if ( $vkapi_buttons == 0 ) echo ' checked ';
 		echo '/>' . __( 'Disable', self::$plugin_domain );
 	}
 	/* end meta_box */
@@ -863,12 +882,12 @@ elseif ( class_exists( 'VK_api' ) )
 /* Community Widget */
 class VKAPI_Community extends WP_Widget {
 
-	static $plugin_domain = 'vkapi';
+	var $plugin_domain = 'vkapi';
 
 	function __construct() {
-		load_plugin_textdomain( self::$plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
-		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Information about VKontakte group', self::$plugin_domain ) );
-		parent::WP_Widget( 'vkapi_community', $name = __( 'VKapi: Community Users', self::$plugin_domain ), $widget_ops );
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Information about VKontakte group', $this->plugin_domain ) );
+		parent::WP_Widget( 'vkapi_community', $name = __( 'VKapi: Community Users', $this->plugin_domain ), $widget_ops );
 	}
 	
 	function widget($args, $instance) {
@@ -905,28 +924,28 @@ class VKAPI_Community extends WP_Widget {
 		$gid = esc_attr( $instance['gid'] );
 		$width = esc_attr( $instance['width'] );
 
-		?><p><label for="<?php echo self::$get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'title' ); ?>" name="<?php echo self::$get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
+		?><p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'gid' ); ?>"><?php _e( 'ID of group (can be seen by reference to statistics):', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'gid' ); ?>" name="<?php echo self::$get_field_name( 'gid' ); ?>" type="text" value="<?php echo $gid; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'gid' ); ?>"><?php _e( 'ID of group (can be seen by reference to statistics):', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'gid' ); ?>" name="<?php echo $this->get_field_name( 'gid' ); ?>" type="text" value="<?php echo $gid; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'width' ); ?>"><?php _e( 'Width:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'width' ); ?>" name="<?php echo self::$get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'width' ); ?>"><?php _e( 'Width:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'width' ); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'height' ); ?>"><?php _e( 'Height:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'height' ); ?>" name="<?php echo self::$get_field_name( 'height' ); ?>" type="text" value="<?php echo $width; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'height' ); ?>"><?php _e( 'Height:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'height' ); ?>" name="<?php echo $this->get_field_name( 'height' ); ?>" type="text" value="<?php echo $width; ?>" />
 		</label></p>
 		
 		<p>
-        <label for="<?php echo self::$get_field_id( 'type' ); ?>"><?php _e( 'Layout:', self::$plugin_domain ); ?></label>
-        <select name="<?php echo self::$get_field_name( 'type' ); ?>" id="<?php echo self::$get_field_id( 'type' ); ?>" class="widefat">
-        <option value="users"<?php selected( $instance['type'], 'users' ); ?>><?php _e( 'Members', self::$plugin_domain ); ?></option>
-	    <option value="news"<?php selected( $instance['type'], 'news' ); ?>><?php _e( 'News', self::$plugin_domain ); ?></option>	                                
-		<option value="name"<?php selected( $instance['type'], 'name' ); ?>><?php _e( 'Only Name', self::$plugin_domain ); ?></option>
+        <label for="<?php echo $this->get_field_id( 'type' ); ?>"><?php _e( 'Layout:', $this->plugin_domain ); ?></label>
+        <select name="<?php echo $this->get_field_name( 'type' ); ?>" id="<?php echo $this->get_field_id( 'type' ); ?>" class="widefat">
+        <option value="users"<?php selected( $instance['type'], 'users' ); ?>><?php _e( 'Members', $this->plugin_domain ); ?></option>
+	    <option value="news"<?php selected( $instance['type'], 'news' ); ?>><?php _e( 'News', $this->plugin_domain ); ?></option>	                                
+		<option value="name"<?php selected( $instance['type'], 'name' ); ?>><?php _e( 'Only Name', $this->plugin_domain ); ?></option>
         </select>
 		</p>
 		<?php }
@@ -934,23 +953,28 @@ class VKAPI_Community extends WP_Widget {
 /* Recommend Widget */
 class VKAPI_Recommend extends WP_Widget {
 
-	static $plugin_domain = 'vkapi';
+	var $plugin_domain = 'vkapi';
 
 	function __construct() {
-		load_plugin_textdomain( self::$plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
-		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Top site on basis of "I like" statistics', self::$plugin_domain ) );
-		parent::WP_Widget( 'vkapi_recommend', $name = __( 'VKapi: Recommends' , self::$plugin_domain), $widget_ops);
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Top site on basis of "I like" statistics', $this->plugin_domain ) );
+		parent::WP_Widget( 'vkapi_recommend', $name = __( 'VKapi: Recommends' , $this->plugin_domain), $widget_ops);
 	}
 
 	function widget( $args, $instance ) {
 		extract( $args );
 		$vkapi_divid = $args['widget_id'];
 		$vkapi_limit = $instance['limit'];
+		$vkapi_width = $instance['width'];
 		$vkapi_period = $instance['period'];
 		$vkapi_verb = $instance['verb'];
-		echo $before_widget . $before_title . $instance['title'] . $after_title . '<div id="'.$vkapi_divid.'_wrapper">';
+		echo $before_widget . $before_title . $instance['title'] . $after_title;
+		if ( $vkapi_width != '0' ) echo "<div style=\"width:$vkapi_width\">";
+		echo '<div id="'.$vkapi_divid.'_wrapper">';
 		$vkapi_divid .= "_wrapper";
-		echo '</div>
+		echo '</div>';
+		if ( $vkapi_width != '0' ) echo '</div>';
+		echo '
 		<script type="text/javascript">
 			VK.Widgets.Recommended("'.$vkapi_divid.'", {limit: '.$vkapi_limit.', period: \''.$vkapi_period.'\', verb: '.$vkapi_verb.', target: "blank"});
 		</script>';
@@ -962,32 +986,37 @@ class VKAPI_Recommend extends WP_Widget {
 	}
 
 	function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'limit' => '5', 'period' => 'month', 'verb' => '0' ) );
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'limit' => '5', 'period' => 'month', 'verb' => '0', 'width' => '0' ) );
 		$title = esc_attr( $instance['title'] );
 		$limit = esc_attr( $instance['limit'] );
+		$width = esc_attr( $instance['width'] );
 
-		?><p><label for="<?php echo self::$get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'title' ); ?>" name="<?php echo self::$get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
+		?><p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'limit' ); ?>"><?php _e( 'Number of posts:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'limit' ); ?>" name="<?php echo self::$get_field_name( 'limit' ); ?>" type="text" value="<?php echo $limit; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'limit' ); ?>"><?php _e( 'Number of posts:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'limit' ); ?>" name="<?php echo $this->get_field_name( 'limit' ); ?>" type="text" value="<?php echo $limit; ?>" />
+		</label></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'width' ); ?>"><?php _e( 'Width:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'width' ); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
 		</label></p>
 		
 		<p>
-        <label for="<?php echo self::$get_field_id( 'period' ); ?>"><?php _e( 'Selection period:', self::$plugin_domain ); ?></label>
-        <select name="<?php echo self::$get_field_name( 'period' ); ?>" id="<?php echo self::$get_field_id( 'period' ); ?>" class="widefat">
-        <option value="day"<?php selected( $instance['period'], 'day' ); ?>><?php _e( 'Day', self::$plugin_domain ); ?></option>
-	    <option value="week"<?php selected( $instance['period'], 'week' ); ?>><?php _e( 'Week', self::$plugin_domain ); ?></option>	                                
-		<option value="month"<?php selected( $instance['period'], 'month' ); ?>><?php _e( 'Month', self::$plugin_domain ); ?></option>
+        <label for="<?php echo $this->get_field_id( 'period' ); ?>"><?php _e( 'Selection period:', $this->plugin_domain ); ?></label>
+        <select name="<?php echo $this->get_field_name( 'period' ); ?>" id="<?php echo $this->get_field_id( 'period' ); ?>" class="widefat">
+        <option value="day"<?php selected( $instance['period'], 'day' ); ?>><?php _e( 'Day', $this->plugin_domain ); ?></option>
+	    <option value="week"<?php selected( $instance['period'], 'week' ); ?>><?php _e( 'Week', $this->plugin_domain ); ?></option>	                                
+		<option value="month"<?php selected( $instance['period'], 'month' ); ?>><?php _e( 'Month', $this->plugin_domain ); ?></option>
         </select>
 		</p>
 		
 		<p>
-        <label for="<?php echo self::$get_field_id( 'verb' ); ?>"><?php _e( 'Formulation:', self::$plugin_domain ); ?></label>
-        <select name="<?php echo self::$get_field_name( 'verb' ); ?>" id="<?php echo self::$get_field_id( 'verb' ); ?>" class="widefat">
-        <option value="0"<?php selected( $instance['verb'], '0' ); ?>><?php _e( '... people like this', self::$plugin_domain ); ?></option>
-	    <option value="1"<?php selected( $instance['verb'], '1' ); ?>><?php _e( '... people find it intersting', self::$plugin_domain ); ?></option>	                                
+        <label for="<?php echo $this->get_field_id( 'verb' ); ?>"><?php _e( 'Formulation:', $this->plugin_domain ); ?></label>
+        <select name="<?php echo $this->get_field_name( 'verb' ); ?>" id="<?php echo $this->get_field_id( 'verb' ); ?>" class="widefat">
+        <option value="0"<?php selected( $instance['verb'], '0' ); ?>><?php _e( '... people like this', $this->plugin_domain ); ?></option>
+	    <option value="1"<?php selected( $instance['verb'], '1' ); ?>><?php _e( '... people find it intersting', $this->plugin_domain ); ?></option>	                                
         </select>
 		</p>
 		<?php 
@@ -996,12 +1025,12 @@ class VKAPI_Recommend extends WP_Widget {
 /* Login Widget */
 class VKAPI_Login extends WP_Widget {
 
-	static $plugin_domain = 'vkapi';
+	var $plugin_domain = 'vkapi';
 
 	function __construct() {
-		load_plugin_textdomain( self::$plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
-		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Login widget', self::$plugin_domain ) );
-		parent::WP_Widget( 'vkapi_login', $name = __( 'VKapi: Login' , self::$plugin_domain), $widget_ops);
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Login widget', $this->plugin_domain ) );
+		parent::WP_Widget( 'vkapi_login', $name = __( 'VKapi: Login' , $this->plugin_domain), $widget_ops);
 		}
 
 	function widget( $args, $instance ) {
@@ -1015,16 +1044,16 @@ class VKAPI_Login extends WP_Widget {
 				if ( !empty( $vkapi_meta_ava{0} ) ) {
 					echo "<div style='float:left; padding-right:20px'><img alt='' src='$vkapi_meta_ava' class='avatar avatar-75' height='75' width='75' /></div>";
 					echo "<br />\r\n<div>";
-					echo "<a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , self::$plugin_domain ) . "</a><br /><br />";
-					echo "<a href='" . wp_logout_url( get_permalink() ) . "' title=''>" . __( 'Logout' , self::$plugin_domain ) . "</a><br /><br /></div>";
+					echo "<a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , $this->plugin_domain ) . "</a><br /><br />";
+					echo "<a href='" . wp_logout_url( get_permalink() ) . "' title=''>" . __( 'Logout' , $this->plugin_domain ) . "</a><br /><br /></div>";
 				} else {
 					echo "<div style='float:left; padding-right:20px'>" . get_avatar( $vkapi_wp_id, 75 ) . "</div>";          
 					echo "<br />\r\n<div>";
-					echo "<a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , self::$plugin_domain ) . "</a><br /><br />";
-					echo "<a href='" . wp_logout_url( get_permalink() ) . "' title=''>" . __( 'Logout' , self::$plugin_domain ) . "</a><br /><br /></div>";
+					echo "<a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , $this->plugin_domain ) . "</a><br /><br />";
+					echo "<a href='" . wp_logout_url( get_permalink() ) . "' title=''>" . __( 'Logout' , $this->plugin_domain ) . "</a><br /><br /></div>";
 				}
 		} else {
-			self::$vkapi_link_vk();
+			$this->vkapi_link_vk();
 		}
 	echo '</div>' . $after_widget;
 	}
@@ -1032,7 +1061,7 @@ class VKAPI_Login extends WP_Widget {
 	function vkapi_link_vk () {
 		$vkapi_url = get_bloginfo('wpurl');
 		echo '<button style="display: none" id="submit" class="vkapi_vk_widget" vkapi_url="'.$vkapi_url.'"></button>';
-		echo '<a href="' . wp_login_url( get_permalink() ) . '" title="">' . __( 'Login' , self::$plugin_domain ) . '</a>';
+		echo '<a href="' . wp_login_url( get_permalink() ) . '" title="">' . __( 'Login' , $this->plugin_domain ) . '</a>';
 		echo '<br /><br />
 		<div id="vkapi_status"></div>
 		<div id="login_button" style="padding:0px;border:0px" onclick="VK.Auth.getLoginStatus(onSignon)"></div>
@@ -1055,8 +1084,8 @@ class VKAPI_Login extends WP_Widget {
 		$instance = wp_parse_args( (array) $instance, array( 'Message' => 'What\'s up' ) );
 		$title = esc_attr( $instance['Message'] );
 		
-		?><p><label for="<?php echo self::$get_field_id( 'Message' ); ?>"><?php _e( 'Message:' ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'Message' ); ?>" name="<?php echo self::$get_field_name( 'Message' ); ?>" type="text" value="<?php echo $title; ?>" />
+		?><p><label for="<?php echo $this->get_field_id( 'Message' ); ?>"><?php _e( 'Message:' ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'Message' ); ?>" name="<?php echo $this->get_field_name( 'Message' ); ?>" type="text" value="<?php echo $title; ?>" />
 		</label></p>
 		<?php 
 	}
@@ -1064,12 +1093,12 @@ class VKAPI_Login extends WP_Widget {
 /* Comments Widget */
 class VKAPI_Comments extends WP_Widget {
 
-	static $plugin_domain = 'vkapi';
+	var $plugin_domain = 'vkapi';
 
 	function __construct() {
-		load_plugin_textdomain( self::$plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
-		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Last Comments', self::$plugin_domain ) );
-		parent::WP_Widget( 'vkapi_comments', $name = __( 'VKapi: Last Comments' , self::$plugin_domain), $widget_ops);
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Last Comments', $this->plugin_domain ) );
+		parent::WP_Widget( 'vkapi_comments', $name = __( 'VKapi: Last Comments' , $this->plugin_domain), $widget_ops);
 	}
 
 	function widget( $args, $instance ) {
@@ -1112,20 +1141,20 @@ class VKAPI_Comments extends WP_Widget {
 		$width = esc_attr( $instance['width'] );
 		$height = esc_attr( $instance['height'] );
 
-		?><p><label for="<?php echo self::$get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'title' ); ?>" name="<?php echo self::$get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
+		?><p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'limit' ); ?>"><?php _e( 'Number of comments:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'limit' ); ?>" name="<?php echo self::$get_field_name( 'limit' ); ?>" type="text" value="<?php echo $limit; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'limit' ); ?>"><?php _e( 'Number of comments:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'limit' ); ?>" name="<?php echo $this->get_field_name( 'limit' ); ?>" type="text" value="<?php echo $limit; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'width' ); ?>"><?php _e( 'Width:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'width' ); ?>" name="<?php echo self::$get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'width' ); ?>"><?php _e( 'Width:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'width' ); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'height' ); ?>"><?php _e( 'Height:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'height' ); ?>" name="<?php echo self::$get_field_name( 'height' ); ?>" type="text" value="<?php echo $height; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'height' ); ?>"><?php _e( 'Height:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'height' ); ?>" name="<?php echo $this->get_field_name( 'height' ); ?>" type="text" value="<?php echo $height; ?>" />
 		</label></p>
 		<?php 
 	}
@@ -1133,12 +1162,12 @@ class VKAPI_Comments extends WP_Widget {
 /* Cloud Widget */
 class VKAPI_Cloud extends WP_Widget {
 
-	static $plugin_domain = 'vkapi';
+	var $plugin_domain = 'vkapi';
 
 	function __construct() {
-		load_plugin_textdomain( self::$plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
-		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Flash cloud of tags and cats', self::$plugin_domain ) );
-		parent::WP_Widget( 'vkapi_tag_cloud', $name = __( 'VKapi: Tags Cloud' , self::$plugin_domain), $widget_ops);
+		load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		$widget_ops = array( 'classname' => 'widget_vkapi', 'description' => __( 'Flash cloud of tags and cats', $this->plugin_domain ) );
+		parent::WP_Widget( 'vkapi_tag_cloud', $name = __( 'VKapi: Tags Cloud' , $this->plugin_domain), $widget_ops);
 	}
 
 	function widget( $args, $instance ) {
@@ -1150,6 +1179,7 @@ class VKAPI_Cloud extends WP_Widget {
 		$vkapi_color2 = $instance['color2'];
 		$vkapi_color3 = $instance['color3'];
 		$vkapi_speed = $instance['speed'];
+		$vkapi_distr = $instance['distr'];
 		// tags
 		ob_start();
 		if ( $instance['tags'] == 1 ) {
@@ -1184,7 +1214,7 @@ class VKAPI_Cloud extends WP_Widget {
 				so.addParam("allowScriptAccess", "always");
 				so.addParam("wmode", "transparent");
 				so.addVariable("tspeed", "'.$vkapi_speed.'");
-				so.addVariable("distr", "false");
+				so.addVariable("distr", "'.$vkapi_distr.'");
 				so.addVariable("mode", "'.$vkapi_mode.'");
 				so.addVariable("tcolor", "'.$vkapi_color1.'");
 				so.addVariable("tcolor2", "'.$vkapi_color2.'");
@@ -1213,7 +1243,8 @@ class VKAPI_Cloud extends WP_Widget {
 				'color3' => '0x255613',
 				'speed' => '88',
 				'tags' => '1',
-				'cats' => '1'
+				'cats' => '1',
+				'distr' => 'false'
 		) );
 		$title = esc_attr( $instance['title'] );
 		$width = esc_attr( $instance['width'] );
@@ -1224,48 +1255,57 @@ class VKAPI_Cloud extends WP_Widget {
 		$speed = esc_attr( $instance['speed'] );
 		$tags = esc_attr( $instance['tags'] );
 		$cats = esc_attr( $instance['cats'] );
+		$distr = esc_attr( $instance['distr'] );
 
-		?><p><label for="<?php echo self::$get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'title' ); ?>" name="<?php echo self::$get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
+		?><p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'width' ); ?>"><?php _e( 'Width:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'width' ); ?>" name="<?php echo self::$get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'width' ); ?>"><?php _e( 'Width:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'width' ); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'height' ); ?>"><?php _e( 'Height:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'height' ); ?>" name="<?php echo self::$get_field_name( 'height' ); ?>" type="text" value="<?php echo $height; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'height' ); ?>"><?php _e( 'Height:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'height' ); ?>" name="<?php echo $this->get_field_name( 'height' ); ?>" type="text" value="<?php echo $height; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'color1' ); ?>"><?php _e( 'Tag color:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'color1' ); ?>" name="<?php echo self::$get_field_name( 'color1' ); ?>" type="text" value="<?php echo $color1; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'color1' ); ?>"><?php _e( 'Tag color:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'color1' ); ?>" name="<?php echo $this->get_field_name( 'color1' ); ?>" type="text" value="<?php echo $color1; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'color2' ); ?>"><?php _e( 'Gradient color:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'color2' ); ?>" name="<?php echo self::$get_field_name( 'color2' ); ?>" type="text" value="<?php echo $color2; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'color2' ); ?>"><?php _e( 'Gradient color:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'color2' ); ?>" name="<?php echo $this->get_field_name( 'color2' ); ?>" type="text" value="<?php echo $color2; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'color3' ); ?>"><?php _e( 'Highlight color:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'color3' ); ?>" name="<?php echo self::$get_field_name( 'color3' ); ?>" type="text" value="<?php echo $color3; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'color3' ); ?>"><?php _e( 'Highlight color:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'color3' ); ?>" name="<?php echo $this->get_field_name( 'color3' ); ?>" type="text" value="<?php echo $color3; ?>" />
 		</label></p>
 		
-		<p><label for="<?php echo self::$get_field_id( 'speed' ); ?>"><?php _e( 'Speed:', self::$plugin_domain ); ?>
-		<input class="widefat" id="<?php echo self::$get_field_id( 'speed' ); ?>" name="<?php echo self::$get_field_name( 'speed' ); ?>" type="text" value="<?php echo $speed; ?>" />
+		<p><label for="<?php echo $this->get_field_id( 'speed' ); ?>"><?php _e( 'Speed:', $this->plugin_domain ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'speed' ); ?>" name="<?php echo $this->get_field_name( 'speed' ); ?>" type="text" value="<?php echo $speed; ?>" />
 		</label></p>
 		
 		<p>
-        <label for="<?php echo self::$get_field_id( 'tags' ); ?>"><?php _e( 'Show tags:', self::$plugin_domain ); ?></label>
-        <select name="<?php echo self::$get_field_name( 'tags' ); ?>" id="<?php echo self::$get_field_id( 'tags' ); ?>" class="widefat">
-			<option value="1"<?php selected( $instance['tags'], '1' ); ?>><?php _e( 'Show', self::$plugin_domain ); ?></option>
-			<option value="0"<?php selected( $instance['tags'], '0' ); ?>><?php _e( 'Dont show', self::$plugin_domain ); ?></option>
+        <label for="<?php echo $this->get_field_id( 'distr' ); ?>"><?php _e( 'Distribute on sphere:', $this->plugin_domain ); ?></label>
+        <select name="<?php echo $this->get_field_name( 'distr' ); ?>" id="<?php echo $this->get_field_id( 'distr' ); ?>" class="widefat">
+			<option value="true"<?php selected( $instance['distr'], 'true' ); ?>><?php _e( 'Evenly', $this->plugin_domain ); ?></option>
+			<option value="false"<?php selected( $instance['distr'], 'false' ); ?>><?php _e( 'Dont evenly', $this->plugin_domain ); ?></option>
         </select>
 		</p>
 		
 		<p>
-        <label for="<?php echo self::$get_field_id( 'cats' ); ?>"><?php _e( 'Show categories:', self::$plugin_domain ); ?></label>
-        <select name="<?php echo self::$get_field_name( 'cats' ); ?>" id="<?php echo self::$get_field_id( 'cats' ); ?>" class="widefat">
-			<option value="1"<?php selected( $instance['cats'], '1' ); ?>><?php _e( 'Show', self::$plugin_domain ); ?></option>
-			<option value="0"<?php selected( $instance['cats'], '0' ); ?>><?php _e( 'Dont show', self::$plugin_domain ); ?></option>	                                
+        <label for="<?php echo $this->get_field_id( 'tags' ); ?>"><?php _e( 'Show tags:', $this->plugin_domain ); ?></label>
+        <select name="<?php echo $this->get_field_name( 'tags' ); ?>" id="<?php echo $this->get_field_id( 'tags' ); ?>" class="widefat">
+			<option value="1"<?php selected( $instance['tags'], '1' ); ?>><?php _e( 'Show', $this->plugin_domain ); ?></option>
+			<option value="0"<?php selected( $instance['tags'], '0' ); ?>><?php _e( 'Dont show', $this->plugin_domain ); ?></option>
+        </select>
+		</p>
+		
+		<p>
+        <label for="<?php echo $this->get_field_id( 'cats' ); ?>"><?php _e( 'Show categories:', $this->plugin_domain ); ?></label>
+        <select name="<?php echo $this->get_field_name( 'cats' ); ?>" id="<?php echo $this->get_field_id( 'cats' ); ?>" class="widefat">
+			<option value="1"<?php selected( $instance['cats'], '1' ); ?>><?php _e( 'Show', $this->plugin_domain ); ?></option>
+			<option value="0"<?php selected( $instance['cats'], '0' ); ?>><?php _e( 'Dont show', $this->plugin_domain ); ?></option>	                                
         </select>
 		</p>
 		<?php 

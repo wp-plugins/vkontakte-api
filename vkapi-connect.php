@@ -117,7 +117,7 @@
 		$first_name = $vkapi_user['first_name'];
 		$last_name = $vkapi_user['last_name'];
 		$rich_editing = TRUE;
-		$role = 'Subscriber';
+		//$role = 'Subscriber';
 		$jabber = $user_login . '@vk.com';
 		$display_name = "$first_name $last_name";
 			$userdata = array (
@@ -128,7 +128,7 @@
 				first_name => $first_name,
 				last_name => $last_name,
 				rich_editing => $rich_editing,
-				role => $role,
+				//role => $role,
 				jabber => $jabber,
 				display_name => $display_name
 			);
