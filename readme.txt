@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, comments, vkontakte, vkontakte.ru, plugin, posts, pages, share, vk.com
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 1.24
+Stable tag: 1.25
 
 Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
 
@@ -66,7 +66,10 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 == Changelog ==
 
-= 1.22 =
+= 1.24 - 1.25 =
+* fix
+
+= 1.23 =
 * Переконвертировал всё в Win-формат.
 
 = 1.22 =
@@ -149,7 +152,10 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 == Upgrade Notice ==
 
-= 1.22 =
+= 1.24 - 1.25 =
+* fix
+
+= 1.23 =
 * Переконвертировал всё в Win-формат.
 
 = 1.22 =

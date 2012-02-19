@@ -1,13 +1,22 @@
 ﻿<div id="comments">
 <?php
-	$vkapi_show_comm = get_option( 'vkapi_show_comm' );
-		if ( $vkapi_show_comm == 'true' ) {
-			global $post;
-			$vkapi_get_comm = get_post_meta($postid, vkapi_comments, true);
-			if ( $vkapi_get_comm == '1' || $vkapi_get_comm === '' )
+	global $post;
+		$postid = $post->ID;
+		$vkapi_get_comm = get_post_meta($postid, vkapi_comments, true);
+		$vkapi_show_comm = get_option( 'vkapi_show_comm' );
+		if ( $vkapi_show_comm == 'true' && ( $vkapi_get_comm == '1' || $vkapi_get_comm === '' ) ) {
 			if ( comments_open() ) {
 				$vkapi_some_desktop = get_option( 'vkapi_some_desktop' );
 				$postid = $post->ID;
+				$att;
+				$att2 = get_option( 'vkapi_comm_autoPublish' );
+	
+	global $post;
+		$postid = $post->ID;
+		$vkapi_get_comm = get_post_meta($postid, vkapi_comments, true);
+		if ( $vkapi_get_comm == '1' || $vkapi_get_comm === '' )
+			if ( comments_open() ) {
+				$vkapi_some_desktop = get_option( 'vkapi_some_desktop' );
 				$att;
 				$att2 = get_option( 'vkapi_comm_autoPublish' );
 				if ( get_option( 'vkapi_comm_graffiti' ) ) $att .= '"graffiti';
@@ -74,6 +83,5 @@
 						<source src="http://vk.com/mp3/bb2.mp3">
 					</audio>';
 			}
-		}
 ?>
 </div>
