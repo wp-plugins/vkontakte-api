@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, comments, vkontakte, vkontakte.ru, plugin, posts, pages, share, vk.com
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 1.26
+Stable tag: 1.27
 
 Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
 
@@ -14,6 +14,8 @@ Stable tag: 1.26
 * А так же оповещение на почту о новых комментариях.
 * А так же кнопка "Мне нравится".
 * А так же кнопка "Сохранить".
+* А так же кнопка "Мне нравится" от Facebook.
+* А так же кнопка "+1" от Google.
 * А так же виджет "Сообщества".
 * А так же виджет "Популярного" по статистике кнопки "Мне нравится".
 * А так же виджет "Последнии комментарии".
@@ -65,6 +67,13 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 10. Виджеты.
 
 == Changelog ==
+
+= 1.27 =
+* Исправленние вывода шорткодов.
+* Мелкие улучшения.
+* Добавлена кнопка "Мне нравится" от Facebook.
+* Добавлена кнопка "+1" от Google.
+* Добавлен шорткод [vk_like] ( [vk_like id="123456"], где 123456 - уникальный айдишник кнопки ).
 
 = 1.24 - 1.26 =
 * Исправление исправлений. А также:
@@ -157,6 +166,13 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.27 =
+* Исправленние вывода шорткодов.
+* Мелкие улучшения.
+* Добавлена кнопка "Мне нравится" от Facebook.
+* Добавлена кнопка "+1" от Google.
+* Добавлен шорткод [vk_like] ( [vk_like id="123456"], где 123456 - уникальный айдишник кнопки ).
 
 = 1.24 - 1.26 =
 * Исправление исправлений. А также:

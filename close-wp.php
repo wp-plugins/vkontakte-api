@@ -64,7 +64,7 @@
 				if ( $vkapi_comm ) $vkapi_comm_show = ' ('.$vkapi_comm.')';
 				echo '</script>
 				<button style="display: none" id="submit" onclick="showVK()" class="vkapi_vk" vkapi_notify="'.$postid.'" vkapi_url="'.$vkapi_url.'">'.$vkapi_button.$vkapi_comm_show.'</button>
-				<div id="vkapi" onclick="showNotification()"></div>
+				<div id="vkapi" style="margin:auto" onclick="showNotification()"></div>
 				<script type="text/javascript">
 					VK.Widgets.Comments(\'vkapi\', {width: '.get_option('vkapi_comm_width').', limit: '.get_option('vkapi_comm_limit').', attach: '.$att.', autoPublish: '.$att2.', height: '.get_option('vkapi_comm_height').', mini:1},'.$postid.');
 				</script>';

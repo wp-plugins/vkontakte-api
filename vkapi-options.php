@@ -7,11 +7,11 @@
 <?php wp_nonce_field( 'update-options' ); ?>
 
 <table class="form-table">
-	<span class="description"><?php _e("If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href='http://vkontakte.ru/apps.php?act=add&site=1'>link</a> and register your site(blog). It's easy.", self::$plugin_domain); ?></span><br />
-	<span class="description"><?php _e("If don't remember : go this <a href='http://vkontakte.ru/apps?act=settings'>link</a> and choose need application.", self::$plugin_domain); ?></span>
+	<span class="description"><?php _e("If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href='http://vkontakte.ru/apps.php?act=add&site=1' target='_blank'>link</a> and register your site(blog). It's easy.", self::$plugin_domain); ?></span><br />
+	<span class="description"><?php _e("If don't remember : go this <a href='http://vkontakte.ru/apps?act=settings' target='_blank'>link</a> and choose need application.", self::$plugin_domain); ?></span><br />
 	<tr valign="top">
-		<th scope="row"><label for="vkapi_appId"><?php _e('Application ID:', self::$plugin_domain); ?></label></th>
-		<td><input type="text" name="vkapi_appId" value="<?php echo get_option('vkapi_appid'); ?>" /></td>
+		<th scope="row"><label for="vkapi_appid"><?php _e('Application ID:', self::$plugin_domain); ?></label></th>
+		<td><input type="text" name="vkapi_appid" value="<?php echo get_option('vkapi_appid'); ?>" /></td>
 	</tr>
 	
 	<tr valign="top">
@@ -72,7 +72,7 @@
 			<option value="false"<?php selected( $like, 'false' ); ?>><?php _e('Disable', self::$plugin_domain); ?></option>
 		</select></td>
 	</tr>
-						<!-- Like -->
+						<!-- VK Like -->
 	<tr valign="top">
 		<td class="section-title" colspan="6"><h3><?php _e('Like button: ', self::$plugin_domain); $like = get_option( 'vkapi_show_like' ); ?></h3></td>
 	</tr>
@@ -118,7 +118,7 @@
 			<input type="checkbox" name="vkapi_like_cat" value="1" <?php echo get_option( 'vkapi_like_cat' )?'checked':'';?> />
         </td>
 	</tr>
-						<!-- Share -->
+						<!-- VK Share -->
 	<tr valign="top">
 		<td class="section-title" colspan="6"><h3><?php _e('Share button: ', self::$plugin_domain); $like = get_option( 'vkapi_show_share' ); ?></h3></td>
 	</tr>
@@ -149,6 +149,47 @@
 			<input type="checkbox" name="vkapi_share_cat" value="1" <?php echo get_option( 'vkapi_share_cat' )?'checked':'';?> />
         </td>
 	</tr>
+						<!-- FB Like -->
+	<tr valign="top">
+		<td class="section-title" colspan="6"><h3><?php _e('Facebook Like button: ', self::$plugin_domain); $like = get_option( 'fbapi_show_like' ); ?></h3></td>
+	</tr>
+	<tr valign="top">
+		<td colspan="3">
+			<span class="description"><?php _e("Facebook <b>App ID</b> : go this <a href='https://developers.facebook.com/apps'>link</a> and register your site(blog). It's easy.", self::$plugin_domain); ?></span><br />
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="fbapi_appid"><?php _e('Facebook App ID:', self::$plugin_domain); ?></label></th>
+		<td><input type="text" name="fbapi_appid" value="<?php echo get_option('fbapi_appid'); ?>" /></td>
+	</tr>
+	<tr valign="top">
+		<td><select name="fbapi_show_like" id="fbapi_show_like" class="widefat">
+			<option value="true"<?php selected( $like, 'true' ); ?>><?php _e('Show', self::$plugin_domain); ?></option>
+			<option value="false"<?php selected( $like, 'false' ); ?>><?php _e('Dont show', self::$plugin_domain); ?></option>
+		</select></td>
+	</tr>
+	<tr valign="top">
+	    <th scope="row"><label for="fbapi_like_cat"><?php _e('Show in Categories page and Home:', self::$plugin_domain); ?></label></th>
+        <td colspan="2">
+			<input type="checkbox" name="fbapi_like_cat" value="1" <?php echo get_option( 'fbapi_like_cat' )?'checked':'';?> />
+        </td>
+	</tr>
+						<!-- PlusOne -->
+	<tr valign="top">
+		<td class="section-title" colspan="6"><h3><?php _e('PlusOne button: ', self::$plugin_domain); $like = get_option( 'gpapi_show_like' ); ?></h3></td>
+	</tr>
+	<tr valign="top">
+		<td><select name="gpapi_show_like" id="gpapi_show_like" class="widefat">
+			<option value="true"<?php selected( $like, 'true' ); ?>><?php _e('Show', self::$plugin_domain); ?></option>
+			<option value="false"<?php selected( $like, 'false' ); ?>><?php _e('Dont show', self::$plugin_domain); ?></option>
+		</select></td>
+	</tr>
+	<tr valign="top">
+	    <th scope="row"><label for="gpapi_like_cat"><?php _e('Show in Categories page and Home:', self::$plugin_domain); ?></label></th>
+        <td colspan="2">
+			<input type="checkbox" name="gpapi_like_cat" value="1" <?php echo get_option( 'gpapi_like_cat' )?'checked':'';?> />
+        </td>
+	</tr>
 						<!-- Decor -->
 	<tr valign="top">
 		<td class="section-title" colspan="6"><h3><?php _e('Decorations: ', self::$plugin_domain); ?></h3></td></tr>
@@ -174,23 +215,52 @@
 						<!-- Donate -->	
 	<tr valign="top">
 	<td colspan="6">
-		<br /><br /><br />
-		<div class="info">
-		<span class="description"><?php _e('Support project (I need some eating...)', self::$plugin_domain) ?></span>
-		<p><img class="webmoney" /><a href="wmk:payto?Purse=R771756795015&Amount=30&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y"><?php _e('Donate Webmoney(R)', self::$plugin_domain) ?></a></p>
-		<p><img class="webmoney" /><a href="wmk:payto?Purse=Z163761330315&Amount=3&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y"><?php _e('Donate Webmoney(Z)', self::$plugin_domain) ?></a></p>
-		<p><img class="webmoney" /><a href="wmk:payto?Purse=U247198770431&Amount=15&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y"><?php _e('Donate Webmoney(U)', self::$plugin_domain) ?></a></p>
-		<p>Yandex-Money -> <b>410011126761075</b></p>
-		<span class="description"><?php _e('Thanks...', self::$plugin_domain) ?></span>
+		<div class="infofooter">
+			<div class="info">
+				<span class="description"><?php _e('Support project (I need some eating...)', self::$plugin_domain) ?></span>
+				<p><img class="webmoney" /><a href="wmk:payto?Purse=R771756795015&Amount=30&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y"><?php _e('Donate Webmoney(R)', self::$plugin_domain) ?></a></p>
+				<p><img class="webmoney" /><a href="wmk:payto?Purse=Z163761330315&Amount=3&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y"><?php _e('Donate Webmoney(Z)', self::$plugin_domain) ?></a></p>
+				<p><img class="webmoney" /><a href="wmk:payto?Purse=U247198770431&Amount=15&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y"><?php _e('Donate Webmoney(U)', self::$plugin_domain) ?></a></p>
+				<p><img class="yamoney" />Yandex-Money -> <b>410011126761075</b></p>
+				<span class="description"><?php _e('Thanks...', self::$plugin_domain) ?></span>
+			</div>
+			<div class="kowack">
+				<img src="https://ru.gravatar.com/userimage/19535946/ecd85e6141b40491d15f571e52c1cb77.jpeg" style="float:left"/>
+				<p><span class="description">Разработчик:</span></p>	
+				<p><span class="description"><a href="http://www.kowack.info/" target="_blank">Забродский Евгений (kowack).</a></span></p>		
+			</div>
+			<div class="sponsor">
+				<img src="http://carabela.ru/carab.png" style="float:left"/>
+				<p><span class="description">Неофициальный спонсор:</span></p>	
+				<p><span class="description"><a href="http://carabela.ru/" target="_blank">"Пресс-центр и парусная флотилия "отряд "Каравелла" г. Екатеринбург.</a></span></p>		
+			</div>
 		</div>
 	</td>
 	</tr>
+	<script>
+		jQuery('div.kowack').hover(
+			function(){
+				jQuery(this).stop().fadeTo('fast', 1);
+			},
+			function(){
+				jQuery(this).stop().fadeTo('slow', .2);
+			}
+		);
+		jQuery('div.sponsor').hover(
+			function(){
+				jQuery(this).stop().fadeTo('fast', 1);
+			},
+			function(){
+				jQuery(this).stop().fadeTo('slow', .2);
+			}
+		);
+	</script>
 	
 </table>
 
 <p class="submit">
 <input type="hidden" name="action" value="update" />
-<input type="hidden" name="page_options" value="vkapi_appId,vkapi_comm_width,vkapi_comm_limit,vkapi_comm_graffiti,vkapi_comm_photo,vkapi_comm_audio,vkapi_comm_video,vkapi_comm_link,vkapi_comm_autoPublish,vkapi_comm_height,vkapi_comm_show,,vkapi_align,vkapi_like_type,vkapi_like_verb,vkapi_show_like,vkapi_show_comm,vkapi_some_logo,vkapi_some_logo_e,vkapi_some_desktop,vkapi_some_autosave_d,vkapi_like_cat,vkapi_close_wp,vkapi_some_revision_d,vkapi_api_secret,vkapi_like_bottom,vkapi_login,vkapi_show_share,vkapi_share_cat,vkapi_share_type,vkapi_share_text" />
+<input type="hidden" name="page_options" value="vkapi_appid,vkapi_comm_width,vkapi_comm_limit,vkapi_comm_graffiti,vkapi_comm_photo,vkapi_comm_audio,vkapi_comm_video,vkapi_comm_link,vkapi_comm_autoPublish,vkapi_comm_height,vkapi_comm_show,,vkapi_align,vkapi_like_type,vkapi_like_verb,vkapi_show_like,vkapi_show_comm,vkapi_some_logo,vkapi_some_logo_e,vkapi_some_desktop,vkapi_some_autosave_d,vkapi_like_cat,vkapi_close_wp,vkapi_some_revision_d,vkapi_api_secret,vkapi_like_bottom,vkapi_login,vkapi_show_share,vkapi_share_cat,vkapi_share_type,vkapi_share_text,fbapi_appid,fbapi_show_like,fbapi_like_cat,gpapi_show_like,gpapi_like_cat" />
 <input type="submit" class="button-primary" value="<?php _e('Save Changes', self::$plugin_domain) ?>" />
 </p>
 
