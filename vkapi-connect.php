@@ -1,7 +1,6 @@
-﻿<?php 	
-	
+<?php
 	//header('HTTP/1.1 200 OK');
-	// Include WordPress 
+	// Include WordPress
 			//define('WP_USE_THEMES', false);
 			require_once('../../../wp-load.php');
 			status_header(200);
@@ -18,14 +17,14 @@
 				list($key, $value) = explode('=', $pair, 2);
 				if (empty($key) || empty($value) || !in_array($key, $valid_keys)) {
 					continue;
-				}	
+				}
 				$session[$key] = $value;
 			}
 			foreach ($valid_keys as $key) {
 				if (!isset($session[$key])) return $member;
 			}
 			ksort($session);
-		
+
 			$sign = '';
 			foreach ($session as $key => $value) {
 				if ($key != 'sig') {
@@ -53,7 +52,7 @@
 		curl_close( $ch ); // close, free memory
 		return $request_result; // profit
 	}
-	
+
 	function params($params) {
 		$pice = array();
 		foreach($params as $k=>$v) {
@@ -61,7 +60,7 @@
 		}
 		return implode('&',$pice);
 	}
-	
+
 	function get_VkMethod ( $method_name, $parameters = array() ) {
 		ksort( $parameters );
 		$parameters = params( $parameters );
@@ -71,31 +70,31 @@
 		$data = json_decode ( $result, TRUE );
 		return $data["response"];
 	}
-	
+
 	define ( 'VKAPI_AT', 'https://api.vkontakte.ru/oauth/access_token') ;
 	define ( 'VKAPI_M', 'https://api.vkontakte.ru/method/' );
-	
+
 	main();
 	function main () {
-		
+
 		$member = authOpenAPIMember();
 
 		if( $member == FALSE ) {
 			echo 'sign not true';
 			exit;
 		}
-		
+
 		if ( isset( $_POST['mid'] ) ) {
 			global $wpdb;
 			global $get_id;
 			$post_mid = $_POST['mid'];
-			$get_id = $wpdb->get_var( $wpdb->prepare( 
+			$get_id = $wpdb->get_var( $wpdb->prepare(
 				"
-					SELECT `user_id` 
+					SELECT `user_id`
 					FROM $wpdb->usermeta
 					WHERE `meta_key` = 'vkapi_uid'
 					AND `meta_value` = %s
-				", 
+				",
 				$post_mid
 				) );
 			if ( $get_id != NULL ) {
@@ -152,4 +151,3 @@
 			};
 		};
 	};
-?>
