@@ -8,14 +8,14 @@
 
 <table class="form-table">
 	<span class="description">
-		<?php _e("If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href='http://vk.com/apps.php?act=add&site=1' target='_blank'>link</a> and register your site(blog). It's easy.", self::$plugin_domain); ?>
+		<?php _e("If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href='http://vk.com/editapp?act=create' target='_blank'>link</a> and select `Web-site`. It's easy.", self::$plugin_domain); ?>
 	</span>
 		<br />
 	<span class="description">
 		<?php _e("If don't remember : go this <a href='http://vk.com/apps?act=settings' target='_blank'>link</a> and choose need application.", self::$plugin_domain); ?>
 	</span>
 		<br />
-	
+
 	<tr valign="top">
 		<th scope="row"><label for="vkapi_appid"><?php _e('Application ID:', self::$plugin_domain); ?></label></th>
 		<td><input type="text" name="vkapi_appid" value="<?php echo get_option('vkapi_appid'); ?>" /></td>
@@ -291,7 +291,13 @@
 	<tr valign="top">
 		<th scope="row"><label for="vkapi_some_desktop"><?php _e('Desktop notifications:', self::$plugin_domain); ?></label></th>
 		<td><input type="checkbox" name="vkapi_some_desktop" value="1" <?php echo get_option('vkapi_some_desktop')?'checked':'';?> /></td></tr>
-						<!-- Non plagin -->
+						<!-- Cross Post --> <?php /*
+	<tr valign="top">
+		<td class="section-title" colspan="6"><h3><?php _e('Cross-Post: ', self::$plugin_domain); ?></h3></td></tr>
+	<tr valign="top">
+		<th scope="row"><label for="vkapi_vk_group"><?php _e('VK group id:', self::$plugin_domain); ?></label></th>
+		<td><input type="text" name="vkapi_vk_group" value="<?php echo get_option('vkapi_vk_group'); ?>" /></td>
+				*/ ?>	<!-- Non plagin -->
 	<tr valign="top">
 		<td class="section-title" colspan="6"><h3><?php _e('No Plugin Options: ', self::$plugin_domain); ?></h3></td></tr>
 	<tr valign="top">

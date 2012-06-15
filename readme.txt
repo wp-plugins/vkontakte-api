@@ -1,26 +1,28 @@
-=== Vkontakte API ===
+=== VKontakte API ===
 Contributors: kowack
 Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, comment, comments, vkontakte, vkontakte.ru, plugin, posts, pages, share, vk.com
 Requires at least: 3.3
-Tested up to: 3.3
-Stable tag: 1.27
+Tested up to: 3.4
+Stable tag: 2.0
 
 Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
 
 == Description ==
 
-* На данный момент реализовано комментирование.
+* Реализовано комментирование:
+1. ВКонтакте.
+1. FaceBook.
 * А так же оповещение на почту о новых комментариях.
-* А так же кнопка "Мне нравится".
-* А так же кнопка "Сохранить".
-* А так же кнопка "Мне нравится" от Facebook.
+* А так же кнопка "Мне нравится" от ВК.
+* А так же кнопка "Сохранить" от ВК.
+* А так же кнопка "Мне нравится" от FB.
 * А так же кнопка "+1" от Google.
-* А так же виджет "Сообщества".
-* А так же виджет "Популярного" по статистике кнопки "Мне нравится".
-* А так же виджет "Последнии комментарии".
-* А так же виджет "Вход\регистрация".
-* А так же вход\регистрация и привязка аккаунта Вконтакте.
+* А так же виджет "Сообщества" от ВК и FB.
+* А так же виджет "Популярного" по статистике кнопки "Мне нравится" от ВК.
+* А так же виджет "Последнии комментарии" от ВК.
+* А так же виджет "Вход\регистрация" от ВК.
+* А так же вход\регистрация и привязка аккаунта ВКонтакте.
 * А так же облако тегов ( многие плагины облака тегов не поддерживают версию WordPress-a 3.3 ).
 * Для переводчиков: поддерживает перевод.
 * Требуеться актуальная версия PHP (>= 5.2.3)
@@ -29,7 +31,7 @@ Stable tag: 1.27
 == Installation ==
 
 1. Upload `/wp-content/plugins/` directory.
-2. Activate the plugin through the 'Plugins' menu in WordPress.
+1. Activate the plugin through the 'Plugins' menu in WordPress.
 
 == Frequently Asked Questions ==
 
@@ -41,7 +43,7 @@ Stable tag: 1.27
 
 = Плагин бесплатный ? =
 
-Да, плагин абсолютно бесплатен, без какой либо рекламы. На веки вечные. 
+Да, плагин абсолютно бесплатен, без какой либо рекламы. На веки вечные.
 
 = Configure plugin =
 
@@ -51,7 +53,7 @@ If not - click on this [http://vk.com/apps.php?act=add&site=1](http://vk.com/app
 
 = Plugin is free? =
 
-Yes, the plugin is completely free, without any advertising. Forever. And forever.
+Yes, the plugin is completely free, without any advertising. Forever. And ever.
 
 == Screenshots ==
 
@@ -67,6 +69,11 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 10. Виджеты.
 
 == Changelog ==
+
+= 2.0 =
+* Комментарии от FB.
+* Виджет "Сообщества" FB.
+* Социальные кнопки: Mail.ru, Однолассники, Twetter, Яндекс.
 
 = 1.27 =
 * Исправленние вывода шорткодов.
@@ -102,7 +109,7 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 = 1.18 =
 * Мелкое исправление редиректа при входе на сайт через ВК.
 * Опцию включения/отключения входа через ВК.
-* Так же по просьбам кнопка "Сохранить" ( Share ). 
+* Так же по просьбам кнопка "Сохранить" ( Share ).
 * Виджет "Последние комментарии Вконтакте".
 
 = 1.17 =
@@ -146,17 +153,17 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 = 1.5 =
 * Fix "closed" commenting on page plus decorations.
 
-= 1.4.1 = 
+= 1.4.1 =
 * Translate fix.
 
-= 1.4 = 
+= 1.4 =
 * Fix something and add somethis options ^^.
 
-= 1.3 = 
+= 1.3 =
 * Add "I like" button.
 * Add Widgets "Groups" and "More popular of 'I like' button statistics"
 
-= 1.2 = 
+= 1.2 =
 * Fix jQuery.
 
 = 1.0 =
@@ -166,6 +173,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 2.0 =
+FaceBook, cоциальные кнопки: Mail.ru, Однолассники, Twitter, Яндекс.
 
 = 1.27 =
 * Исправленние вывода шорткодов.
@@ -201,7 +211,7 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 = 1.18 =
 * Мелкое исправление редиректа при входе на сайт через ВК.
 * Опцию включения/отключения входа через ВК.
-* Так же по просьбам кнопка "Сохранить" ( Share ). 
+* Так же по просьбам кнопка "Сохранить" ( Share ).
 * Виджет "Последние комментарии Вконтакте".
 
 = 1.17 =
@@ -209,7 +219,7 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 
 = 1.16 =
 * Очередное улучшение производительности.
-* Виджет авторизации (бетаверсия). 
+* Виджет авторизации (бетаверсия).
 
 = 1.15 =
 * Вывод количества комментриев вконтакта.
@@ -257,14 +267,14 @@ Yes, the plugin is completely free, without any advertising. Forever. And foreve
 * Чучуть подправил и прибавил пару опций.
 
 = 1.3 =
-* Добавлена кнопка "Мне нравиться". 
+* Добавлена кнопка "Мне нравиться".
 * Добавлены 2 виджета: первый показывает вашу группу вконтакте (название, участники, новости), второй - самое популярное исходя из статистики кнопки "Мне нравиться".
 
-= 1.2 = 
+= 1.2 =
 * Fix jQuery.
 
-= 1.0 = 
+= 1.0 =
 * Stable.
 
-= 0.9 = 
+= 0.9 =
 * Firts release.

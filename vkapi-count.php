@@ -24,6 +24,6 @@
 			foreach ($resp as $key => $value) {
 				$num = $value['comments'];
 			};
-			update_post_meta($post_id, 'fbapi_comm', $num, FALSE);	
+			update_post_meta($post_id, 'fbapi_comm', $num, FALSE);
 		};
 	}

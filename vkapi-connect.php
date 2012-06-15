@@ -1,7 +1,7 @@
 <?php
 	//header('HTTP/1.1 200 OK');
 	// Include WordPress
-			//define('WP_USE_THEMES', false);
+			define('WP_USE_THEMES', false);
 			require_once('../../../wp-load.php');
 			status_header(200);
 			nocache_headers();
@@ -71,8 +71,8 @@
 		return $data["response"];
 	}
 
-	define ( 'VKAPI_AT', 'https://api.vkontakte.ru/oauth/access_token') ;
-	define ( 'VKAPI_M', 'https://api.vkontakte.ru/method/' );
+	define ( 'VKAPI_AT', 'https://api.vk.com/oauth/access_token') ;
+	define ( 'VKAPI_M', 'https://api.vk.com/method/' );
 
 	main();
 	function main () {
