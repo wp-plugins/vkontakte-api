@@ -1,18 +1,16 @@
 === VKontakte API ===
 Contributors: kowack
 Donate link: http://www.kowack.info/projects/vk_api/
-Tags: social, comment, comments, vkontakte, vkontakte.ru, plugin, posts, pages, share, vk.com
+Tags: social, comment, comments, VKontakte, VKontakte.ru, plugin, posts, pages, share, vk.com
 Requires at least: 3.3
 Tested up to: 3.4
 Stable tag: 2.0
 
-Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты
+Добавляет функционал API сайта VKontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...
 
 == Description ==
 
-* Реализовано комментирование:
-1. ВКонтакте.
-1. FaceBook.
+* Реализовано комментирование: ВКонтакте, FaceBook.
 * А так же оповещение на почту о новых комментариях.
 * А так же кнопка "Мне нравится" от ВК.
 * А так же кнопка "Сохранить" от ВК.
@@ -57,14 +55,14 @@ Yes, the plugin is completely free, without any advertising. Forever. And ever.
 
 == Screenshots ==
 
-1. Комментарии Vkontakte.
+1. Комментарии VKontakte.
 2. Комментарии WordPress.
 3. Анимация переключения.
 4. Настройки записи.
-5. Привязка аккаунта Vkontakte.
-6. Отсоединение аккаунта Vkontakte.
+5. Привязка аккаунта VKontakte.
+6. Отсоединение аккаунта VKontakte.
 7. Страница настроек.
-8. Кнопка входа через Vkontakte.
+8. Кнопка входа через VKontakte.
 9. Виджеты.
 10. Виджеты.
 
