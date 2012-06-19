@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 2.3
+Version: 2.4
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -951,7 +951,6 @@ class VK_api {
 	##### start meta_box
 	function save_postdata( $post_id ) {
 		// check
-		print_r($_REQUEST);
 		if ( isset($_REQUEST['vkapi_noncename']) ) {
 			if ( !wp_verify_nonce( $_REQUEST['vkapi_noncename'], plugin_basename(__FILE__) ))
 				return $post_id;
