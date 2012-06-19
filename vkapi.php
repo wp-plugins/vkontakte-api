@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 2.1
+Version: 2.2
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -969,15 +969,16 @@ class VK_api {
 			// do submit box
 			if ( $_REQUEST['vkapi_crosspost_submit'] == '1' ) {
 				global $post;
-				$vk_group = get_option('vkapi_vk_group');
 				$vk_at = get_option('vkapi_at');
+				if ( empty($vk_at) ) return true;
+				$vk_group = get_option('vkapi_vk_group');
 				$vkapi_text = do_shortcode($post->post_content);
 				$image_url = self::first_postimage($vkapi_text);
 				if ( $image_url )
 					$att[] = self::vk_upload_photo( $vk_at, $vk_group, $post->ID );
 				$vkapi_text = strip_tags( $vkapi_text );
-				$vkapi_text = str_replace( array("\r\n", "\n", "\r") , '<br />', $vkapi_text );
 				$vkapi_text = addslashes ( $vkapi_text );
+				$vkapi_text = str_replace( array("\r\n", "\n", "\r") , ' ', $vkapi_text );
 				$vkapi_text = substr( $vkapi_text, 0, 999 );
 				$att[] = get_permalink();
 				$att = implode(',',$att);
@@ -991,20 +992,20 @@ class VK_api {
 				);
 				$query = http_build_query($params);
 				$data = wp_remote_get(self::$vkapi_m.'wall.post?'.$query);
-				ob_start();
+				//ob_start();
+				//echo $att."\n";
 				if (is_wp_error($data))
 					echo $data->get_error_message();
 				$resp = json_decode($data['body'],true);
 				print_r($resp);
-				if ($resp['error'])
+				if ( isset($resp['error']) )
 					echo $resp['error']['error_code'] . ': ' . $resp['error']['error_msg'];
-				if ( $resp['response']['processing'] )
+				if ( isset($resp['response']['processing']) )
 					echo 'processing';
-				if ( $resp['response']['post_id'] )
+				if ( isset($resp['response']['post_id']) )
 					echo 'posted';
-				wp_mail('kowack@gmail.com',(string)rand.rand(),ob_get_clean());
-				add_action ( 'admin_notices',
-				create_function( '',"echo '<div class=\"notice\"><p>Cross-Post Finish :)</p></div>';" ) );
+				//wp_mail('kowack@gmail.com',(string)'rand'.rand(),ob_get_clean());
+				add_action ( 'admin_notices', create_function( '','echo \'<div class="updated"><p>Cross-Post Finish :)</p></div>\';' ) );
 				return true;
 			}
 		};
@@ -1504,9 +1505,9 @@ class VK_api {
 		if (!$resp['response'])
 			echo '!$resp[\'response\']';
 		// Return
-		//print_r($resp);
-		//wp_mail('','rand'.rand(),ob_get_clean());
-		return $resp['response']['id'];
+		//$temp = print_r($resp['response'], true);
+		//wp_mail('kowack@gmail.com','rand'.rand(),$temp);
+		return $resp['response']['0']['id'];
 	}
 	# end crosspost
 }
@@ -1738,6 +1739,7 @@ class VKAPI_Login extends WP_Widget {
 			#login_button td, #login_button tr {
 				padding:0px !important;
 				margin:0px !important;
+				vertical-align:top !important; 
 			}
 		</style>
 		<script language="javascript">

@@ -304,7 +304,7 @@
 	<tr valign="top">
 		<th scope="row" colspan="2">
 			<label id="vk_at" for="vkapi_at">
-				<?php _e('Access Token(click me) а затем выреж из адресной строки ACCESS_TOKEN:', self::$plugin_domain) ?>
+				<?php _e('Access Token(click me)<br />А затем вырежьте адресную строку(целиком) и вставьте в это поле:', self::$plugin_domain) ?>
 			</label>
 		</th>
 		<td colspan="4">
@@ -404,8 +404,7 @@
 			}
 			
 			function myBubenFunc2() {
-				alert($('#vk_at_input').val().substring(4));
-				if ( $('#vk_at_input').val().substring(4) == 'http' ) {
+				if ( $('#vk_at_input').val().substring(0,4) == 'http' ) {
 					var parts = $('#vk_at_input').val().substr(31).split("&");
 					var $_GET = {};
 					for (var i = 0; i < parts.length; i++) {
