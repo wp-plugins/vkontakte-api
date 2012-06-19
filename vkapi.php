@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 2.2
+Version: 2.3
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -973,9 +973,23 @@ class VK_api {
 				if ( empty($vk_at) ) return true;
 				$vk_group = get_option('vkapi_vk_group');
 				$vkapi_text = do_shortcode($post->post_content);
-				$image_url = self::first_postimage($vkapi_text);
+				// get image path
+				$images = get_children( array(
+						'post_parent'    => $post_id,
+						'post_type'      => 'attachment',
+						'numberposts'    => 1, // show all -1
+						'post_status'    => 'inherit',
+						'post_mime_type' => 'image',
+						'order'          => 'ASC',
+						'orderby'        => 'menu_order id'
+						) );
+				foreach($images as $image) {
+					$attachment_id = $image->ID;
+				}
+				$image_url = get_attached_file($attachment_id);
+				//
 				if ( $image_url )
-					$att[] = self::vk_upload_photo( $vk_at, $vk_group, $post->ID );
+					$att[] = self::vk_upload_photo( $vk_at, $vk_group, $image_url );
 				$vkapi_text = strip_tags( $vkapi_text );
 				$vkapi_text = addslashes ( $vkapi_text );
 				$vkapi_text = str_replace( array("\r\n", "\n", "\r") , ' ', $vkapi_text );
@@ -992,20 +1006,16 @@ class VK_api {
 				);
 				$query = http_build_query($params);
 				$data = wp_remote_get(self::$vkapi_m.'wall.post?'.$query);
-				//ob_start();
-				//echo $att."\n";
 				if (is_wp_error($data))
-					echo $data->get_error_message();
+					$echo = $data->get_error_message();
 				$resp = json_decode($data['body'],true);
-				print_r($resp);
 				if ( isset($resp['error']) )
-					echo $resp['error']['error_code'] . ': ' . $resp['error']['error_msg'];
+					$echo = $resp['error']['error_code'] . ': ' . $resp['error']['error_msg'];
 				if ( isset($resp['response']['processing']) )
-					echo 'processing';
+					$echo = 'processing';
 				if ( isset($resp['response']['post_id']) )
-					echo 'posted';
-				//wp_mail('kowack@gmail.com',(string)'rand'.rand(),ob_get_clean());
-				add_action ( 'admin_notices', create_function( '','echo \'<div class="updated"><p>Cross-Post Finish :)</p></div>\';' ) );
+					$echo = 'posted';
+				add_action ( 'admin_notices', create_function( '','echo \'<div class="updated"><p>Cross-Post: '.$echo.'</p></div>\';' ) );
 				return true;
 			}
 		};
@@ -1069,7 +1079,7 @@ class VK_api {
 			if (empty($conn)) {
 		?>
 				<td>
-					<div id="vkapi_login_button" style="padding:0px;border:0px" onclick="VK.Auth.login(onSignonProfile)"></div>
+					<div id="vkapi_login_button" style="padding:0px;border:0px" onclick="VK.Auth.login(onSignonProfile)">ВойтиВКонтакте</div>
 					<div id="vkapi_status"></div>
 			<style type="text/css">
 				.form-table td #vkapi_login_button td {
@@ -1217,9 +1227,9 @@ class VK_api {
 			echo '
 			<button style="display: none" class="vkapi_vk_widget" vkapi_url="'.$vkapi_url.'"></button>
 			<div id="vkapi_status"></div>
-			<div id="login_button" onclick="VK.Auth.getLoginStatus(onSignon)"></div>
+			<div id="login_button" onclick="VK.Auth.getLoginStatus(onSignon)">ВойтиВКонтакте</div>
 			<script language="text/javascript">
-				VK.UI.button(\'login_button\');
+				VK.UI.button("login_button");
 			</script>
 			<div style="display:none" id="vk_auth"></div>
 			<script type="text/javascript">
@@ -1442,24 +1452,7 @@ class VK_api {
 		</div><?php
 	}
 
-	function vk_upload_photo( $vk_at, $vk_group, $postid) {
-		//ob_start();
-		$images = get_children( array(
-                'post_parent'    => $postid,
-                'post_type'      => 'attachment',
-                'numberposts'    => 1, // show all -1
-                'post_status'    => 'inherit',
-                'post_mime_type' => 'image',
-                'order'          => 'ASC',
-                'orderby'        => 'menu_order id'
-                ) );
-		//print_r($images);
-		foreach($images as $image) {
-			$attachment_id = $image->ID;
-		}
-		//$attachment_id = $images[0]->ID;
-		$image_url = get_attached_file($attachment_id);
-		//echo $image_url."\n";
+	function vk_upload_photo( $vk_at, $vk_group, $image_url ) {
 		// Get Wall Upload Server
 		$params = array(
 			'access_token' => $vk_at,
@@ -1467,12 +1460,15 @@ class VK_api {
 		);
 		$query = http_build_query($params);
 		$data = wp_remote_get(self::$vkapi_m.'photos.getWallUploadServer?'.$query);
-		if (is_wp_error($data))
-			echo $data->get_error_message();
+		if (is_wp_error($data)) {
+			$echo = $data->get_error_message();
+			return false;
+		};
 		$resp = json_decode($data['body'],true);
-		//print_r($resp);
-		if (!$resp['response']['upload_url'])
-			echo '!$resp[\'response\'][\'upload_url\']';
+		if (!$resp['response']['upload_url']) {
+			$echo = '!$resp[\'response\'][\'upload_url\']';
+			return false;
+		};
 		// Upload photo to server
 		$curl = new Wp_Http_Curl();
 		$body = array(
@@ -1482,12 +1478,13 @@ class VK_api {
 			'body' => $body,
 			'method' => 'POST'
 		));
-		if (is_wp_error($data))
-			echo $data->get_error_message();
+		if (is_wp_error($data)) {
+			$echo = $data->get_error_message();
+			return false;
+		};
 		$resp = json_decode($data['body'],true);
-		//print_r($resp);
 		if (empty($resp['photo']))
-			echo 'empty($resp[\'photo\'])';
+			$echo = 'empty($resp[\'photo\'])';
 		// Save Wall Photo
 		$params = array(
 			'access_token' => $vk_at,
@@ -1498,15 +1495,14 @@ class VK_api {
 		);
 		$query = http_build_query($params);
 		$data = wp_remote_get(self::$vkapi_m.'photos.saveWallPhoto?'.$query);
-		if (is_wp_error($data))
-			echo $data->get_error_message();
+		if (is_wp_error($data)) {
+			$echo = $data->get_error_message();
+			return false;
+		};
 		$resp = json_decode($data['body'],true);
-		//print_r($resp);
 		if (!$resp['response'])
-			echo '!$resp[\'response\']';
+			$echo = '!$resp[\'response\']';
 		// Return
-		//$temp = print_r($resp['response'], true);
-		//wp_mail('kowack@gmail.com','rand'.rand(),$temp);
 		return $resp['response']['0']['id'];
 	}
 	# end crosspost
@@ -1525,11 +1521,11 @@ else :
 endif;
 
 global $wp_version;
-if ( version_compare( $wp_version, "3.3", "<" ) ) {
+if ( version_compare( $wp_version, "3.4", "<" ) ) {
 	function vkapi_notice_update() {
 		echo '
 		<div class="error">
-		<p>VKontakte API plugin requires Wordpress 3.3 or newer. <a href="'.bloginfo('url').'wp-admin/update-core.php'.'">Please update!</a></p>
+		<p>VKontakte API plugin requires Wordpress 3.4 or newer. <a href="'.bloginfo('url').'wp-admin/update-core.php'.'">Please update!</a></p>
 		<p>Plugin not activated!</p>
 		</div>
 		';
@@ -1734,16 +1730,16 @@ class VKAPI_Login extends WP_Widget {
 		echo wp_register( '','',home_url($_SERVER['REQUEST_URI']) );
 		echo '<br /><br />
 		<div id="vkapi_status"></div>
-		<div id="login_button" style="padding:0px;border:0px;width:125px;" onclick="VK.Auth.getLoginStatus(onSignon)"></div>
+		<div id="login_button" style="padding:0px;border:0px;width:125px;" onclick="VK.Auth.getLoginStatus(onSignon)">ВойтиВКонтакте</div>
 		<style type="text/css">
 			#login_button td, #login_button tr {
 				padding:0px !important;
 				margin:0px !important;
-				vertical-align:top !important; 
+				vertical-align:top !important;
 			}
 		</style>
 		<script language="javascript">
-			VK.UI.button(\'login_button\');
+			VK.UI.button("login_button");
 		</script>
 		<div style="display:none" id="vk_auth"></div>
 			<script type="text/javascript">
