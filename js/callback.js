@@ -5,9 +5,9 @@ function showVK(Tshow, Thide){
 	if ( !Tshow ) Tshow = 1000;
 	if ( !Thide ) Thide = 1500;
 	jQuery("#vkapi").show(Tshow);
-	jQuery(".fb-comments").hide(Tshow);
-	jQuery("#comments").hide(Tshow);
-	jQuery("#respond").hide(Tshow);
+	jQuery(".fb-comments").hide(Thide);
+	jQuery("#comments").hide(Thide);
+	jQuery("#respond").hide(Thide);
 };
 function showFB(Tshow, Thide){
 	if ( !Tshow ) Tshow = 1000;
@@ -45,7 +45,7 @@ function vkapi_comm_plus(id,num,last_comment,datee,sign) {
 			};
 		};
 		var wpurl = jQuery("#vkapi_wrapper").attr("vkapi_url");
-		jQuery.post(wpurl+'/wp-content/plugins/vkontakte-api/vkapi-mail.php', vkdata, function(e) {alert(e)});
+		jQuery.post(wpurl+'/wp-content/plugins/vkontakte-api/vkapi-mail.php', vkdata, function() {});
 	});
 };
 

@@ -23,7 +23,7 @@
 
 	<tr valign="top">
 		<th scope="row"><label for="vkapi_api_secret"><?php _e('Secure key:', self::$plugin_domain); ?></label></th>
-		<td><input type="text" name="vkapi_api_secret" value="<?php echo get_option('vkapi_api_secret'); ?>" /></td>
+		<td colspan="2"><input type="text" name="vkapi_api_secret" value="<?php echo get_option('vkapi_api_secret'); ?>" /></td>
 	</tr>
 						<!-- Comments -->
 	<tr valign="top">
@@ -184,7 +184,7 @@
 	</tr>
 	<tr valign="top">
 		<th scope="row">
-			<label id ="fb_admin" for="fbapi_admin_id">
+			<label id="fb_admin" for="fbapi_admin_id">
 				<?php _e('Admin user ID(click me):', self::$plugin_domain) ?>
 			</label>
 		</th>
@@ -287,17 +287,31 @@
 	</tr>
 						<!-- Decor -->
 	<tr valign="top">
-		<td class="section-title" colspan="6"><h3><?php _e('Decorations: ', self::$plugin_domain); ?></h3></td></tr>
+		<td class="section-title" colspan="6"><h3><?php _e('Decorations: ', self::$plugin_domain); ?></h3></td>
+	</tr>
 	<tr valign="top">
 		<th scope="row"><label for="vkapi_some_desktop"><?php _e('Desktop notifications:', self::$plugin_domain); ?></label></th>
-		<td><input type="checkbox" name="vkapi_some_desktop" value="1" <?php echo get_option('vkapi_some_desktop')?'checked':'';?> /></td></tr>
-						<!-- Cross Post --> <?php /*
+		<td><input type="checkbox" name="vkapi_some_desktop" value="1" <?php echo get_option('vkapi_some_desktop')?'checked':'';?> /></td>
+	</tr>
+						<!-- Cross Post -->
 	<tr valign="top">
-		<td class="section-title" colspan="6"><h3><?php _e('Cross-Post: ', self::$plugin_domain); ?></h3></td></tr>
+		<td class="section-title" colspan="6"><h3><?php _e('Cross-Post: ', self::$plugin_domain); ?></h3></td>
+	</tr>
 	<tr valign="top">
 		<th scope="row"><label for="vkapi_vk_group"><?php _e('VK group id:', self::$plugin_domain); ?></label></th>
 		<td><input type="text" name="vkapi_vk_group" value="<?php echo get_option('vkapi_vk_group'); ?>" /></td>
-				*/ ?>	<!-- Non plagin -->
+	</tr>
+	<tr valign="top">
+		<th scope="row" colspan="2">
+			<label id="vk_at" for="vkapi_at">
+				<?php _e('Access Token(click me) а затем выреж из адресной строки ACCESS_TOKEN:', self::$plugin_domain) ?>
+			</label>
+		</th>
+		<td colspan="4">
+			<input id="vk_at_input" style="width:100%" type="text" id="vkapi_at" name="vkapi_at" value="<?php echo get_option('vkapi_at'); ?>" />
+		</td>
+	</tr>
+						<!-- Non plagin -->
 	<tr valign="top">
 		<td class="section-title" colspan="6"><h3><?php _e('No Plugin Options: ', self::$plugin_domain); ?></h3></td></tr>
 	<tr valign="top">
@@ -307,9 +321,6 @@
 	<td colspan="4">
 		<a onclick='jQuery("#defpath").val("/wp-content/plugins/vkontakte-api/images/wordpress-logo.jpg");'>default</a>
 		<br /><textarea id="defpath" rows="1" cols="65" placeholder="<?php _e('path to image...', self::$plugin_domain); ?>" name="vkapi_some_logo" ><?php echo get_option('vkapi_some_logo'); ?></textarea></td></tr>
-	<tr valign="top">
-		<th scope="row"><label for="vkapi_some_autosave_d"><?php _e('Disable Autosave Post Script:', self::$plugin_domain); ?></label></th>
-		<td><input type="checkbox" name="vkapi_some_autosave_d" value="1" <?php echo get_option('vkapi_some_autosave_d')?'checked':'';?> /></td></tr>
 	<tr valign="top">
 		<th scope="row"><label for="vkapi_some_revision_d"><?php _e('Disable Revision Post Save:', self::$plugin_domain); ?></label></th>
 		<td><input type="checkbox" name="vkapi_some_revision_d" value="1" <?php echo get_option( 'vkapi_some_revision_d' )?'checked':'';?> /></td></tr>
@@ -333,8 +344,11 @@
 			<div class="sponsor">
 				<img src="../../../../wp-content/plugins/vkontakte-api/images/SsEFVN.gif" style="float:left"/>
 				<p><span class="description">Любимый спонсор:</span></p>
-				<p><span class="description"><a href="" target="_blank">Вакантное место (:</a></span></p>
+				<p><span class="description"><a href="void(0)" target="_blank">Вакантное место (:</a></span></p>
 			</div>
+		</div>
+		<div id="vk_url" style="visibility:hidden">
+		<?php echo site_url('/wp-content/plugins/vkontakte-api/index.php'); ?>
 		</div>
 	</td>
 	</tr>
@@ -357,17 +371,77 @@
 		);
 		jQuery(function($) {
 			$('#fb_admin').click(function()
-			{
+				{
 					FB.login(function(response) {
 						$('input#fbapi_admin_id').val(response.authResponse.userID);
 					})
 				}
 			);
+			
+			$('#vk_at').click(function()
+				{
+					vk_url = $.trim( $('#vk_url').html() );
+					myBuben = window.open(	'http://oauth.vk.com/authorize?client_id=2742215&scope=messages,wall,photos,offline&redirect_uri=blank.html&display=page&response_type=token',
+						'CrossPost',
+						'');
+					setTimeout(myBubenFunc2,1000);						
+				}
+			);
+
+			function myBubenFunc() {
+				if ( myBuben.location.protocol == 'http:' || myBuben.location.protocol == 'https:' ) {
+					var parts = myBuben.location.hash.substr(1).split("&");
+					var $_GET = {};
+					for (var i = 0; i < parts.length; i++) {
+						var temp = parts[i].split("=");
+						$_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+					}
+					$('#vk_at_input').val($_GET['access_token']);
+					myBuben.close();
+				} else {
+					setTimeout(myBubenFunc,1000);
+				}
+			}
+			
+			function myBubenFunc2() {
+				alert($('#vk_at_input').val().substring(4));
+				if ( $('#vk_at_input').val().substring(4) == 'http' ) {
+					var parts = $('#vk_at_input').val().substr(31).split("&");
+					var $_GET = {};
+					for (var i = 0; i < parts.length; i++) {
+						var temp = parts[i].split("=");
+						$_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+					}
+					$('#vk_at_input').val($_GET['access_token']);
+					myBuben.close();
+				} else {
+					setTimeout(myBubenFunc2,1000);
+				}
+			}
 		});
+		
+		function print_r(arr, level) {
+			var print_red_text = "";
+			if(!level) level = 0;
+			var level_padding = "";
+			for(var j=0; j<level+1; j++) level_padding += "    ";
+			if(typeof(arr) == 'object') {
+				for(var item in arr) {
+					var value = arr[item];
+					if(typeof(value) == 'object') {
+						print_red_text += level_padding + "'" + item + "' :\n";
+						print_red_text += print_r(value,level+1);
+				} 
+					else 
+						print_red_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+				}
+			} 
+
+			else  print_red_text = "===>"+arr+"<===("+typeof(arr)+")";
+			return print_red_text;
+		}
 	</script>
-
 </table>
-
 <p class="submit">
 <input type="submit" class="button-primary" value="<?php _e('Save Changes', self::$plugin_domain) ?>" />
 </p>

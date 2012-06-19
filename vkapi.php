@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 2.0
+Version: 2.1
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -34,6 +34,7 @@ class VK_api {
 	static $vkapi_page_menu;
 	static $vkapi_page_settings;
 	static $vkapi_page_comments;
+	static $vkapi_m = 'https://api.vk.com/method/';
 
 	function __construct() {
 
@@ -62,46 +63,15 @@ class VK_api {
 			add_action( 'register_form', array( &$this, 'add_login_form' ) ); # register
 			add_action( 'wp_ajax_update_vkapi_user_meta', array( &$this, 'update_vkapi_user_meta' ) ); # update_vkapi_user_meta
 		};
-		if ( !is_admin() ) {
-			$option = get_option( 'vkapi_show_share' );
-			if ( $option == 'true' ) {
-				wp_register_script ( 'share', 'http://vk.com/js/api/share.js' );
-				wp_enqueue_script ( 'share' );
-			};
-			$option = get_option( 'gpapi_show_like' );
-			if ( $option == 'true' ) {
-				wp_register_script ( 'plusone', 'https://apis.google.com/js/plusone.js' );
-				wp_enqueue_script ( 'plusone' );
-			};
-			$option = get_option( 'fbapi_show_like' );
-			if ( $option == 'true' || get_option( 'fbapi_show_comm' ) == 'true' ) {
-				add_action ( 'wp_footer', array( &$this, 'add_footer_fb' ) );
-			};
-			$option = get_option( 'tweet_show_share' );
-			if ( $option == 'true' ) {
-				add_action ( 'wp_footer', array( &$this, 'add_footer_tw' ) );
-			};
-			$option = get_option( 'mrc_show_share' );
-			if ( $option == 'true' ) {
-				add_action ( 'wp_footer', array( &$this, 'add_footer_mrc' ) );
-			};
-			$option = get_option( 'ya_show_share' );
-			if ( $option == 'true' ) {
-				add_action ( 'wp_footer', array( &$this, 'add_footer_ya' ) );
-			};
-		};
-		add_action( 'admin_bar_menu', array( &$this, 'user_links' ) ); # admin bar
+		add_action(	'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ), 1 ); # enqueue script
+		add_action(	'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_admin' ), 1 ); # enqueue script admin
+		add_action( 'admin_bar_menu', array( &$this, 'user_links' ) ); # admin bar add
+		add_action( 'wp_before_admin_bar_render', array( &$this, 'remove_admin_bar_links' ) ); #admin bar remove
 		add_action(	'wp_head', array( &$this, 'add_after_body' ), 1, 2); # add before body
+		add_action(	'post_submitbox_misc_actions', array( &$this, 'add_post_submit' ) ); # add before post submit
 		add_filter( 'the_content', array( &$this, 'add_buttons' ), 88 ); # buttons
-		add_filter( 'contextual_help', array( &$this, 'vkapi_contextual_help' ), 1, 3 ); # help
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'own_actions_links' ) ); # plugin links
 		add_filter( 'plugin_row_meta', array( &$this, 'plugin_meta' ), 1, 2); # plugin meta
-		#add_action( 'edit_post_link',  array( &$this, 'add_crosspost' ), 1, 88); # crosspost
-		wp_enqueue_script ( 'jquery' );
-		wp_register_script ( 'vkapi_callback', self::$plugin_url . 'js/callback.js');
-		wp_register_script ( 'userapi', 'http://userapi.com/js/api/openapi.js' );
-
-		if ( !is_admin() ) wp_enqueue_script ( 'vkapi_callback' );
 
 		function close_wp ( $file ) {
 			global $post;
@@ -123,9 +93,6 @@ class VK_api {
 		$logo_e = get_option( 'vkapi_some_logo_e' );
 		if ( $logo_e ) add_action( 'login_head', array(&$this, 'change_login_logo') );
 
-		$autosave_d = get_option( 'vkapi_some_autosave_d' );
-		if ( $autosave_d ) add_action( 'wp_print_scripts', array(&$this, 'disable_autosave') );
-
 		$vkapi_some_revision_d = get_option( 'vkapi_some_revision_d' );
 		if ( $vkapi_some_revision_d ) {
 			define ( 'WP_POST_REVISIONS', 0 );
@@ -140,14 +107,7 @@ class VK_api {
 		}
 	}
 
-	function disable_autosave() {
-		wp_deregister_script( 'autosave' );
-	}
-
 	function pause() {
-		unregister_widget( 'VKAPI_Community' );
-		unregister_widget( 'VKAPI_Recommend' );
-		unregister_widget( 'VKAPI_Login' );
 	}
 
 	function install(){
@@ -155,6 +115,7 @@ class VK_api {
 		// init platform
 		add_option( 'vkapi_appid', '' );
 		add_option( 'vkapi_api_secret', '' );
+		add_option( 'vkapi_at' );
 		add_option( 'fbapi_appid', '' );
 		// comments
 		add_option( 'vkapi_comm_width', '600' );
@@ -192,7 +153,6 @@ class VK_api {
 		add_option( 'vkapi_some_logo_e', '0' );
 		add_option( 'vkapi_some_logo', self::$plugin_url.'images/wordpress-logo.jpg' );
 		add_option( 'vkapi_some_desktop', '1' );
-		add_option( 'vkapi_some_autosave_d', '1' );
 		add_option( 'vkapi_some_revision_d', '1' );
 		add_option( 'vkapi_close_wp', '0' );
 		add_option( 'vkapi_login', '1' );
@@ -238,7 +198,6 @@ class VK_api {
 		delete_option( 'vkapi_some_logo_e' );
 		delete_option( 'vkapi_some_logo' );
 		delete_option( 'vkapi_some_desktop' );
-		delete_option( 'vkapi_some_autosave_d' );
 		delete_option( 'vkapi_some_revision_d' );
 		delete_option( 'vkapi_close_wp' );
 		delete_option( 'vkapi_login' );
@@ -255,6 +214,44 @@ class VK_api {
 		delete_option( 'ya_show_share' );
 		delete_option( 'ya_share_cat' );
 		delete_option( 'vkapi_vk_group' );
+		delete_option( 'vkapi_at' );
+	}
+
+	function enqueue_scripts() {
+		wp_register_script ( 'vkapi_callback', self::$plugin_url . 'js/callback.js', array('jquery') );
+		wp_register_script ( 'userapi', 'http://userapi.com/js/api/openapi.js' );
+		wp_enqueue_script ( 'userapi' );
+		wp_enqueue_script ( 'vkapi_callback' );
+		wp_enqueue_script ( 'jquery' );
+		$option = get_option( 'vkapi_show_share' );
+		if ( $option == 'true' ) {
+			wp_register_script ( 'share', 'http://vk.com/js/api/share.js' );
+			wp_enqueue_script ( 'share' );
+		};
+		$option = get_option( 'gpapi_show_like' );
+		if ( $option == 'true' ) {
+			wp_register_script ( 'plusone', 'https://apis.google.com/js/plusone.js' );
+			wp_enqueue_script ( 'plusone' );
+		};
+		$option = get_option( 'fbapi_show_like' );
+		if ( $option == 'true' || get_option( 'fbapi_show_comm' ) == 'true' ) {
+			add_action ( 'wp_footer', array( &$this, 'add_footer_fb' ) );
+		};
+		$option = get_option( 'tweet_show_share' );
+		if ( $option == 'true' ) {
+			add_action ( 'wp_footer', array( &$this, 'add_footer_tw' ) );
+		};
+		$option = get_option( 'mrc_show_share' );
+		if ( $option == 'true' ) {
+			add_action ( 'wp_footer', array( &$this, 'add_footer_mrc' ) );
+		};
+		$option = get_option( 'ya_show_share' );
+		if ( $option == 'true' ) {
+			add_action ( 'wp_footer', array( &$this, 'add_footer_ya' ) );
+		};
+	}
+
+	function enqueue_scripts_admin(){
 	}
 
 	function settings_page() {
@@ -279,8 +276,13 @@ class VK_api {
 		if ( !is_admin() || defined('IS_PROFILE_PAGE') ) {
 			$id = get_option( 'vkapi_appId' );
 			echo '<meta property="vk:app_id" content="'.$id.'" />'."\n";
-			wp_enqueue_script ( 'userapi' );
-		}
+		};
+		// Fix WP 3.4 Bug
+		if ( in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) ) ) {
+			echo '<script type="text/javascript" src="http://userapi.com/js/api/openapi.js"></script>';
+			echo '<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>';
+			echo '<script type="text/javascript" src="'.self::$plugin_url.'js/callback.js"></script>';
+		};
 		// FB API
 		$temp = get_option( 'fbapi_show_comm' );
 		if ( !is_admin() && $temp == 'true' ) {
@@ -317,6 +319,8 @@ class VK_api {
 		add_action( 'admin_print_styles-' . self::$vkapi_page_menu, array( &$this, 'add_css_admin' ) );
 		add_action( 'admin_print_styles-' . self::$vkapi_page_settings, array( &$this, 'add_css_admin' ) );
 		add_action( 'admin_print_styles-' . self::$vkapi_page_comments, array( &$this, 'add_css_admin_comm' ) );
+		// Adds my_help_tab when my_admin_page loads
+		add_action('load-'.self::$vkapi_page_settings, array( &$this, 'contextual_help' ) );
 		add_action ( 'admin_init', array( &$this, 'register_settings' ) );
 	}
 
@@ -349,7 +353,6 @@ class VK_api {
 		register_setting( 'vkapi-settings-group', 'vkapi_some_logo_e' );
 		register_setting( 'vkapi-settings-group', 'vkapi_some_logo' );
 		register_setting( 'vkapi-settings-group', 'vkapi_some_desktop' );
-		register_setting( 'vkapi-settings-group', 'vkapi_some_autosave_d' );
 		register_setting( 'vkapi-settings-group', 'vkapi_some_revision_d' );
 		register_setting( 'vkapi-settings-group', 'vkapi_close_wp' );
 		register_setting( 'vkapi-settings-group', 'vkapi_login' );
@@ -366,6 +369,7 @@ class VK_api {
 		register_setting( 'vkapi-settings-group', 'ya_show_share' );
 		register_setting( 'vkapi-settings-group', 'ya_share_cat' );
 		register_setting( 'vkapi-settings-group', 'vkapi_vk_group' );
+		register_setting( 'vkapi-settings-group', 'vkapi_at' );
 	}
 
 	function add_css () {
@@ -385,7 +389,24 @@ class VK_api {
 				js.src = "//connect.facebook.net/ru_RU/all.js#xfbml=1&appId='.$fbapi_appid.'";
 				fjs.parentNode.insertBefore(js, fjs);
 			}(document, \'script\', \'facebook-jssdk\'));</script>
-		';
+		'; ?>
+		<div id="vk_api_transport"></div>
+		<script type="text/javascript">
+			window.vkAsyncInit = function() {
+				VK.init({
+					apiId: <?php echo get_option( 'vkapi_appId' )."\n";?>
+				});
+			};
+
+			setTimeout(function() {
+				var el = document.createElement("script");
+				el.type = "text/javascript";
+				el.src = "http://vkontakte.ru/js/api/openapi.js";
+				el.async = true;
+				document.getElementById("vk_api_transport").appendChild(el);
+			}, 0);
+		</script>
+		<?php
 	}
 
 	function add_css_admin_comm () {
@@ -394,8 +415,8 @@ class VK_api {
 		wp_enqueue_script ( 'userapi' );
 	}
 
-	function vkapi_contextual_help( $contextual_help, $screen_id, $screen ) {
-		if ( $screen_id == self::$vkapi_page_menu || $screen_id == self::$vkapi_page_settings ) {
+	function contextual_help() {
+			$screen = get_current_screen();
 			/* main */
 			$help = '<p>Добавляет функционал API сайта vkontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...</p>';
 			$screen->add_help_tab( array(
@@ -431,8 +452,9 @@ class VK_api {
 				'content'	=> $help
 				) );
 			/* other */
-			$help = '<p><strong>Disable Autosave Post Script</strong> - выключает астосохранение при редактировании/добавлении новой записи(поста).<br />
-				Это полезно тем, что теперь не будет тучи бесполезных черновиков(ведь зачем заполнять ими нашу базу данных?)<br />
+			$help = '<p><strong>В WordPress-e срабатывает астосохранение при редактировании/добавлении новой записи(поста).<br />
+				Это плохо тем, что появляется туча бесполезных черновиков (копий, записей).
+				А ведь зачем заполнять ими нашу базу данных?<br />
 				<strong>Disable Revision Post Save</strong> - устанавливает количество выше упомянутых черновиков в ноль.<br /></p>';
 			$screen->add_help_tab( array(
 				'id'	=> 'vkapi_other',
@@ -446,16 +468,14 @@ class VK_api {
 				'title'	=> __( 'Help', self::$plugin_domain ),
 				'content'	=> $help
 				) );
-		};
-		return '';
 	}
 
 	function add_tabs_button_start() {
 		global $post;
 		$vkapi_url = get_bloginfo('wpurl');
 		echo
-			'<table id="vkapi_wrapper" style="width:auto" vkapi_notify="'.$post->ID.'" vkapi_url="'.$vkapi_url.'"><br />
-			<td style="font-weight:800">'
+			'<table id="vkapi_wrapper" style="width:auto" vkapi_notify="'.$post->ID.'" vkapi_url="'.$vkapi_url.'">
+			<td style="font-weight:800;white-space:nowrap">'
 			.__('Comments:', self::$plugin_domain).
 			'</td>';
 	}
@@ -468,7 +488,7 @@ class VK_api {
 		$vkapi_comm_show = ' ('.$vkapi_comm.')';
 		echo '
 			<td>
-			<button id="submit" class="vk_recount" onclick="showVK()" >'.$vkapi_button.$vkapi_comm_show.'</button>
+			<button style="white-space:nowrap" id="submit" class="vk_recount" onclick="showVK()" >'.$vkapi_button.$vkapi_comm_show.'</button>
 			</td>
 			';
 	}
@@ -476,7 +496,7 @@ class VK_api {
 	function add_tabs_button_fb() {
 		echo '
 			<td>
-			<button id="submit" onclick="showFB()" >'.__('Facebook', self::$plugin_domain).' (<fb:comments-count href='.get_permalink().'></fb:comments-count>)</button>
+			<button style="white-space:nowrap" id="submit" onclick="showFB()" >'.__('Facebook', self::$plugin_domain).' (<fb:comments-count href="'.get_permalink().'"></fb:comments-count>)</button>
 			</td>
 			';
 	}
@@ -488,7 +508,7 @@ class VK_api {
 		$comm_wp = get_comments_number() - $vkapi_comm - $fbapi_comm;
 		echo '
 			<td>
-			<button id="submit" onclick="showWP()">'.__('Site', self::$plugin_domain).' ('.$comm_wp.') </button>
+			<button style="white-space:nowrap" id="submit" onclick="showWP()">'.__('Site', self::$plugin_domain).' ('.$comm_wp.') </button>
 			</td>
 			';
 	}
@@ -499,7 +519,7 @@ class VK_api {
 			add_action ( 'add_tabs_button_action', array( &$this, 'add_tabs_button_start' ) );
 			// VK
 				global $post;
-				$vkapi_get_comm = get_post_meta($post->ID, vkapi_comments, true);
+				$vkapi_get_comm = get_post_meta($post->ID, 'vkapi_comments', true);
 				$show_comm = get_option( 'vkapi_show_comm' );
 			if ( $show_comm == 'true' && ( $vkapi_get_comm == '1' || $vkapi_get_comm === '' ) ) {
 				//self::add_vk_comments();
@@ -575,7 +595,9 @@ class VK_api {
 			};
 			</script>';
 		} else {
-			echo 'function onChangeRecalc(num,last_comment,data,hash){
+			echo '
+				<script type="text/javascript">
+				function onChangeRecalc(num,last_comment,data,hash){
 				jQuery("button.vk_recount").html(\''.$vkapi_button.' (\'+num+\')\');
 				};
 				</script>';
@@ -614,9 +636,9 @@ class VK_api {
 ########## start social buttons
 	function add_buttons ( $args ) {
 		global $post;
-		$vkapi_get_butt = get_post_meta($post->ID, vkapi_buttons, true);
+		$vkapi_get_butt = get_post_meta($post->ID, 'vkapi_buttons', true);
 		if ( !is_feed() && !( in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) ) ) && ( $vkapi_get_butt == '1' || $vkapi_get_butt === '' ) ) {
-			add_action ( 'add_social_button_action', create_function( '', 'echo \'<!--noindex--><ul class="nostyle" style="margin:auto">\';'), 1 );
+			add_action ( 'add_social_button_action', array( &$this, 'social_button_start' ), 1 );
 			// mrc share
 			if ( get_option( 'mrc_show_share' ) == 'true' ) {
 				$in_cat = get_option( 'mrc_share_cat' );
@@ -674,7 +696,7 @@ class VK_api {
 				};
 			};
 			// shake
-			add_action ( 'add_social_button_action', create_function( '', 'echo \'</ul><!--/noindex-->\';'), 88 );
+			add_action ( 'add_social_button_action',  array( &$this, 'social_button_end' ), 88 );
 			ob_start();
 			do_action( 'add_social_button_action' );
 ?>
@@ -682,10 +704,10 @@ class VK_api {
 	ul.nostyle, ul.nostyle li{
 		list-style:none;
 		background:none;
-		padding:5px;
 	}
 
 	ul.nostyle li {
+		padding:5px;
 		float:left;
 		display:block;
 	}
@@ -704,6 +726,14 @@ class VK_api {
 		}
 	}
 
+	function social_button_start(){
+		echo '<!--noindex--><ul class="nostyle" style="margin:'.get_option("vkapi_align").'">';
+	}
+
+	function social_button_end(){
+		echo '</ul><!--/noindex-->';
+	}
+
 	function vkapi_button_like () {
 				global $post;
 				$postid = $post->ID;
@@ -716,8 +746,8 @@ class VK_api {
 				$vkapi_descr = addslashes ( $vkapi_descr );
 				$vkapi_descr = substr( $vkapi_descr, 0, 139 );
 				$vkapi_url = get_permalink();
-				$vkapi_image = self::first_postimage($postid);
 				$vkapi_text = str_replace( array("\r\n", "\n", "\r") , ' <br />', do_shortcode($post->post_content) );
+				$vkapi_image = self::first_postimage($vkapi_text);
 				$vkapi_text = strip_tags( $vkapi_text );
 				$vkapi_text = addslashes ( $vkapi_text );
 				$vkapi_text = substr( $vkapi_text, 0, 139 );
@@ -747,11 +777,11 @@ class VK_api {
 				$vkapi_url = get_permalink();
 				$vkapi_title = addslashes ( do_shortcode($post->post_title) );
 				$vkapi_descr = str_replace( array("\r\n", "\n", "\r") , ' <br />', do_shortcode($post->post_content) );
+				$vkapi_image = self::first_postimage($vkapi_descr);
 				$vkapi_descr = strip_tags( $vkapi_descr );
 				$vkapi_descr = addslashes ( $vkapi_descr );
 				$vkapi_descr = substr( $vkapi_descr, 0, 139 );
 				$vkapi_type = get_option( 'vkapi_share_type' );
-				$vkapi_image = self::first_postimage($postid);
 				$vkapi_text = get_option( 'vkapi_share_text' );
 				$vkapi_text = addslashes ( $vkapi_text );
 				echo "
@@ -814,41 +844,43 @@ class VK_api {
 	}
 
 	function tweet_button_share() {
+		global $post;
 		$url = get_permalink();
 		$who = get_option('tweet_account');
+		$vkapi_title = addslashes ( do_shortcode($post->post_title) );
 		echo '
-			<li>
+			<li><div>
 			<a
 				style="border:none"
 				rel="nofollow"
 				href="https://twitter.com/share"
 				class="twitter-share-button"
 				data-url="'.$url.'"
-				data-text="title"
+				data-text="'.$vkapi_title.'"
 				data-lang="ru"
 				data-via="'.$who.'"
 				data-dnt="true"
 				data-count="none">Tweet</a>
-			</li>';
+			</div></li>';
 	}
 
 	function mrc_button_share() {
 		$url = rawurlencode ( get_permalink() );
 		echo '
-			<li>
+			<li><div>
 			<a
 				rel="nofollow"
 				target="_blank"
 				class="mrc__plugin_uber_like_button"
 				href="'.$url.'"
 				data-mrc-config="{\'type\' : \'button\', \'caption-mm\' : \'2\', \'caption-ok\' : \'1\', \'counter\' : \'true\', \'text\' : \'true\', \'width\' : \'250px\', \'show_faces\': \'1\', \'show_text\': \'1\'}">Нравится</a>
-			</li>';
+			</div></li>';
 	}
 
 	function ya_button_share() {
 		$url = get_permalink();
 		echo '
-			<li>
+			<li><div>
 			<a
 				rel="nofollow"
 				counter="yes"
@@ -856,15 +888,19 @@ class VK_api {
 				size="large"
 				share_url="'.$url.'"
 				name="ya-share"> </a>
-			</li>';
+			</div></li>';
 	}
 	#end social button
 
 	function change_login_logo() {
 		$logo = get_option( 'vkapi_some_logo' );
 		echo '<style type="text/css">
-			#login { width: 380px !important}
-			.login h1 a { background:url('.$logo.') !important; width: 380px !important; height: 130px !important;}
+			#login {
+				height: 121px !important;
+			}
+			.login h1 a {
+				background: url('.$logo.') 50% 50% no-repeat !important;
+			}
 		</style>';
 	}
 
@@ -888,19 +924,23 @@ class VK_api {
 	}
 
 	function own_actions_links( $links ) {
+		//unset($links['deactivate']);
+		unset($links['edit']);
 		$settings_link = '&nbsp;<a href="options-general.php?page=vkapi_settings"><img src="'.self::$plugin_url.'images/set.png" width="20" />&nbsp;</a>';
 		array_push( $links, $settings_link );
 		return $links;
 	}
 
 	function add_dashboard_widgets() {
-		wp_add_dashboard_widget( 'vkapi_dashboard_widget', 'VKapi: Новости', array( &$this,'dashboard_widget_function') );
-		global $wp_meta_boxes;
-		$normal_dashboard = $wp_meta_boxes['dashboard']['normal']['core'];
-		$vkapi_widget_backup = array( 'vkapi_dashboard_widget' => $normal_dashboard['vkapi_dashboard_widget'] );
-		unset( $normal_dashboard['vkapi_dashboard_widget'] );
-		$sorted_dashboard = array_merge( $vkapi_widget_backup, $normal_dashboard );
-		$wp_meta_boxes['dashboard']['normal']['core'] = $sorted_dashboard;
+		if ( current_user_can( 'manage_options' ) ) {
+			wp_add_dashboard_widget( 'vkapi_dashboard_widget', 'VKapi: Новости', array( &$this,'dashboard_widget_function') );
+			global $wp_meta_boxes;
+			$normal_dashboard = $wp_meta_boxes['dashboard']['normal']['core'];
+			$vkapi_widget_backup = array( 'vkapi_dashboard_widget' => $normal_dashboard['vkapi_dashboard_widget'] );
+			unset( $normal_dashboard['vkapi_dashboard_widget'] );
+			$sorted_dashboard = array_merge( $vkapi_widget_backup, $normal_dashboard );
+			$wp_meta_boxes['dashboard']['normal']['core'] = $sorted_dashboard;
+		};
 	}
 
 	function load_domain() {
@@ -911,18 +951,63 @@ class VK_api {
 	##### start meta_box
 	function save_postdata( $post_id ) {
 		// check
-		if ( !wp_verify_nonce( $_REQUEST['vkapi_noncename'], plugin_basename(__FILE__) ))
-			return $post_id;
-		if ( 'page' == $_REQUEST['post_type'] ) {
-			if ( !current_user_can( 'edit_page', $post_id ))
+		print_r($_REQUEST);
+		if ( isset($_REQUEST['vkapi_noncename']) ) {
+			if ( !wp_verify_nonce( $_REQUEST['vkapi_noncename'], plugin_basename(__FILE__) ))
 				return $post_id;
-		} else {
-			if ( !current_user_can( 'edit_post', $post_id ))
-				return $post_id;
-		}
-		// do
-		update_post_meta($post_id, 'vkapi_comments', $_REQUEST['vkapi_comments']);
-		update_post_meta($post_id, 'vkapi_buttons', $_REQUEST['vkapi_buttons']);
+			if ( 'page' == $_REQUEST['post_type'] ) {
+				if ( !current_user_can( 'edit_page', $post_id ))
+					return $post_id;
+			} else {
+				if ( !current_user_can( 'edit_post', $post_id ))
+					return $post_id;
+			}
+			// do meta box
+			update_post_meta($post_id, 'vkapi_comments', $_REQUEST['vkapi_comments']);
+			update_post_meta($post_id, 'vkapi_buttons', $_REQUEST['vkapi_buttons']);
+
+			// do submit box
+			if ( $_REQUEST['vkapi_crosspost_submit'] == '1' ) {
+				global $post;
+				$vk_group = get_option('vkapi_vk_group');
+				$vk_at = get_option('vkapi_at');
+				$vkapi_text = do_shortcode($post->post_content);
+				$image_url = self::first_postimage($vkapi_text);
+				if ( $image_url )
+					$att[] = self::vk_upload_photo( $vk_at, $vk_group, $post->ID );
+				$vkapi_text = strip_tags( $vkapi_text );
+				$vkapi_text = str_replace( array("\r\n", "\n", "\r") , '<br />', $vkapi_text );
+				$vkapi_text = addslashes ( $vkapi_text );
+				$vkapi_text = substr( $vkapi_text, 0, 999 );
+				$att[] = get_permalink();
+				$att = implode(',',$att);
+				$params = array(
+				   'access_token' => $vk_at,
+				   'owner_id' => -$vk_group,
+				   'from_group' => 0,
+				   'signed' => 1,
+				   'message' => "$vkapi_text",
+				   'attachments' => "$att"
+				);
+				$query = http_build_query($params);
+				$data = wp_remote_get(self::$vkapi_m.'wall.post?'.$query);
+				ob_start();
+				if (is_wp_error($data))
+					echo $data->get_error_message();
+				$resp = json_decode($data['body'],true);
+				print_r($resp);
+				if ($resp['error'])
+					echo $resp['error']['error_code'] . ': ' . $resp['error']['error_msg'];
+				if ( $resp['response']['processing'] )
+					echo 'processing';
+				if ( $resp['response']['post_id'] )
+					echo 'posted';
+				wp_mail('kowack@gmail.com',(string)rand.rand(),ob_get_clean());
+				add_action ( 'admin_notices',
+				create_function( '',"echo '<div class=\"notice\"><p>Cross-Post Finish :)</p></div>';" ) );
+				return true;
+			}
+		};
 	}
 
 	function add_custom_box($page,$context) {
@@ -991,7 +1076,7 @@ class VK_api {
 					margin:0px !important;
 				}
 			</style>
-			<script language="javascript">
+			<script language="text/javascript">
 				VK.UI.button('vkapi_login_button');
 			</script>
 					<div style="display:none" id="vk_auth"></div>
@@ -1132,7 +1217,7 @@ class VK_api {
 			<button style="display: none" class="vkapi_vk_widget" vkapi_url="'.$vkapi_url.'"></button>
 			<div id="vkapi_status"></div>
 			<div id="login_button" onclick="VK.Auth.getLoginStatus(onSignon)"></div>
-			<script language="javascript">
+			<script language="text/javascript">
 				VK.UI.button(\'login_button\');
 			</script>
 			<div style="display:none" id="vk_auth"></div>
@@ -1161,9 +1246,36 @@ class VK_api {
 					'href'   => "http://vk.com/id$vkapi_user",
 					'meta'   => array(
 						'target' => '_blank',
-		)
+					)
 				) );
 		};
+		$wp_admin_bar->add_menu( array(
+					'id' => 'vkapi',
+					'parent' => false,
+					'title' => __( 'VKapi', self::$plugin_domain ),
+					'href' => false,
+					/*'meta' => array(
+						'html' => '',
+						'class' => '',
+						'onclick' => '',
+						'target' => '',
+						'title' => ''
+					)*/
+				) );
+		$wp_admin_bar->add_node( array(
+					'id'     => 'vkapi-site',
+					'parent' => 'vkapi',
+					'title'  => __( 'Devmaster site', self::$plugin_domain ),
+					'href'   => 'http://www.kowack.info/',
+					'meta'   => array(
+						'target' => '_blank',
+					)
+				) );
+	}
+
+	function remove_admin_bar_links() {
+		global $wp_admin_bar;
+		$wp_admin_bar->remove_menu('wp-logo');
 	}
 	# end bar menu
 
@@ -1234,8 +1346,8 @@ class VK_api {
 		$vkapi_descr = substr( $vkapi_descr, 0, 130 );
 		$vkapi_descr = addslashes ( $vkapi_descr );
 		$vkapi_url = get_permalink();
-		//$vkapi_image = self::first_postimage($postid); pageImage: '$vkapi_image',
 		$vkapi_text = str_replace( array("\r\n", "\n", "\r") , ' <br />', $post->post_content );
+		//$vkapi_image = self::first_postimage($vkapi_text); pageImage: '$vkapi_image',
 		$vkapi_text = strip_tags( $vkapi_text );
 		$vkapi_text = substr( $vkapi_text, 0, 130 );
 		$vkapi_text = addslashes ( $vkapi_text );
@@ -1260,18 +1372,13 @@ class VK_api {
 	# end shortcodes
 
 	##### start post img url
-	function first_postimage(&$id){
-		$args = array(
-			'post_parent' => $id,
-			'post_type' => 'attachment',
-			'numberposts' => 1,
-			'post_mime_type' => 'image'
-			);
-		if( $images=get_posts($args) )
-			foreach( $images as $image )
-				$link = wp_get_attachment_url($image->ID);
-
-		return $link;
+	function first_postimage(&$text){
+		if((bool)preg_match('#<img[^>]+src=[\'"]([^\'"]+)[\'"]#', $text, $matches))
+		{
+		   return $matches[1];
+		} else {
+		   return '';
+		};
 	}
 	# start post img url
 
@@ -1326,6 +1433,80 @@ class VK_api {
 			);
 		};
 		</script>';
+	}
+
+	function add_post_submit() {?>
+		<div class="misc-pub-section">
+		<input type="checkbox" value="1" name="vkapi_crosspost_submit" /> Cross-Post to VK.com Wall
+		</div><?php
+	}
+
+	function vk_upload_photo( $vk_at, $vk_group, $postid) {
+		//ob_start();
+		$images = get_children( array(
+                'post_parent'    => $postid,
+                'post_type'      => 'attachment',
+                'numberposts'    => 1, // show all -1
+                'post_status'    => 'inherit',
+                'post_mime_type' => 'image',
+                'order'          => 'ASC',
+                'orderby'        => 'menu_order id'
+                ) );
+		//print_r($images);
+		foreach($images as $image) {
+			$attachment_id = $image->ID;
+		}
+		//$attachment_id = $images[0]->ID;
+		$image_url = get_attached_file($attachment_id);
+		//echo $image_url."\n";
+		// Get Wall Upload Server
+		$params = array(
+			'access_token' => $vk_at,
+			'gid' => -$vk_group
+		);
+		$query = http_build_query($params);
+		$data = wp_remote_get(self::$vkapi_m.'photos.getWallUploadServer?'.$query);
+		if (is_wp_error($data))
+			echo $data->get_error_message();
+		$resp = json_decode($data['body'],true);
+		//print_r($resp);
+		if (!$resp['response']['upload_url'])
+			echo '!$resp[\'response\'][\'upload_url\']';
+		// Upload photo to server
+		$curl = new Wp_Http_Curl();
+		$body = array(
+			'photo' => '@'.$image_url,
+		);
+		$data = $curl->request( $resp['response']['upload_url'], array(
+			'body' => $body,
+			'method' => 'POST'
+		));
+		if (is_wp_error($data))
+			echo $data->get_error_message();
+		$resp = json_decode($data['body'],true);
+		//print_r($resp);
+		if (empty($resp['photo']))
+			echo 'empty($resp[\'photo\'])';
+		// Save Wall Photo
+		$params = array(
+			'access_token' => $vk_at,
+			'gid' => -$vk_group,
+			'server' => $resp['server'],
+			'photo' => $resp['photo'],
+			'hash' => $resp['hash']
+		);
+		$query = http_build_query($params);
+		$data = wp_remote_get(self::$vkapi_m.'photos.saveWallPhoto?'.$query);
+		if (is_wp_error($data))
+			echo $data->get_error_message();
+		$resp = json_decode($data['body'],true);
+		//print_r($resp);
+		if (!$resp['response'])
+			echo '!$resp[\'response\']';
+		// Return
+		//print_r($resp);
+		//wp_mail('','rand'.rand(),ob_get_clean());
+		return $resp['response']['id'];
 	}
 	# end crosspost
 }
