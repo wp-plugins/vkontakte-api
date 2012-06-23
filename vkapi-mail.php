@@ -19,8 +19,7 @@
 				$blogurl = site_url();
 				if (substr($blogurl,0,7)=='http://') $blogurl = substr($blogurl,7);
 				if (substr($blogurl,0,8)=='https://') $blogurl = substr($blogurl,8);
-					$mofile = dirname( __FILE__ ) . '/lang/' . 'vkapi' . '-' . get_locale() . '.mo';
-				load_plugin_textdomain( 'vkapi', $mofile );
+				load_plugin_textdomain( 'vkapi', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 				$notify_message  = __( 'VKapi: Page has just commented!', 'vkapi' ). "<br />";
 					$notify_message .= rawurldecode( get_permalink( $post_id ) ) . "<br /><br />";
 					$notify_message .= __( 'Comment: ', 'vkapi' ) . "<br />" . $last_comment . "<br /><br />";
@@ -36,8 +35,7 @@
 				$blogurl = site_url();
 				if (substr($blogurl,0,7)=='http://') $blogurl = substr($blogurl,7);
 				if (substr($blogurl,0,8)=='https://') $blogurl = substr($blogurl,8);
-					$mofile = dirname( __FILE__ ) . '/lang/' . 'vkapi' . '-' . get_locale() . '.mo';
-				load_plugin_textdomain( 'vkapi', $mofile );
+				load_plugin_textdomain( 'vkapi', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 				$notify_message  = __( 'VKapi: Page has just commented!', 'vkapi' ). "<br />";
 					$notify_message .= rawurldecode( get_permalink( $post_id ) ) . "<br /><br />";
 					$notify_message .= __( 'Comment: ', 'vkapi' ) . "<br />" . $last_comment . "<br /><br />";
@@ -65,8 +63,7 @@
 			$blogurl = site_url();
 			if (substr($blogurl,0,7)=='http://') $blogurl = substr($blogurl,7);
 			if (substr($blogurl,0,8)=='https://') $blogurl = substr($blogurl,8);
-				$mofile = dirname( __FILE__ ) . '/lang/' . 'vkapi' . '-' . get_locale() . '.mo';
-			load_plugin_textdomain( 'vkapi', $mofile );
+			load_plugin_textdomain( 'vkapi', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 			$notify_message  = __( 'FBapi: Page has just commented!', 'vkapi' ). "<br />";
 				$notify_message .= rawurldecode( get_permalink( $post_id ) ) . '<br /><br />';
 				$notify_message .= 'Появился новый комментарий' . '<br /><br />';

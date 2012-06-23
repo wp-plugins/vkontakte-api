@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 2.4
+Version: 2.5
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -72,6 +72,9 @@ class VK_api {
 		add_filter( 'the_content', array( &$this, 'add_buttons' ), 88 ); # buttons
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'own_actions_links' ) ); # plugin links
 		add_filter( 'plugin_row_meta', array( &$this, 'plugin_meta' ), 1, 2); # plugin meta
+		add_filter( 'login_headerurl', array( &$this, 'login_href' ) ); # login href
+		#add_filter( 'login_url', array( &$this, 'login_path' ), 1, 2); # login path
+		add_action( 'init', array( &$this, 'login_add_rule' ) );
 
 		function close_wp ( $file ) {
 			global $post;
@@ -108,9 +111,13 @@ class VK_api {
 	}
 
 	function pause() {
+		add_action( 'init', array( &$this, 'login_add_rule' ) );
+		flush_rewrite_rules();
 	}
 
 	function install(){
+		add_action( 'init', array( &$this, 'login_add_rule' ) );
+		flush_rewrite_rules();
 		// wp_load_alloptions()
 		// init platform
 		add_option( 'vkapi_appid', '' );
@@ -130,6 +137,7 @@ class VK_api {
 		add_option( 'vkapi_comm_show', '0' );
 		// button align
 		add_option( 'vkapi_align', 'left' );
+		add_option( 'vkapi_like_top', '0' );
 		add_option( 'vkapi_like_bottom', '1' );
 		// vk like
 		add_option( 'vkapi_like_type', 'full' );
@@ -168,9 +176,13 @@ class VK_api {
 		add_option( 'tweet_account', '' );
 		// crosspost
 		add_option( 'vkapi_vk_group', '');
+		add_option( 'vkapi_crosspost_default', '0');
+		add_option( 'vkapi_crosspost_length', '888');
+		add_option( 'vkapi_crosspost_link', '0');
 	}
 
 	function deinstall() {
+		flush_rewrite_rules();
 		delete_option( 'vkapi_appid' );
 		delete_option( 'vkapi_api_secret' );
 		delete_option( 'vkapi_comm_width' );
@@ -186,6 +198,7 @@ class VK_api {
 		delete_option( 'vkapi_like_type' );
 		delete_option( 'vkapi_like_verb' );
 		delete_option( 'vkapi_like_cat' );
+		delete_option( 'vkapi_like_top' );
 		delete_option( 'vkapi_like_bottom' );
 		delete_option( 'vkapi_share_cat' );
 		delete_option( 'vkapi_share_type' );
@@ -215,6 +228,9 @@ class VK_api {
 		delete_option( 'ya_share_cat' );
 		delete_option( 'vkapi_vk_group' );
 		delete_option( 'vkapi_at' );
+		delete_option( 'vkapi_crosspost_default' );
+		delete_option( 'vkapi_crosspost_length' );
+		delete_option( 'vkapi_crosspost_link' );
 	}
 
 	function enqueue_scripts() {
@@ -276,6 +292,7 @@ class VK_api {
 		if ( !is_admin() || defined('IS_PROFILE_PAGE') ) {
 			$id = get_option( 'vkapi_appId' );
 			echo '<meta property="vk:app_id" content="'.$id.'" />'."\n";
+			echo '<script type="text/javascript" src="http://userapi.com/js/api/openapi.js"></script>';
 		};
 		// Fix WP 3.4 Bug
 		if ( in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) ) ) {
@@ -370,6 +387,10 @@ class VK_api {
 		register_setting( 'vkapi-settings-group', 'ya_share_cat' );
 		register_setting( 'vkapi-settings-group', 'vkapi_vk_group' );
 		register_setting( 'vkapi-settings-group', 'vkapi_at' );
+		register_setting( 'vkapi-settings-group', 'vkapi_like_top' );
+		register_setting( 'vkapi-settings-group', 'vkapi_crosspost_default' );
+		register_setting( 'vkapi-settings-group', 'vkapi_crosspost_length' );
+		register_setting( 'vkapi-settings-group', 'vkapi_crosspost_link' );
 	}
 
 	function add_css () {
@@ -707,6 +728,7 @@ class VK_api {
 	}
 
 	ul.nostyle li {
+		height:20px;
 		padding:5px;
 		float:left;
 		display:block;
@@ -992,13 +1014,16 @@ class VK_api {
 				$vkapi_text = strip_tags( $vkapi_text );
 				$vkapi_text = addslashes ( $vkapi_text );
 				$vkapi_text = str_replace( array("\r\n", "\n", "\r") , ' ', $vkapi_text );
-				$vkapi_text = substr( $vkapi_text, 0, 999 );
-				$att[] = get_permalink();
+				if ( !(empty($_REQUEST['vkapi_crosspost_length']) || $_REQUEST['vkapi_crosspost_length'] == '0') )
+					$vkapi_text = substr( $vkapi_text, 0, (int)$_REQUEST['vkapi_crosspost_length'] );
+				$vkapi_text = html_entity_decode($vkapi_text, ENT_QUOTES);
+				if ( $_REQUEST['vkapi_crosspost_link'] == '1' )
+					$att[] = get_permalink();
 				$att = implode(',',$att);
 				$params = array(
 				   'access_token' => $vk_at,
 				   'owner_id' => -$vk_group,
-				   'from_group' => 0,
+				   'from_group' => 1,
 				   'signed' => 1,
 				   'message' => "$vkapi_text",
 				   'attachments' => "$att"
@@ -1078,7 +1103,7 @@ class VK_api {
 			if (empty($conn)) {
 		?>
 				<td>
-					<div id="vkapi_login_button" style="padding:0px;border:0px" onclick="VK.Auth.login(onSignonProfile)">ВойтиВКонтакте</div>
+					<div id="vkapi_login_button" style="padding:0px;border:0px" onclick="VK.Auth.login(onSignonProfile)"><a>ВойтиВКонтакте</a></div>
 					<div id="vkapi_status"></div>
 			<style type="text/css">
 				.form-table td #vkapi_login_button td {
@@ -1226,7 +1251,7 @@ class VK_api {
 			echo '
 			<button style="display: none" class="vkapi_vk_widget" vkapi_url="'.$vkapi_url.'"></button>
 			<div id="vkapi_status"></div>
-			<div id="login_button" onclick="VK.Auth.getLoginStatus(onSignon)">ВойтиВКонтакте</div>
+			<div id="login_button" onclick="VK.Auth.getLoginStatus(onSignon)"><a>ВойтиВКонтакте</a></div>
 			<script language="text/javascript">
 				VK.UI.button("login_button");
 			</script>
@@ -1261,8 +1286,8 @@ class VK_api {
 		};
 		$wp_admin_bar->add_menu( array(
 					'id' => 'vkapi',
-					'parent' => false,
-					'title' => __( 'VKapi', self::$plugin_domain ),
+					'parent' => 'site-name',
+					'title' => __( '`kowack` developer', self::$plugin_domain ),
 					'href' => false,
 					/*'meta' => array(
 						'html' => '',
@@ -1275,8 +1300,8 @@ class VK_api {
 		$wp_admin_bar->add_node( array(
 					'id'     => 'vkapi-site',
 					'parent' => 'vkapi',
-					'title'  => __( 'Devmaster site', self::$plugin_domain ),
-					'href'   => 'http://www.kowack.info/',
+					'title'  => __( 'VKapi', self::$plugin_domain ),
+					'href'   => 'http://www.kowack.info/projects/vk_api/',
 					'meta'   => array(
 						'target' => '_blank',
 					)
@@ -1288,6 +1313,26 @@ class VK_api {
 		$wp_admin_bar->remove_menu('wp-logo');
 	}
 	# end bar menu
+
+	##### start login change
+	function login_href() {
+		return home_url('/');
+	}
+
+	function login_path( $force_reauth, $redirect ) {
+		$login_url = '/kowack-login/';
+		if ( !empty($redirect) )
+			$login_url = add_query_arg( 'redirect_to', urlencode( $redirect ), $login_url );
+		if ( $force_reauth )
+			$login_url = add_query_arg( 'reauth', '1', $login_url ) ;
+		return $login_url ;
+	}
+	
+	function login_add_rule() {
+		add_rewrite_rule( 'my-login/?$', 'wp-login.php', 'top' );
+		add_rewrite_rule( 'my-admin/?$', 'wp-admin.php', 'top' );
+	}
+	# end login change
 
 	##### start plugin meta
 	function plugin_meta( $links, $file ) {
@@ -1415,40 +1460,20 @@ class VK_api {
 	# end add after body
 
 	##### start crosspost
-	function add_crosspost() {
-	global $post;
-	$vkapi_text = strip_tags( do_shortcode($post->post_content) );
-	$vkapi_text = addslashes ( $vkapi_text );
-	$vkapi_text = str_replace( array("\r\n", "\n", "\r") , array('\r\n', '\n', '\r'), $vkapi_text );
-	$vkapi_text = substr( $vkapi_text, 0, 999 );
-	echo ' / <a href="'.get_admin_url().'post.php?post='.$post->ID.'&action=edit">'.__('Change').'</a> / <a href="#" onclick="vk_crosspost(); return false">VKcrossPOST</a>
-		<script>
-		function vk_crosspost() {
-			VK.Api.call(
-				\'wall.post\',
-				{
-					owner_id:\'-'. get_option('vkapi_vk_group') .'\',
-					message:\''. $vkapi_text .'\',
-					attachments:\''. get_permalink() .'\',
-					from_group:\'0\',
-					signed:\'1\',
-				},
-				function (data) {
-					if (data.response) { // если получен ответ
-						alert(\'Сообщение отправлено! ID сообщения: \' + data.response.post_id);
-					} else { // ошибка при отправке сообщения
-						alert(\'Ошибка! \' + data.error.error_code + \' \' + data.error.error_msg);
-					}
-				}
-			);
-		};
-		</script>';
-	}
-
-	function add_post_submit() {?>
+	function add_post_submit() {
+		$temp1 = get_option('vkapi_vk_group');
+		$temp2 = get_option('vkapi_at');
+		if ( !(empty($temp1) || empty($temp2)) ) { ?>
 		<div class="misc-pub-section">
-		<input type="checkbox" value="1" name="vkapi_crosspost_submit" /> Cross-Post to VK.com Wall
-		</div><?php
+		<input type="checkbox" value="1" name="vkapi_crosspost_submit" <?php echo get_option('vkapi_crosspost_default')?'checked':'';?> /> Cross-Post to VK.com Wall
+		<br />
+		<?php _e('Text length:', self::$plugin_domain); ?> <input type="text" name="vkapi_crosspost_length" value="<?php echo get_option('vkapi_crosspost_length'); ?>" />
+		<br />
+		<input type="checkbox" name="vkapi_crosspost_link" value="1" <?php echo get_option('vkapi_crosspost_link')?'checked':'';?> /><?php _e('Show link:', self::$plugin_domain); ?>
+		</div><?php } else { ?>
+		<div class="misc-pub-section">
+		<p>Cross-Post <a href="options-general.php?page=vkapi_settings#vkapi_vk_group">not configured<a><p>
+		</div><?php }
 	}
 
 	function vk_upload_photo( $vk_at, $vk_group, $image_url ) {
@@ -1729,7 +1754,7 @@ class VKAPI_Login extends WP_Widget {
 		echo wp_register( '','',home_url($_SERVER['REQUEST_URI']) );
 		echo '<br /><br />
 		<div id="vkapi_status"></div>
-		<div id="login_button" style="padding:0px;border:0px;width:125px;" onclick="VK.Auth.getLoginStatus(onSignon)">ВойтиВКонтакте</div>
+		<div id="login_button" style="padding:0px;border:0px;width:125px;" onclick="VK.Auth.getLoginStatus(onSignon)"><a>ВойтиВКонтакте</a></div>
 		<style type="text/css">
 			#login_button td, #login_button tr {
 				padding:0px !important;

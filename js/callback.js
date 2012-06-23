@@ -59,7 +59,8 @@ function vkapi_comm_minus(id,num,last_comment,datee,sign) {
 				num: encodeURIComponent(num),
 				last_comment: encodeURIComponent(last_comment),
 				date: encodeURIComponent(datee),
-				sign: encodeURIComponent(sign)
+				sign: encodeURIComponent(sign),
+				social: 'vk'
 			};
 		} else {
 			var vkdata = {
@@ -77,7 +78,7 @@ jQuery(function() {
 	jQuery("#comments-title").css("padding","0 0");
 });
 
-// On add comment
+// On VK add comment
 function onChangePlus (num,last_comment,datee,sign) {
 	var id = jQuery("#vkapi_wrapper").attr("vkapi_notify");
 	vkapi_comm_plus (id,num,last_comment,datee,sign);
@@ -85,18 +86,18 @@ function onChangePlus (num,last_comment,datee,sign) {
 	onChange(num,last_comment,datee,sign);
 	onChangeRecalc(num,last_comment,datee,sign);
 };
-// On FB add comment
-function onChangePlusFB(array) {
-	var id = jQuery("#vkapi_wrapper").attr("vkapi_notify");
-	vkapi_comm_plus (id,0,0,0,0);
-}
-
-// On del comment
+// On VK del comment
 function onChangeMinus (num,last_comment,datee,sign) {
 	var id = jQuery("#vkapi_wrapper").attr("vkapi_notify");
 	last_comment = html_entity_decode ( last_comment );
 	vkapi_comm_minus (id,num,last_comment,datee,sign);
 };
+
+// On FB add comment
+function onChangePlusFB(array) {
+	var id = jQuery("#vkapi_wrapper").attr("vkapi_notify");
+	vkapi_comm_plus (id,0,0,0,0);
+}
 //On FB del comment
 function onChangeMinusFB(array) {
 	var id = jQuery("#vkapi_wrapper").attr("vkapi_notify");

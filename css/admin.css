@@ -22,6 +22,10 @@ textarea.mid-text {
 	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/set.png) no-repeat;
 }
 
+.description {
+	font-width: normal;
+}
+
 .webmoney {
 	width:16px;
 	float:left;

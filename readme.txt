@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: social, share, comments, VKontakte, vk.com, Facebook, facebook.com, crosspost
 Requires at least: 3.4
 Tested up to: 3.4
-Stable tag: 2.4
+Stable tag: 2.5
 
 Добавляет функционал API сайта VKontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...
 
@@ -25,7 +25,6 @@ Stable tag: 2.4
 * А так же облако тегов ( многие плагины облака тегов не поддерживают версию WordPress-a 3.3 ).
 * Для переводчиков: поддерживает перевод.
 * Требуеться актуальная версия PHP (>= 5.2.3)
-* Версия WordpPress не ниже 3.3
 
 == Installation ==
 

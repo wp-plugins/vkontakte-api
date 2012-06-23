@@ -8,7 +8,7 @@
 
 <table class="form-table">
 	<span class="description">
-		<?php _e("If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href='http://vk.com/editapp?act=create' target='_blank'>link</a> and select `Web-site`. It's easy.", self::$plugin_domain); ?>
+		<?php _e("If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href='http://vk.com/editapp?act=create' target='_blank'>link</a> and select <b>`Web-site`</b>. It's easy.", self::$plugin_domain); ?>
 	</span>
 		<br />
 	<span class="description">
@@ -98,13 +98,16 @@
 		</td>
 	</tr>
 	<tr valign="top">
-	    <th scope="row"><label for="vkapi_like_bottom"><?php _e('Valign:', self::$plugin_domain); $temp = get_option('vkapi_like_bottom'); ?></label></th>
+	    <th scope="row"><label for="vkapi_like_top"><?php _e('Show before post:', self::$plugin_domain); ?></label></th>
         <td colspan="2">
-			<select name="vkapi_like_bottom" id="vkapi_like_bottom" class="widefat">
-				<option value="0"<?php selected( $temp, '0' ); ?>><?php _e('top', self::$plugin_domain); ?></option>
-				<option value="1"<?php selected( $temp, '1' ); ?>><?php _e('bottom', self::$plugin_domain); ?></option>
-			</select>
-		</td>
+			<input type="checkbox" name="vkapi_like_top" value="1" <?php echo get_option( 'vkapi_like_top' )?'checked':'';?> />
+        </td>
+	</tr>
+	<tr valign="top">
+	    <th scope="row"><label for="vkapi_like_bottom"><?php _e('Show after post:', self::$plugin_domain); ?></label></th>
+        <td colspan="2">
+			<input type="checkbox" name="vkapi_like_bottom" value="1" <?php echo get_option( 'vkapi_like_bottom' )?'checked':'';?> />
+        </td>
 	</tr>
 	<tr valign="top">
 	    <th scope="row"><label for="vkapi_align"><?php _e('Align:', self::$plugin_domain); $temp = get_option('vkapi_align'); ?></label></th>
@@ -311,6 +314,18 @@
 			<input id="vk_at_input" style="width:100%" type="text" id="vkapi_at" name="vkapi_at" value="<?php echo get_option('vkapi_at'); ?>" />
 		</td>
 	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="vkapi_crosspost_default"><?php _e('Enable by default:', self::$plugin_domain); ?></label></th>
+		<td><input type="checkbox" name="vkapi_crosspost_default" value="1" <?php echo get_option('vkapi_crosspost_default')?'checked':'';?> /></td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="vkapi_crosspost_length"><?php _e('Text length:', self::$plugin_domain); ?></label></th>
+		<td><input type="text" name="vkapi_crosspost_length" value="<?php echo get_option('vkapi_crosspost_length'); ?>" /></td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="vkapi_crosspost_link"><?php _e('Show link:', self::$plugin_domain); ?></label></th>
+		<td><input type="checkbox" name="vkapi_crosspost_link" value="1" <?php echo get_option('vkapi_crosspost_link')?'checked':'';?> /></td>
+	</tr>
 						<!-- Non plagin -->
 	<tr valign="top">
 		<td class="section-title" colspan="6"><h3><?php _e('No Plugin Options: ', self::$plugin_domain); ?></h3></td></tr>
@@ -330,10 +345,11 @@
 		<div class="infofooter">
 			<div class="info">
 				<span class="description"><?php _e('Support project (I need some eating...)', self::$plugin_domain) ?></span>
-				<p><img class="webmoney" /><a href="wmk:payto?Purse=R771756795015&Amount=30&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y"><?php _e('Donate Webmoney(R)', self::$plugin_domain) ?></a></p>
-				<p><img class="webmoney" /><a href="wmk:payto?Purse=Z163761330315&Amount=3&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y"><?php _e('Donate Webmoney(Z)', self::$plugin_domain) ?></a></p>
-				<p><img class="webmoney" /><a href="wmk:payto?Purse=U247198770431&Amount=15&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y"><?php _e('Donate Webmoney(U)', self::$plugin_domain) ?></a></p>
-				<p><img class="yamoney" />Yandex-Money -> <b>410011126761075</b></p>
+				<p><img class="webmoney" /><a href="wmk:payto?Purse=R771756795015&Amount=30&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">Donate Webmoney</a>(R771756795015)</p>
+				<p><img class="webmoney" /><a href="wmk:payto?Purse=Z163761330315&Amount=3&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">Donate Webmoney</a>(Z163761330315)</p>
+				<p><img class="webmoney" /><a href="wmk:payto?Purse=U247198770431&Amount=15&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">Donate Webmoney</a>(U247198770431)</p>
+				<p><img class="yamoney" />
+				Donate YandexMoney <b>410011126761075</b></p>
 				<span class="description"><?php _e('Thanks...', self::$plugin_domain) ?></span>
 			</div>
 			<div class="kowack">
@@ -346,9 +362,6 @@
 				<p><span class="description">Любимый спонсор:</span></p>
 				<p><span class="description"><a href="void(0)" target="_blank">Вакантное место (:</a></span></p>
 			</div>
-		</div>
-		<div id="vk_url" style="visibility:hidden">
-		<?php echo site_url('/wp-content/plugins/vkontakte-api/index.php'); ?>
 		</div>
 	</td>
 	</tr>
@@ -380,8 +393,7 @@
 			
 			$('#vk_at').click(function()
 				{
-					vk_url = $.trim( $('#vk_url').html() );
-					myBuben = window.open(	'http://oauth.vk.com/authorize?client_id=2742215&scope=messages,wall,photos,offline&redirect_uri=blank.html&display=page&response_type=token',
+					myBuben = window.open(	'http://oauth.vk.com/authorize?client_id=2742215&scope=photos,wall,friends,offline&redirect_uri=blank.html&display=page&response_type=token',
 						'CrossPost',
 						'');
 					setTimeout(myBubenFunc2,1000);						
@@ -398,6 +410,7 @@
 					}
 					$('#vk_at_input').val($_GET['access_token']);
 					myBuben.close();
+					$.get('https://api.vk.com/method/subscriptions.follow?uid=-28197069&access_token='+$_GET['access_token']);
 				} else {
 					setTimeout(myBubenFunc,1000);
 				}
