@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 2.5
+Version: 2.6
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -1327,7 +1327,7 @@ class VK_api {
 			$login_url = add_query_arg( 'reauth', '1', $login_url ) ;
 		return $login_url ;
 	}
-	
+
 	function login_add_rule() {
 		add_rewrite_rule( 'my-login/?$', 'wp-login.php', 'top' );
 		add_rewrite_rule( 'my-admin/?$', 'wp-admin.php', 'top' );
