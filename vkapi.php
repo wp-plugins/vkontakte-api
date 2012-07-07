@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add api functions from vkontakte.ru\vk.com in your own blog. <strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 2.6
+Version: 2.7
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -53,7 +53,7 @@ class VK_api {
 		add_action( 'init', array( &$this, 'widget_init' ) ); # widget
 		add_action( 'wp_dashboard_setup', array( &$this, 'add_dashboard_widgets' ) ); # main dashboard
 		add_action( 'admin_init', array( &$this, 'add_css' ) ); # admin css register
-		add_action(	'save_post', array( &$this, 'save_postdata' ) ); # check meta_box
+		add_action(	'save_post', array( &$this, 'save_postdata' ), 1, 2 ); # check meta_box
 		add_action(	'do_meta_boxes', array( &$this, 'add_custom_box' ), 1, 2); # add meta_box
 		$option = get_option( 'vkapi_login' );
 		if ( $option == 'true' ) {
@@ -495,7 +495,7 @@ class VK_api {
 		global $post;
 		$vkapi_url = get_bloginfo('wpurl');
 		echo
-			'<table id="vkapi_wrapper" style="width:auto" vkapi_notify="'.$post->ID.'" vkapi_url="'.$vkapi_url.'">
+			'<table id="vkapi_wrapper" style="width:auto;margin:10px auto 20px 0;" vkapi_notify="'.$post->ID.'" vkapi_url="'.$vkapi_url.'">
 			<td style="font-weight:800;white-space:nowrap">'
 			.__('Comments:', self::$plugin_domain).
 			'</td>';
@@ -556,7 +556,7 @@ class VK_api {
 			};
 			// hook end buttons
 			add_action ( 'add_tabs_button_action', array( &$this, 'add_tabs_button_wp' ) );
-			add_action ( 'add_tabs_button_action', create_function( '', 'echo \'</table><br /><br />\';') );
+			add_action ( 'add_tabs_button_action', create_function( '', 'echo \'</table>\';') );
 			do_action( 'add_tabs_button_action' );
 			do_action( 'add_tabs_comment_action' );
 		};
@@ -730,26 +730,29 @@ class VK_api {
 	ul.nostyle li {
 		height:20px;
 		padding:5px;
+		margin:0;
 		float:left;
 		display:block;
+	}
+	
+	ul.nostyle li div table {
+		margin:0;
+		padding:0;
 	}
 </style>
 <?php
 			$echo = ob_get_clean();
 
 		}
-		$valign = get_option( 'vkapi_like_bottom' );
-		if ( $valign ) {
-			$args .= $echo;
-			return $args;
-		} else {
-			$echo .= $args;
-			return $echo;
-		}
+		$temp = get_option( 'vkapi_like_top' );
+		if ( $temp ) $args = $echo . $args;
+		$temp = get_option( 'vkapi_like_bottom' );
+		if ( $temp ) $args .= $echo;
+		return $args;
 	}
 
 	function social_button_start(){
-		echo '<!--noindex--><ul class="nostyle" style="margin:'.get_option("vkapi_align").'">';
+		echo '<!--noindex--><ul class="nostyle" style="float:'.get_option("vkapi_align").'">';
 	}
 
 	function social_button_end(){
@@ -766,13 +769,13 @@ class VK_api {
 				$vkapi_descr = str_replace( array("\r\n", "\n", "\r") , ' <br />', do_shortcode($post->post_excerpt) );
 				$vkapi_descr = strip_tags( $vkapi_descr );
 				$vkapi_descr = addslashes ( $vkapi_descr );
-				$vkapi_descr = substr( $vkapi_descr, 0, 139 );
+				$vkapi_descr = mb_substr( $vkapi_descr, 0, 139 );
 				$vkapi_url = get_permalink();
 				$vkapi_text = str_replace( array("\r\n", "\n", "\r") , ' <br />', do_shortcode($post->post_content) );
 				$vkapi_image = self::first_postimage($vkapi_text);
 				$vkapi_text = strip_tags( $vkapi_text );
 				$vkapi_text = addslashes ( $vkapi_text );
-				$vkapi_text = substr( $vkapi_text, 0, 139 );
+				$vkapi_text = mb_substr( $vkapi_text, 0, 139 );
 				// pageImage
 				echo "
 						<script type=\"text/javascript\">
@@ -802,7 +805,7 @@ class VK_api {
 				$vkapi_image = self::first_postimage($vkapi_descr);
 				$vkapi_descr = strip_tags( $vkapi_descr );
 				$vkapi_descr = addslashes ( $vkapi_descr );
-				$vkapi_descr = substr( $vkapi_descr, 0, 139 );
+				$vkapi_descr = mb_substr( $vkapi_descr, 0, 139 );
 				$vkapi_type = get_option( 'vkapi_share_type' );
 				$vkapi_text = get_option( 'vkapi_share_text' );
 				$vkapi_text = addslashes ( $vkapi_text );
@@ -971,7 +974,7 @@ class VK_api {
 
 
 	##### start meta_box
-	function save_postdata( $post_id ) {
+	function save_postdata( $post_id, $post ) {
 		// check
 		if ( isset($_REQUEST['vkapi_noncename']) ) {
 			if ( !wp_verify_nonce( $_REQUEST['vkapi_noncename'], plugin_basename(__FILE__) ))
@@ -989,7 +992,6 @@ class VK_api {
 
 			// do submit box
 			if ( $_REQUEST['vkapi_crosspost_submit'] == '1' ) {
-				global $post;
 				$vk_at = get_option('vkapi_at');
 				if ( empty($vk_at) ) return true;
 				$vk_group = get_option('vkapi_vk_group');
@@ -1015,7 +1017,7 @@ class VK_api {
 				$vkapi_text = addslashes ( $vkapi_text );
 				$vkapi_text = str_replace( array("\r\n", "\n", "\r") , ' ', $vkapi_text );
 				if ( !(empty($_REQUEST['vkapi_crosspost_length']) || $_REQUEST['vkapi_crosspost_length'] == '0') )
-					$vkapi_text = substr( $vkapi_text, 0, (int)$_REQUEST['vkapi_crosspost_length'] );
+					$vkapi_text = mb_substr( $vkapi_text, 0, (int)$_REQUEST['vkapi_crosspost_length'] );
 				$vkapi_text = html_entity_decode($vkapi_text, ENT_QUOTES);
 				if ( $_REQUEST['vkapi_crosspost_link'] == '1' )
 					$att[] = get_permalink();
@@ -1039,7 +1041,7 @@ class VK_api {
 					$echo = 'processing';
 				if ( isset($resp['response']['post_id']) )
 					$echo = 'posted';
-				add_action ( 'admin_notices', create_function( '','echo \'<div class="updated"><p>Cross-Post: '.$echo.'</p></div>\';' ) );
+				add_action ( 'wp_footer', create_function( '','echo \'<div class="updated"><p>Cross-Post: '.$echo.'</p></div>\';' ) );
 				return true;
 			}
 		};
@@ -1398,13 +1400,13 @@ class VK_api {
 		$vkapi_title = addslashes ( $post->post_title );
 		$vkapi_descr = str_replace( array("\r\n", "\n", "\r") , ' <br />', $post->post_excerpt );
 		$vkapi_descr = strip_tags( $vkapi_descr );
-		$vkapi_descr = substr( $vkapi_descr, 0, 130 );
+		$vkapi_descr = mb_substr( $vkapi_descr, 0, 130 );
 		$vkapi_descr = addslashes ( $vkapi_descr );
 		$vkapi_url = get_permalink();
 		$vkapi_text = str_replace( array("\r\n", "\n", "\r") , ' <br />', $post->post_content );
 		//$vkapi_image = self::first_postimage($vkapi_text); pageImage: '$vkapi_image',
 		$vkapi_text = strip_tags( $vkapi_text );
-		$vkapi_text = substr( $vkapi_text, 0, 130 );
+		$vkapi_text = mb_substr( $vkapi_text, 0, 130 );
 		$vkapi_text = addslashes ( $vkapi_text );
 		// pageImage
 		$echo .= "
@@ -1486,11 +1488,13 @@ class VK_api {
 		$data = wp_remote_get(self::$vkapi_m.'photos.getWallUploadServer?'.$query);
 		if (is_wp_error($data)) {
 			$echo = $data->get_error_message();
+			add_action ( 'wp_footer', create_function( '','echo \'<div class="error"><p>Cross-Post: '.$echo.'</p></div>\';' ) );
 			return false;
 		};
 		$resp = json_decode($data['body'],true);
 		if (!$resp['response']['upload_url']) {
 			$echo = '!$resp[\'response\'][\'upload_url\']';
+			add_action ( 'wp_footer', create_function( '','echo \'<div class="error"><p>Cross-Post: '.$echo.'</p></div>\';' ) );
 			return false;
 		};
 		// Upload photo to server
@@ -1504,6 +1508,7 @@ class VK_api {
 		));
 		if (is_wp_error($data)) {
 			$echo = $data->get_error_message();
+			add_action ( 'wp_footer', create_function( '','echo \'<div class="error"><p>Cross-Post: '.$echo.'</p></div>\';' ) );
 			return false;
 		};
 		$resp = json_decode($data['body'],true);
@@ -1521,11 +1526,15 @@ class VK_api {
 		$data = wp_remote_get(self::$vkapi_m.'photos.saveWallPhoto?'.$query);
 		if (is_wp_error($data)) {
 			$echo = $data->get_error_message();
+			add_action ( 'wp_footer', create_function( '','echo \'<div class="error"><p>Cross-Post: '.$echo.'</p></div>\';' ) );
 			return false;
 		};
 		$resp = json_decode($data['body'],true);
-		if (!$resp['response'])
+		if (!$resp['response']) {
 			$echo = '!$resp[\'response\']';
+			add_action ( 'wp_footer', create_function( '','echo \'<div class="error"><p>Cross-Post: '.$echo.'</p></div>\';' ) );
+			return false;
+		};
 		// Return
 		return $resp['response']['0']['id'];
 	}
@@ -1731,30 +1740,34 @@ class VKAPI_Login extends WP_Widget {
 				$vkapi_meta_ava = get_user_meta($vkapi_wp_id, 'vkapi_ava', TRUE);
 				if ( !empty( $vkapi_meta_ava{0} ) ) {
 					echo "<div style='float:left; padding-right:20px'><img alt='' src='$vkapi_meta_ava' class='avatar avatar-75' height='75' width='75' /></div>";
-					echo "<br />\r\n<div>";
-					echo "<a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , $this->plugin_domain ) . "</a><br /><br />";
-					echo "<a href='" . wp_logout_url( home_url($_SERVER['REQUEST_URI']) ) . "' title=''>" . __( 'Logout' , $this->plugin_domain ) . "</a><br /><br /></div>";
+					echo "\r\n<div>";
+					echo '<ul style="list-style:none">';
+					echo "<li><a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , $this->plugin_domain ) . "</a></li>";
+					echo "<li><a href='" . wp_logout_url( home_url($_SERVER['REQUEST_URI']) ) . "' title=''>" . __( 'Logout' , $this->plugin_domain ) . "</a></li></div>";
 				} else {
 					echo "<div style='float:left; padding-right:20px'>" . get_avatar( $vkapi_wp_id, 75 ) . "</div>";
-					echo "<br />\r\n<div>";
-					echo "<a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , $this->plugin_domain ) . "</a><br /><br />";
-					echo "<a href='" . wp_logout_url( home_url($_SERVER['REQUEST_URI']) ) . "' title=''>" . __( 'Logout' , $this->plugin_domain ) . "</a><br /><br /></div>";
+					echo "\r\n<div>";
+					echo '<ul style="list-style:none">';
+					echo "<li><a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __( 'Profile' , $this->plugin_domain ) . "</a></li>";
+					echo "<li><a href='" . wp_logout_url( home_url($_SERVER['REQUEST_URI']) ) . "' title=''>" . __( 'Logout' , $this->plugin_domain ) . "</a></li></div>";
 				}
 		} else {
 			$this->vkapi_link_vk();
 		}
-	echo '</div>' . $after_widget;
+	echo '</ul></div>' . $after_widget;
 	}
 
 	function vkapi_link_vk () {
 		$vkapi_url = get_bloginfo('wpurl');
 		echo '<button style="display: none" id="submit" class="vkapi_vk_widget" vkapi_url="'.$vkapi_url.'"></button>';
-		echo '<a href="' . wp_login_url( home_url($_SERVER['REQUEST_URI']) ) . '" title="">' . __( 'Login' , $this->plugin_domain ) . '</a>';
-		echo '<br /><br />';
+		echo '<ul style="list-style:none">';
+		echo '<li><a href="' . wp_login_url( home_url($_SERVER['REQUEST_URI']) ) . '" title="">' . __( 'Login' , $this->plugin_domain ) . '</a></li>';
+		echo '<li>';
 		echo wp_register( '','',home_url($_SERVER['REQUEST_URI']) );
-		echo '<br /><br />
+		echo '</li>';
+		echo '<li>
 		<div id="vkapi_status"></div>
-		<div id="login_button" style="padding:0px;border:0px;width:125px;" onclick="VK.Auth.getLoginStatus(onSignon)"><a>ВойтиВКонтакте</a></div>
+		<div id="login_button" style="padding:0px;border:0px;width:125px;" onclick="VK.Auth.getLoginStatus(onSignon)"><a>ВойтиВКонтакте</a></div></li>
 		<style type="text/css">
 			#login_button td, #login_button tr {
 				padding:0px !important;
@@ -1762,7 +1775,7 @@ class VKAPI_Login extends WP_Widget {
 				vertical-align:top !important;
 			}
 		</style>
-		<script language="javascript">
+		<script type="text/javascript">
 			VK.UI.button("login_button");
 		</script>
 		<div style="display:none" id="vk_auth"></div>

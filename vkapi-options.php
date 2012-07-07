@@ -258,7 +258,7 @@
 	</tr>
 						<!-- Mail.ru -->
 	<tr valign="top">
-		<td class="section-title" colspan="6"><h3><?php _e('Mail.ru button:', self::$plugin_domain); $temp = get_option( 'mrc_show_share' ); ?></h3></td>
+		<td class="section-title" colspan="6"><h3><?php _e('Mail.ru+Ok.ru button:', self::$plugin_domain); $temp = get_option( 'mrc_show_share' ); ?></h3></td>
 	</tr>
 	<tr valign="top">
 		<td><select name="mrc_show_share" id="mrc_show_share" class="widefat">
@@ -390,13 +390,13 @@
 					})
 				}
 			);
-			
+
 			$('#vk_at').click(function()
 				{
-					myBuben = window.open(	'http://oauth.vk.com/authorize?client_id=2742215&scope=photos,wall,friends,offline&redirect_uri=blank.html&display=page&response_type=token',
+					myBuben = window.open('http://oauth.vk.com/authorize?client_id=2742215&scope=photos,wall,friends,offline&redirect_uri=blank.html&display=page&response_type=token',
 						'CrossPost',
 						'');
-					setTimeout(myBubenFunc2,1000);						
+					setTimeout(myBubenFunc2,1000);
 				}
 			);
 
@@ -415,7 +415,7 @@
 					setTimeout(myBubenFunc,1000);
 				}
 			}
-			
+
 			function myBubenFunc2() {
 				if ( $('#vk_at_input').val().substring(0,4) == 'http' ) {
 					var parts = $('#vk_at_input').val().substr(31).split("&");
@@ -431,7 +431,7 @@
 				}
 			}
 		});
-		
+
 		function print_r(arr, level) {
 			var print_red_text = "";
 			if(!level) level = 0;
@@ -443,11 +443,11 @@
 					if(typeof(value) == 'object') {
 						print_red_text += level_padding + "'" + item + "' :\n";
 						print_red_text += print_r(value,level+1);
-				} 
-					else 
+				}
+					else
 						print_red_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
 				}
-			} 
+			}
 
 			else  print_red_text = "===>"+arr+"<===("+typeof(arr)+")";
 			return print_red_text;
