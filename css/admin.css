@@ -1,21 +1,13 @@
-.form-table td {
-	padding:10px;
-}
-
-textarea.mid-text {
+textarea {
 	width:75%;
 }
 
-.form-table .section-title {
-	margin:0; padding:0;
-}
-
-.widefat, input {
+ input {
 	border-color: #999 !important;
 }
 
 #wpbody {
-	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/admin-bg.jpg) no-repeat right top;
+	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/admin-bg.jpg) no-repeat right 21px;
 }
 
 #vkapi_icon32 {
@@ -35,17 +27,6 @@ textarea.mid-text {
 .contextual-help-tabs .active a:hover ,
 .contextual-help-tabs a:hover {
 	color:red;
-}
-
-.form-table .section-title h3 {
-	margin:0; padding:5px 10px;
-	background:#DFDFDF url(../../../../wp-admin/images/menu-bits.gif) repeat-x scroll left -379px !important;
-	border:1px solid #999 !important;
-	font-family:font-size:14px; font-weight:700; line-height:18px; color:#464646; text-shadow:#fff 0 1px 0;
-	-moz-border-radius:6px;
-	-khtml-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
 }
 
 .infofooter {
