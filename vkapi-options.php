@@ -1011,7 +1011,7 @@
                 $('#mymenu li').css({color:'#333'});
                 $(this).css({color:'#21759b'});
                 $('div.page').stop().slideUp(100);
-                var speed = 12 * $(page).height();
+                var speed = $(page).height();
                 $(page).slideDown(speed);
             }
         });

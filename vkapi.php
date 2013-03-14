@@ -348,7 +348,7 @@ if (!class_exists('VK_api')) :
         function js_async_tw()
         {
             ?>
-        <script>!function (d, s, id) {
+        <script type="text/javascript">!function (d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
             if (!d.getElementById(id)) {
                 js = d.createElement(s);
@@ -449,11 +449,15 @@ if (!class_exists('VK_api')) :
 				<div class="icon32"><img src="' . self::$plugin_url . 'images/set.png" /></div>
 				<h2 style="margin: 0px 0px 20px 50px">VKontakte API - ' . __('Comments', self::$plugin_domain) . '</h2>
 				<div id="vkapi_comments"></div>
+				<script type="text/javascript" src="//vk.com/js/api/openapi.js"></script>
 				<script type="text/javascript">
 					function VK_Widgets_CommentsBrowse() {
-					    if (VK !== "undefined" ) VK.Widgets.CommentsBrowse(\'vkapi_comments\', { mini: 1});
-						    else setTimeout(VK_Widgets_CommentsBrowse,1000);
-						};
+					    if (VK !== "undefined" )
+					        VK.Widgets.CommentsBrowse(\'vkapi_comments\', { mini: 1});
+						else
+						    setTimeout(VK_Widgets_CommentsBrowse,1000);
+				    };
+				    VK_Widgets_CommentsBrowse();
 				</script>
 			</div>
 			';
@@ -1111,7 +1115,7 @@ if (!class_exists('VK_api')) :
 							<script type=\"text/javascript\">
 								<!--
 									function VK_Share_button_$divid() {
-										if ( typeof VK !== 'undefined' ) {
+										if ( typeof VK !== 'undefined' && typeof VK.Share !== 'undefined') {
 											var temp = Math.random()%1;
 											jQuery('#{$divid}').attr('id',temp);
 											document.getElementById(temp).innerHTML = VK.Share.button({
@@ -1213,7 +1217,7 @@ if (!class_exists('VK_api')) :
 				    type="icon"
 				    size="large"
 				    share_url="' . $url . '"
-				    name="ya-share"> </a>
+				    name="ya-share">&nbsp;</a>
 			    </div>
 			</li>';
         }
@@ -2335,19 +2339,19 @@ class VKAPI_Recommend extends WP_Widget
             echo "<div style=\"width:$vkapi_width\">";
         }
         echo '<div id="' . $vkapi_divid . '">';
-        if ($vkapi_width != '0') {
-            echo '</div>';
-        }
         echo '
 		<script type="text/javascript">
 			function VK_Widgets_Recommended_' . $vkapi_widgetid . '() {
+            if ( typeof VK !== "undefined" )
 				VK.Widgets.Recommended("' . $vkapi_divid . '", {limit: ' . $vkapi_limit . ', period: \'' . $vkapi_period . '\', verb: ' . $vkapi_verb . ', target: "blank"});
-			};
-			if ( typeof VK !== "undefined" )
-				function VK_Widgets_Recommended_' . $vkapi_widgetid . '();
 			else setTimeout(VK_Widgets_Recommended_' . $vkapi_widgetid . ',1000);
+			};
+			VK_Widgets_Recommended_' . $vkapi_widgetid . '();
 		</script>';
-        echo $after_widget;
+        if ($vkapi_width != '0') {
+            echo '</div>';
+        }
+        echo '</div>' . $after_widget;
     }
 
     function update($new_instance, $old_instance)
@@ -2590,14 +2594,13 @@ class VKAPI_Comments extends WP_Widget
 				<div id=\"vkapi_comments\"></div>
 				<script type=\"text/javascript\">
 					function VK_Widgets_CommentsBrowse() {
-						VK.Widgets.CommentsBrowse('vkapi_comments', {
-							{$vkapi_width}
-							limit: '{$vkapi_limit}',
-							{height}: '{$vkapi_height}',
-							mini: 1
-						});
-						if ( typeof VK !== 'undefined' )
-						    VK_Widgets_CommentsBrowse();
+                        if ( typeof VK !== 'undefined' )
+                            VK.Widgets.CommentsBrowse('vkapi_comments', {
+                                {$vkapi_width}
+                                limit: '{$vkapi_limit}',
+                                height: '{$vkapi_height}',
+                                mini: 1
+                            });
 					    else
 					        setTimeout(VK_Widgets_CommentsBrowse,1000);
 					};
@@ -2725,7 +2728,7 @@ class VKAPI_Cloud extends WP_Widget
         pulsateTo: .9,
         wheelZoom: false,
         shadow: '{$shadow}',
-        depth: 1,
+        depth: 1.3,
         minBrightness: .5,
         weight: true,
         weightMode: 'both',
@@ -2905,8 +2908,9 @@ class FBAPI_LikeBox extends WP_Widget
 				data-height="' . $instance['height'] . '"
 				data-show-faces="' . $instance['face'] . '"
 				data-stream="' . $instance['news'] . '"
-				data-header="' . $instance['header'] . '"></div>
-			</div>';
+				data-header="' . $instance['header'] . '">
+			</div>
+		</div>';
         echo $after_widget;
     }
 
