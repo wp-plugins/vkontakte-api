@@ -1249,7 +1249,7 @@ if (!class_exists('VK_api')) :
         function dashboard_widget_function()
         {
             add_action('vkapi_body', array(&$this, 'js_async_openapi'));
-            echo '<!-- <script type="text/javascript" src="https://vk.com/js/api/openapi.js"></script> -->
+            echo '<script type="text/javascript" src="https://vk.com/js/api/openapi.js"></script>
 			<div id="vkapi_groups"></div>
 			<script type="text/javascript">
 				function VK_Widgets_Group() {
@@ -2219,7 +2219,14 @@ class VKAPI_Community extends WP_Widget
         $vkapi_divid .= "_wrapper";
         echo '</div>
 		<script type="text/javascript">
-			VK.Widgets.Group("' . $vkapi_divid . '", {mode: ' . $vkapi_mode . ', ' . $vkapi_width . ' height: "' . $vkapi_height . '"}, ' . $vkapi_gid . ');
+		    function VK_Widgets_Group() {
+	            if (typeof VK != "undefined") {
+    			    VK.Widgets.Group("' . $vkapi_divid . '", {mode: ' . $vkapi_mode . ', ' . $vkapi_width . ' height: "' . $vkapi_height . '"}, ' . $vkapi_gid . ');
+			    } else {
+			        setTimeout(VK_Widgets_Group,1000);
+			    }
+			};
+			VK_Widgets_Group();
 		</script>';
         echo $after_widget;
     }
@@ -2317,7 +2324,7 @@ class VKAPI_Recommend extends WP_Widget
     function widget($args, $instance)
     {
         extract($args);
-        $vkapi_widgetid = $args['widget_id'];
+        $vkapi_widgetid = str_replace('-', '_', $args['widget_id']);
         $vkapi_divid = $vkapi_widgetid . '_wrapper';
         $vkapi_limit = $instance['limit'];
         $vkapi_width = $instance['width'];
@@ -2584,9 +2591,9 @@ class VKAPI_Comments extends WP_Widget
 				<script type=\"text/javascript\">
 					function VK_Widgets_CommentsBrowse() {
 						VK.Widgets.CommentsBrowse('vkapi_comments', {
-							width: '$vkapi_width'
-							limit: '$vkapi_limit',
-							height: '$vkapi_height',
+							{$vkapi_width}
+							limit: '{$vkapi_limit}',
+							{height}: '{$vkapi_height}',
 							mini: 1
 						});
 						if ( typeof VK !== 'undefined' )

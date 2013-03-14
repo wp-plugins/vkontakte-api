@@ -1010,8 +1010,8 @@
             if ($(page).css('display') == 'none') {
                 $('#mymenu li').css({color:'#333'});
                 $(this).css({color:'#21759b'});
-                $('div.page').stop().slideUp(400);
-                var speed = 3 * $(page).height();
+                $('div.page').stop().slideUp(100);
+                var speed = 12 * $(page).height();
                 $(page).slideDown(speed);
             }
         });
