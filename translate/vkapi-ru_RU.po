@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vkontakte API\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-13 18:00+0200\n"
-"PO-Revision-Date: 2013-01-13 18:14+0200\n"
+"POT-Creation-Date: 2013-04-01 12:13+0200\n"
+"PO-Revision-Date: 2013-04-01 12:15+0200\n"
 "Last-Translator: www.kowack.info <kowack@gmail.com>\n"
 "Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
 "Language: ru_UA\n"
@@ -17,43 +17,299 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 "X-Poedit-SearchPath-1: .\n"
 
-#: ../vkapi-mail.php:23 ../vkapi-mail.php:39
-msgid "VKapi: Page has just commented!"
-msgstr "VKapi: Страницу только что прокомментировали."
+#: ../vkapi.php:152
+#, php-format
+msgid "VKontakte API Plugin needs <a href=\"%s\">configuration</a>."
+msgstr "VKontakte API Plugin нуждается в <a href=\"%s\">настройке</a>."
 
-#: ../vkapi-mail.php:25 ../vkapi-mail.php:41
-msgid "Comment: "
-msgstr "Комментарий:"
-
-#: ../vkapi-mail.php:26 ../vkapi-mail.php:42 ../vkapi-mail.php:70
-msgid "[VKapi] Website:"
-msgstr "[VKapi] Сайт:"
-
-#: ../vkapi-mail.php:67
-msgid "FBapi: Page has just commented!"
-msgstr "VKAPI: С"
-
-#: ../vkapi-options.php:4 ../vkapi.php:512 ../vkapi.php:513 ../vkapi.php:1940
+#: ../vkapi.php:379 ../vkapi.php:380 ../vkapi.php:680 ../php/options.php:3
 msgid "Settings"
 msgstr "Настройки"
 
-#: ../vkapi-options.php:14
-msgid "Other"
-msgstr "Остальное"
+#: ../vkapi.php:388 ../vkapi.php:503 ../vkapi.php:510 ../vkapi.php:966
+#: ../vkapi.php:2001
+msgid "Comments"
+msgstr "Комментарии"
 
-#: ../vkapi-options.php:17 ../vkapi.php:690 ../vkapi.php:773 ../vkapi.php:1651
+#: ../vkapi.php:389 ../vkapi.php:2486 ../vkapi.php:2487
+msgid "Last Comments"
+msgstr "Последнии комментарии"
+
+#: ../vkapi.php:437
+msgid "Already crossposted."
+msgstr ""
+
+#: ../vkapi.php:444
+msgid "Access Token is empty."
+msgstr ""
+
+#: ../vkapi.php:517 ../vkapi.php:524
+msgid "Social buttons"
+msgstr "Социальные кнопки"
+
+#: ../vkapi.php:565
+msgid "VKontakte Profile"
+msgstr "Профиль ВКонтакте"
+
+#: ../vkapi.php:634
+msgid "CrossPost to VK.com Wall"
+msgstr "CrossPost на ВК стену"
+
+#: ../vkapi.php:636
+msgid "Text length:"
+msgstr "Длина текста:"
+
+#: ../vkapi.php:646
+msgid "Show Post link:"
+msgstr "Показывать ссылку на пост:"
+
+#: ../vkapi.php:757
+msgid "Comments:"
+msgstr "Комментарии:"
+
+#: ../vkapi.php:775 ../vkapi.php:817 ../vkapi.php:997 ../php/options.php:74
 msgid "VKontakte"
 msgstr "ВКонтакте"
 
-#: ../vkapi-options.php:20 ../vkapi.php:708
+#: ../vkapi.php:788 ../php/options.php:77
 msgid "Facebook"
 msgstr "Facebook"
 
-#: ../vkapi-options.php:23
+#: ../vkapi.php:804
+msgid "Site"
+msgstr "Обычные"
+
+#: ../vkapi.php:1034
+#, fuzzy
+msgid "Connected User Id: "
+msgstr "Присоеденённый User Id : "
+
+#: ../vkapi.php:1039
+msgid "Disconnect from VKontakte"
+msgstr "Отсоединить аккаунт ВКонтакте"
+
+#: ../vkapi.php:1990
+msgid "Main"
+msgstr "Обзор"
+
+#: ../vkapi.php:2013
+msgid "Like button"
+msgstr "Кнопка \"Мне нравиться\""
+
+#: ../vkapi.php:2023
+msgid "Decor"
+msgstr "Декор"
+
+#: ../vkapi.php:2035
+msgid "No Plugin Options"
+msgstr "Не связаное с плагином"
+
+#: ../vkapi.php:2044
+msgid "Help"
+msgstr "Помощь"
+
+#: ../vkapi.php:2057 ../vkapi.php:2070 ../php/options.php:283
+msgid "Enable"
+msgstr "Включено"
+
+#: ../vkapi.php:2060 ../vkapi.php:2073 ../php/options.php:285
+msgid "Disable"
+msgstr "Выключено"
+
+#: ../vkapi.php:2091
+msgid "Information about VKontakte group"
+msgstr "Информация о группе Вконтакте"
+
+#: ../vkapi.php:2095
+msgid "Community Users"
+msgstr "Группа"
+
+#: ../vkapi.php:2158 ../vkapi.php:2280 ../vkapi.php:2545 ../vkapi.php:2703
+#: ../vkapi.php:2864
+msgid "Title:"
+msgstr "Название:"
+
+#: ../vkapi.php:2167
+msgid "ID of group (can be seen by reference to statistics):"
+msgstr "ID группы (видно по ссылке на статистику):"
+
+#: ../vkapi.php:2177 ../vkapi.php:2296 ../vkapi.php:2564 ../vkapi.php:2714
+#: ../vkapi.php:2880
+msgid "Width:"
+msgstr "Ширина:"
+
+#: ../vkapi.php:2185 ../vkapi.php:2572 ../vkapi.php:2725 ../vkapi.php:2888
+msgid "Height:"
+msgstr "Высота:"
+
+#: ../vkapi.php:2194
+msgid "Layout:"
+msgstr "Тип виджета:"
+
+#: ../vkapi.php:2199
+msgid "Members"
+msgstr "Список пользователей"
+
+#: ../vkapi.php:2203
+msgid "News"
+msgstr "Новости группы"
+
+#: ../vkapi.php:2207
+msgid "Only Name"
+msgstr "Только название"
+
+#: ../vkapi.php:2227
+msgid "Top site on basis of \"I like\" statistics"
+msgstr "Топ сайта на основе \"Мне нравиться\""
+
+#: ../vkapi.php:2229
+msgid "Recommends"
+msgstr "Популярное"
+
+#: ../vkapi.php:2288
+msgid "Number of posts:"
+msgstr "Количество:"
+
+#: ../vkapi.php:2306
+msgid "Selection period:"
+msgstr "Период:"
+
+#: ../vkapi.php:2313
+msgid "Day"
+msgstr "Сутки"
+
+#: ../vkapi.php:2317
+msgid "Week"
+msgstr "Неделя"
+
+#: ../vkapi.php:2321
+msgid "Month"
+msgstr "Месяц"
+
+#: ../vkapi.php:2329
+msgid "Formulation:"
+msgstr "Формулировка:"
+
+#: ../vkapi.php:2336
+msgid "... people like this"
+msgstr "Понравилось ..."
+
+#: ../vkapi.php:2340
+msgid "... people find it intersting"
+msgstr "Интересно ..."
+
+#: ../vkapi.php:2358
+msgid "Login widget"
+msgstr "Виджет входа"
+
+#: ../vkapi.php:2359 ../vkapi.php:2412
+msgid "Login"
+msgstr "Вход"
+
+#: ../vkapi.php:2380 ../vkapi.php:2392
+msgid "Profile"
+msgstr "Профиль"
+
+#: ../vkapi.php:2384 ../vkapi.php:2396
+msgid "Logout"
+msgstr "Выход"
+
+#: ../vkapi.php:2466
+msgid "Message:"
+msgstr "Сообщение:"
+
+#: ../vkapi.php:2554
+msgid "Number of comments:"
+msgstr "Количество комментариев:"
+
+#: ../vkapi.php:2594
+msgid "HTML5 Cloud of tags and cats"
+msgstr ""
+
+#: ../vkapi.php:2596
+msgid "Tags Cloud"
+msgstr "Облако тегов"
+
+#: ../vkapi.php:2736
+msgid "Color of text:"
+msgstr "Цвет текста:"
+
+#: ../vkapi.php:2747
+msgid "Color of active link:"
+msgstr "Цвет активной ссылки:"
+
+#: ../vkapi.php:2758
+msgid "Color of shadow:"
+msgstr "Цвет тени:"
+
+#: ../vkapi.php:2769
+msgid "Show tags:"
+msgstr "Показывать теги:"
+
+#: ../vkapi.php:2775 ../vkapi.php:2791 ../php/options.php:145
+#: ../php/options.php:303 ../php/options.php:409 ../php/options.php:575
+#: ../php/options.php:615 ../php/options.php:653 ../php/options.php:685
+#: ../php/options.php:725 ../php/options.php:757
+msgid "Show"
+msgstr "Показывать"
+
+#: ../vkapi.php:2778 ../vkapi.php:2794 ../php/options.php:149
+#: ../php/options.php:305 ../php/options.php:410 ../php/options.php:579
+#: ../php/options.php:617 ../php/options.php:655 ../php/options.php:687
+#: ../php/options.php:727 ../php/options.php:759
+msgid "Dont show"
+msgstr "Не показывать"
+
+#: ../vkapi.php:2785
+msgid "Show categories:"
+msgstr "Показывать категории:"
+
+#: ../vkapi.php:2813
+msgid "Information about Facebook group"
+msgstr "Информация о группе Facebook"
+
+#: ../vkapi.php:2815
+msgid "FBapi: Community Users"
+msgstr "FBapi: Сообщество"
+
+#: ../vkapi.php:2872
+msgid "Facebook Page URL:"
+msgstr "URL Facebook страницы:"
+
+#: ../vkapi.php:2896
+msgid "Show Faces:"
+msgstr "Показвывать лица:"
+
+#: ../vkapi.php:2904
+msgid "Stream:"
+msgstr "Обновление:"
+
+#: ../vkapi.php:2912
+msgid "Header:"
+msgstr "Заголовок:"
+
+#: ../php/mail.php:27 ../php/mail.php:45 ../php/mail.php:78
+msgid "Page has just commented!"
+msgstr "Страницу только что прокомментировали."
+
+#: ../php/mail.php:29 ../php/mail.php:47
+msgid "Comment: "
+msgstr "Комментарий:"
+
+#: ../php/mail.php:30 ../php/mail.php:48 ../php/mail.php:82
+#, fuzzy
+msgid "Website:"
+msgstr "Сайт:"
+
+#: ../php/options.php:80
 msgid "Socialize"
 msgstr "Соц.кнопки"
 
-#: ../vkapi-options.php:33
+#: ../php/options.php:83
+msgid "Other"
+msgstr "Остальное"
+
+#: ../php/options.php:99
 #, php-format
 msgid ""
 "If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a "
@@ -64,7 +320,7 @@ msgstr ""
 "по этой <a href='%s' target='_blank'>ссылке</a> и зарегестрируйте ваш сайт"
 "(блог). Это просто!"
 
-#: ../vkapi-options.php:43
+#: ../php/options.php:109
 #, php-format
 msgid ""
 "If don't remember : go this <a href=\"%s\" target=\"_blank\">link</a> and "
@@ -73,230 +329,195 @@ msgstr ""
 "Если не помните : перейдите по этой <a href='%s' target='_blank'>ссылке</a> "
 "и выбирите нужное приложение."
 
-#: ../vkapi-options.php:51
+#: ../php/options.php:118
 msgid "Application ID:"
 msgstr "ID приложения:"
 
-#: ../vkapi-options.php:58
+#: ../php/options.php:125
 msgid "Secure key:"
 msgstr "Защищенный ключ:"
 
-#: ../vkapi-options.php:68
+#: ../php/options.php:134
 msgid "VKontakte Comments:"
 msgstr "Комментарии ВКонтакте:"
 
-#: ../vkapi-options.php:76 ../vkapi-options.php:222 ../vkapi-options.php:325
-#: ../vkapi-options.php:453 ../vkapi-options.php:527 ../vkapi-options.php:563
-#: ../vkapi-options.php:594 ../vkapi-options.php:632 ../vkapi-options.php:663
-#: ../vkapi.php:2854 ../vkapi.php:2873
-msgid "Show"
-msgstr "Показывать"
-
-#: ../vkapi-options.php:78 ../vkapi-options.php:224 ../vkapi-options.php:326
-#: ../vkapi-options.php:457 ../vkapi-options.php:529 ../vkapi-options.php:565
-#: ../vkapi-options.php:596 ../vkapi-options.php:634 ../vkapi-options.php:665
-#: ../vkapi.php:2858 ../vkapi.php:2877
-msgid "Dont show"
-msgstr "Не показывать"
-
-#: ../vkapi-options.php:86
+#: ../php/options.php:157
 msgid "Height of widget(0=auto):"
 msgstr "Высота виджета (0=авто):"
 
-#: ../vkapi-options.php:95
+#: ../php/options.php:167
 msgid "Block width in pixels(>300):"
 msgstr "Ширина блока в пикселях (>300):"
 
-#: ../vkapi-options.php:104
+#: ../php/options.php:177
 msgid "Number of comments on the page (5-100):"
 msgstr "Количество коментариев на странице (5-100):"
 
-#: ../vkapi-options.php:115
+#: ../php/options.php:189
 msgid "AutoPublish to vk user wall"
 msgstr "Автопубликация на стене пользователя"
 
-#: ../vkapi-options.php:125 ../vkapi-options.php:466 ../vkapi-options.php:692
+#: ../php/options.php:200 ../php/options.php:588 ../php/options.php:788
 #, php-format
 msgid "Show first %s comments"
 msgstr "Первыми показывать комментарии %s"
 
-#: ../vkapi-options.php:142
+#: ../php/options.php:217
 msgid "Hide WordPress Comments"
 msgstr "Убрать комметарии WordPress-а"
 
-#: ../vkapi-options.php:154
+#: ../php/options.php:229
 msgid "Media in comments:"
 msgstr "Медиа в комментариях:"
 
-#: ../vkapi-options.php:157
+#: ../php/options.php:233
 msgid "Graffiti:"
 msgstr "Графити:"
 
-#: ../vkapi-options.php:163
+#: ../php/options.php:240
 msgid "Photo:"
 msgstr "Фото:"
 
-#: ../vkapi-options.php:169
+#: ../php/options.php:247
 msgid "Audio:"
 msgstr "Аудио:"
 
-#: ../vkapi-options.php:177
+#: ../php/options.php:256
 msgid "Video:"
 msgstr "Видео:"
 
-#: ../vkapi-options.php:183
+#: ../php/options.php:263
 msgid "Link:"
 msgstr "Ссылки:"
 
-#: ../vkapi-options.php:193
+#: ../php/options.php:273
 msgid "Sign On: "
 msgstr "Вход:"
 
-#: ../vkapi-options.php:202 ../vkapi.php:1595 ../vkapi.php:1616
-msgid "Enable"
-msgstr "Включено"
-
-#: ../vkapi-options.php:204 ../vkapi.php:1599 ../vkapi.php:1620
-msgid "Disable"
-msgstr "Выключено"
-
-#: ../vkapi-options.php:213
+#: ../php/options.php:293
 msgid "Like button: "
 msgstr "Кнопка \"Мне нравится\":"
 
-#: ../vkapi-options.php:231
+#: ../php/options.php:312
 msgid "Show before post:"
 msgstr "Показывать перед постом:"
 
-#: ../vkapi-options.php:241
+#: ../php/options.php:323
 msgid "Show after post:"
 msgstr "Показывать после поста:"
 
-#: ../vkapi-options.php:251
+#: ../php/options.php:334
 msgid "Align:"
 msgstr "Позиция:"
 
-#: ../vkapi-options.php:258
+#: ../php/options.php:341
 msgid "right"
 msgstr "справа"
 
-#: ../vkapi-options.php:259
+#: ../php/options.php:342
 msgid "left"
 msgstr "слева"
 
-#: ../vkapi-options.php:264 ../vkapi-options.php:330
+#: ../php/options.php:347 ../php/options.php:414
 msgid "Button style:"
 msgstr "Стиль кнопки:"
 
-#: ../vkapi-options.php:272
+#: ../php/options.php:355
 msgid "Button with text counter"
 msgstr "Кнопка с текстовым счётчиком"
 
-#: ../vkapi-options.php:276
+#: ../php/options.php:359
 msgid "Button with mini counter"
 msgstr "Кнопка с миниатюрным счётчиком"
 
-#: ../vkapi-options.php:280
+#: ../php/options.php:363
 msgid "Mini button"
 msgstr "Миниатюрная кнопка"
 
-#: ../vkapi-options.php:284
+#: ../php/options.php:367
 msgid "Mini button with counter at the top"
 msgstr "Миниатюрная кнопка, счётчик сверху"
 
-#: ../vkapi-options.php:291
+#: ../php/options.php:374
 msgid "Statement:"
 msgstr "Формулировка:"
 
-#: ../vkapi-options.php:297
+#: ../php/options.php:380
 msgid "I like"
 msgstr "Мне нравится"
 
-#: ../vkapi-options.php:298
+#: ../php/options.php:381
 msgid "It's interesting"
 msgstr "Это интересно"
 
-#: ../vkapi-options.php:303 ../vkapi-options.php:364 ../vkapi-options.php:536
-#: ../vkapi-options.php:572 ../vkapi-options.php:603 ../vkapi-options.php:641
-#: ../vkapi-options.php:672
+#: ../php/options.php:386 ../php/options.php:449 ../php/options.php:624
+#: ../php/options.php:662 ../php/options.php:694 ../php/options.php:734
+#: ../php/options.php:766
 msgid "Show in Categories page and Home:"
 msgstr "Показывать в Категориях и на Главной:"
 
-#: ../vkapi-options.php:317
+#: ../php/options.php:400
 msgid "Share button: "
 msgstr "Кнопка \"Сохранить\":"
 
-#: ../vkapi-options.php:336
+#: ../php/options.php:420
 msgid "Button"
 msgstr "Кнопка"
 
-#: ../vkapi-options.php:338
+#: ../php/options.php:422
 msgid "Button without a Counter"
 msgstr "Кнопка без счетчика"
 
-#: ../vkapi-options.php:342
+#: ../php/options.php:426
 msgid "Button Right Angles"
 msgstr "Кнопка Прямые углы"
 
-#: ../vkapi-options.php:346
+#: ../php/options.php:430
 msgid "Button without a Counter Right Angles"
 msgstr "Кнопка без счетчика Прямые углы"
 
-#: ../vkapi-options.php:349
+#: ../php/options.php:433
 msgid "Link"
 msgstr "Ссылка"
 
-#: ../vkapi-options.php:351
+#: ../php/options.php:435
 msgid "Link without an Icon"
 msgstr "Ссылка без иконки"
 
-#: ../vkapi-options.php:357
+#: ../php/options.php:441
 msgid "Text on the button:"
 msgstr "Текст на кнопке"
 
-#: ../vkapi-options.php:378
+#: ../php/options.php:463
 msgid "CrossPost: "
 msgstr ""
 
-#: ../vkapi-options.php:381
+#: ../php/options.php:467
 msgid "Group ID:"
 msgstr "ID группы или публичной страницы:"
 
-#: ../vkapi-options.php:393
-#, php-format
+#: ../php/options.php:479
 msgid ""
-"%sClick on the line, and then cut out the address bar (as a whole) and paste "
-"into this field:"
+"Click me, and then cut out the address bar (as a whole) and paste into this "
+"field:"
 msgstr ""
-"%sКликни по надписи, а затем вырежьте адресную строку(целиком) и вставьте в "
+"Кликни по надписи, а затем вырежьте адресную строку(целиком) и вставьте в "
 "это поле:"
 
-#: ../vkapi-options.php:411
+#: ../php/options.php:493
 msgid "Enable by default:"
 msgstr "Включить по умолчанию:"
 
-#: ../vkapi-options.php:421 ../vkapi.php:2028
-msgid "Text length:"
-msgstr "Длина текста:"
+#: ../php/options.php:504
+#, fuzzy
+msgid "Text length(0=unlimited):"
+msgstr "Высота виджета (0=неограничено):"
 
-#: ../vkapi-options.php:428
+#: ../php/options.php:513
 msgid "Show link:"
 msgstr "Добавить ссылку:"
 
-#: ../vkapi-options.php:443
-msgid "FaceBook Comments: "
-msgstr "Комментарии FaceBook:"
-
-#: ../vkapi-options.php:486
-#, php-format
-msgid "Admin ID %s (click me)"
-msgstr "ID админа %s (Кликни по надписи)"
-
-#: ../vkapi-options.php:505
-msgid "Facebook Like button: "
-msgstr "Facebook кнопка \"Мне нравится\":"
-
-#: ../vkapi-options.php:512
+#: ../php/options.php:529
 msgid ""
 "Facebook <b>App ID</b> : go this <a href='https://developers.facebook.com/"
 "apps' target='_blank'>link</a> and register your site(blog). It's easy."
@@ -305,324 +526,115 @@ msgstr ""
 "developers.facebook.com/apps' target='_blank'>ссылке</a> и зарегестрируйте "
 "ваш сайт(блог). Это просто!"
 
-#: ../vkapi-options.php:518
+#: ../php/options.php:535
 msgid "Facebook App ID:"
 msgstr "Facebook ID приложения:"
 
-#: ../vkapi-options.php:555
+#: ../php/options.php:547
+#, php-format
+msgid "Admin ID %s (click me)"
+msgstr "ID админа %s (Кликни по надписи)"
+
+#: ../php/options.php:564
+msgid "FaceBook Comments: "
+msgstr "Комментарии FaceBook:"
+
+#: ../php/options.php:606
+msgid "Facebook Like button: "
+msgstr "Facebook кнопка \"Мне нравится\":"
+
+#: ../php/options.php:644
 msgid "PlusOne button:"
 msgstr "Кнопка \"+1\" от Google:"
 
-#: ../vkapi-options.php:586
+#: ../php/options.php:676
 msgid "Tweet button:"
 msgstr "Кнопка \"tweet\":"
 
-#: ../vkapi-options.php:615
+#: ../php/options.php:707
 msgid "Twitter account:"
 msgstr "Twitter аккаунт:"
 
-#: ../vkapi-options.php:624
+#: ../php/options.php:716
 msgid "Mail.ru+Ok.ru button:"
 msgstr "Кнопка Mail.ru и Одноклассники:"
 
-#: ../vkapi-options.php:655
+#: ../php/options.php:748
 msgid "Ya.ru button:"
 msgstr "Я.ru кнопка:"
 
-#: ../vkapi-options.php:709
+#: ../php/options.php:805
 msgid "Decorations: "
 msgstr "Декор:"
 
-#: ../vkapi-options.php:713
+#: ../php/options.php:810
 msgid "Desktop notifications:"
 msgstr "Уведомления на рабочем столе:"
 
-#: ../vkapi-options.php:726
+#: ../php/options.php:823
 msgid "No Plugin Options: "
 msgstr "Не связаное с плагином:"
 
-#: ../vkapi-options.php:729
+#: ../php/options.php:827
 msgid "Custom login logo:"
 msgstr "Включить произвольный логотип входа:"
 
-#: ../vkapi-options.php:736
+#: ../php/options.php:835
 msgid "Path :"
 msgstr "Путь:"
 
-#: ../vkapi-options.php:742
+#: ../php/options.php:840
 msgid "path to image..."
 msgstr "путь к изображению..."
 
-#: ../vkapi-options.php:747
+#: ../php/options.php:847
 msgid "Disable Revision Post Save:"
 msgstr ""
 
-#: ../vkapi-options.php:765
+#: ../php/options.php:866
 msgid "Support project (I need some eating...)"
 msgstr "Поддержка проекта (Мне нужно немного еды ...)"
 
-#: ../vkapi-options.php:786
+#: ../php/options.php:895
 msgid "Thanks..."
 msgstr "Пасибки..."
 
-#: ../vkapi-options.php:900
+#: ../php/options.php:1074
 msgid "Save Changes"
 msgstr " Сохранить настройки "
 
-#: ../vkapi.php:131
-#, php-format
-msgid "VKontakte API Plugin needs <a href=\"%s\">configuration</a>."
-msgstr "VKontakte API Plugin нуждается в <a href=\"%s\">настройке</a>."
+#~ msgid "FBapi: Page has just commented!"
+#~ msgstr "VKAPI: С"
 
-#: ../vkapi.php:461 ../vkapi.php:520 ../vkapi.php:627
-msgid "Comments"
-msgstr "Комментарии"
+#~ msgid "VKapi: Comments"
+#~ msgstr "VKapi: Комментарии"
 
-#: ../vkapi.php:521 ../vkapi.php:2565
-msgid "Last Comments"
-msgstr "Последнии комментарии"
+#~ msgid "VKapi: Login"
+#~ msgstr "VKapi: Вход"
 
-#: ../vkapi.php:616
-msgid "Main"
-msgstr "Обзор"
+#~ msgid "VKapi: Last Comments"
+#~ msgstr "VKapi: Последние комментарии"
 
-#: ../vkapi.php:639
-msgid "Like button"
-msgstr "Кнопка \"Мне нравиться\""
+#~ msgid "Tag color:"
+#~ msgstr "Цвет тега:"
 
-#: ../vkapi.php:649
-msgid "Decor"
-msgstr "Декор"
+#~ msgid "Gradient color:"
+#~ msgstr "Цвет градиента:"
 
-#: ../vkapi.php:661
-msgid "No Plugin Options"
-msgstr "Не связаное с плагином"
+#~ msgid "Highlight color:"
+#~ msgstr "Цвет выделения:"
 
-#: ../vkapi.php:670
-msgid "Help"
-msgstr "Помощь"
+#~ msgid "Speed:"
+#~ msgstr "Скорость:"
 
-#: ../vkapi.php:683
-msgid "Comments:"
-msgstr "Комментарии:"
+#~ msgid "Distribute on sphere:"
+#~ msgstr "Распределение по сфере:"
 
-#: ../vkapi.php:724
-msgid "Site"
-msgstr "Обычные"
+#~ msgid "Evenly"
+#~ msgstr "Равномерно"
 
-#: ../vkapi.php:1553 ../vkapi.php:1560
-msgid "VKapi: Comments"
-msgstr "VKapi: Комментарии"
-
-#: ../vkapi.php:1567 ../vkapi.php:1574
-msgid "VKapi: Social buttons"
-msgstr "VKapi: Социальные кнопки"
-
-#: ../vkapi.php:1682
-msgid "Connected User Id : "
-msgstr "Присоединённый User Id : "
-
-#: ../vkapi.php:1685
-msgid "Disconnect from VKontakte"
-msgstr "Отсоединить аккаунт ВКонтакте"
-
-#: ../vkapi.php:1863
-msgid "VKontakte Profile"
-msgstr "Профиль ВКонтакте"
-
-#: ../vkapi.php:1876
-msgid "`kowack` developer"
-msgstr ""
-
-#: ../vkapi.php:2026
-msgid "CrossPost to VK.com Wall"
-msgstr "CrossPost на ВК стену"
-
-#: ../vkapi.php:2039
-msgid "Show Post link:"
-msgstr "Показывать ссылку на пост:"
-
-#: ../vkapi.php:2196
-msgid "Information about VKontakte group"
-msgstr "Информация о группе Вконтакте"
-
-#: ../vkapi.php:2198
-msgid "VKapi: Community Users"
-msgstr "VKapi: Сообщество"
-
-#: ../vkapi.php:2249 ../vkapi.php:2367 ../vkapi.php:2621 ../vkapi.php:2773
-#: ../vkapi.php:2943
-msgid "Title:"
-msgstr "Название:"
-
-#: ../vkapi.php:2258
-msgid "ID of group (can be seen by reference to statistics):"
-msgstr "ID группы (видно по ссылке на статистику):"
-
-#: ../vkapi.php:2268 ../vkapi.php:2383 ../vkapi.php:2640 ../vkapi.php:2781
-#: ../vkapi.php:2959
-msgid "Width:"
-msgstr "Ширина:"
-
-#: ../vkapi.php:2276 ../vkapi.php:2648 ../vkapi.php:2789 ../vkapi.php:2967
-msgid "Height:"
-msgstr "Высота:"
-
-#: ../vkapi.php:2285
-msgid "Layout:"
-msgstr "Тип виджета:"
-
-#: ../vkapi.php:2290
-msgid "Members"
-msgstr "Список пользователей"
-
-#: ../vkapi.php:2294
-msgid "News"
-msgstr "Новости группы"
-
-#: ../vkapi.php:2298
-msgid "Only Name"
-msgstr "Только название"
-
-#: ../vkapi.php:2318
-msgid "Top site on basis of \"I like\" statistics"
-msgstr "Топ сайта на основе \"Мне нравиться\""
-
-#: ../vkapi.php:2320
-msgid "VKapi: Recommends"
-msgstr "VKapi: Популярное"
-
-#: ../vkapi.php:2375
-msgid "Number of posts:"
-msgstr "Количество:"
-
-#: ../vkapi.php:2393
-msgid "Selection period:"
-msgstr "Период:"
-
-#: ../vkapi.php:2400
-msgid "Day"
-msgstr "Сутки"
-
-#: ../vkapi.php:2404
-msgid "Week"
-msgstr "Неделя"
-
-#: ../vkapi.php:2408
-msgid "Month"
-msgstr "Месяц"
-
-#: ../vkapi.php:2416
-msgid "Formulation:"
-msgstr "Формулировка:"
-
-#: ../vkapi.php:2423
-msgid "... people like this"
-msgstr "Понравилось ..."
-
-#: ../vkapi.php:2427
-msgid "... people find it intersting"
-msgstr "Интересно ..."
-
-#: ../vkapi.php:2445
-msgid "Login widget"
-msgstr "Виджет входа"
-
-#: ../vkapi.php:2446
-msgid "VKapi: Login"
-msgstr "VKapi: Вход"
-
-#: ../vkapi.php:2463 ../vkapi.php:2475
-msgid "Profile"
-msgstr "Профиль"
-
-#: ../vkapi.php:2467 ../vkapi.php:2479
-msgid "Logout"
-msgstr "Выход"
-
-#: ../vkapi.php:2495
-msgid "Login"
-msgstr "Вход"
-
-#: ../vkapi.php:2545
-msgid "Message:"
-msgstr "Сообщение:"
-
-#: ../vkapi.php:2566
-msgid "VKapi: Last Comments"
-msgstr "VKapi: Последние комментарии"
-
-#: ../vkapi.php:2630
-msgid "Number of comments:"
-msgstr "Количество комментариев:"
-
-#: ../vkapi.php:2670
-msgid "Flash cloud of tags and cats"
-msgstr "Флеш-облако тегов и категорий"
-
-#: ../vkapi.php:2672
-msgid "VKapi: Tags Cloud"
-msgstr "VKapi: Облако тегов"
-
-#: ../vkapi.php:2797
-msgid "Tag color:"
-msgstr "Цвет тега:"
-
-#: ../vkapi.php:2805
-msgid "Gradient color:"
-msgstr "Цвет градиента:"
-
-#: ../vkapi.php:2813
-msgid "Highlight color:"
-msgstr "Цвет выделения:"
-
-#: ../vkapi.php:2821
-msgid "Speed:"
-msgstr "Скорость:"
-
-#: ../vkapi.php:2831
-msgid "Distribute on sphere:"
-msgstr "Распределение по сфере:"
-
-#: ../vkapi.php:2838
-msgid "Evenly"
-msgstr "Равномерно"
-
-#: ../vkapi.php:2842
-msgid "Dont evenly"
-msgstr "Неравномерно"
-
-#: ../vkapi.php:2849
-msgid "Show tags:"
-msgstr "Показывать теги:"
-
-#: ../vkapi.php:2866
-msgid "Show categories:"
-msgstr "Показывать категории:"
-
-#: ../vkapi.php:2897
-msgid "Information about Facebook group"
-msgstr "Информация о группе Facebook"
-
-#: ../vkapi.php:2899
-msgid "FBapi: Community Users"
-msgstr "FBapi: Сообщество"
-
-#: ../vkapi.php:2951
-msgid "Facebook Page URL:"
-msgstr "URL Facebook страницы:"
-
-#: ../vkapi.php:2975
-msgid "Show Faces:"
-msgstr "Показвывать лица:"
-
-#: ../vkapi.php:2983
-msgid "Stream:"
-msgstr "Обновление:"
-
-#: ../vkapi.php:2991
-msgid "Header:"
-msgstr "Заголовок:"
+#~ msgid "Dont evenly"
+#~ msgstr "Неравномерно"
 
 #, fuzzy
 #~ msgid "VKapi"
