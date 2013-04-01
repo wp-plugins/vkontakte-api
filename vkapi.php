@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.2
+Version: 3.3
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -30,7 +30,6 @@ Author URI: http://www.kowack.info/
  * стили соц.кнопок
  * соц.кнопки слева\справа\центр
  * ширина блока комментариев в процентах
- * + пост тайп
  * кросспост: твиттер, фейсбук, гугл
  */
 function vkapi_can_start()
@@ -135,9 +134,7 @@ class VK_api
         if ($vkapi_some_revision_d) {
             add_action(
                 'admin_init',
-                function () {
-                    define ('WP_POST_REVISIONS', false);
-                }
+                create_function('', "define ('WP_POST_REVISIONS', false);")
             );
             remove_action('pre_post_update', 'wp_save_post_revision');
         }
@@ -2640,7 +2637,7 @@ class VKAPI_Cloud extends WP_Widget
 <script type='text/javascript'>
     if( ! jQuery('#vkapi_cloud').tagcanvas({
         reverse: true,
-        maxSpeed: .2,
+        maxSpeed: .5,
         initial: [0.3,-0.3],
         minSpeed: .05,
         textColour: '{$textColour}',
@@ -2651,7 +2648,7 @@ class VKAPI_Cloud extends WP_Widget
         shadow: '{$shadow}',
         depth: 1.1,
         minBrightness: .5,
-        weight: true,
+        weight: false,
         weightMode: 'both',
         zoom: .55,
         weightSize: 3
