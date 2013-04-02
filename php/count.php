@@ -1,7 +1,8 @@
 <?php
 if (isset($_POST['social'])) {
     define('WP_USE_THEMES', false);
-    require_once('../../../wp-load.php');    status_header(200);
+    require_once('../../../../wp-load.php');
+    status_header(200);
     nocache_headers();
     switch ($_POST['social']) {
         case 'vk':

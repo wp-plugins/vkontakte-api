@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.3
+Version: 3.4
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -201,7 +201,7 @@ class VK_api
         add_option('ya_show_share', 'false');
         // over
         add_option('vkapi_some_logo_e', '0');
-        add_option('vkapi_some_logo', $this->plugin_url . 'images/wordpress-logo.jpg');
+        add_option('vkapi_some_logo', plugin_dir_url(__FILE__) . 'images/wordpress-logo.jpg');
         add_option('vkapi_some_desktop', '1');
         add_option('vkapi_some_revision_d', '1');
         add_option('vkapi_close_wp', '0');
@@ -1395,6 +1395,7 @@ class VK_api
             margin: 0;
             /*display: inline-block;*/
             float: left;
+            content: '';
         }
 
         ul.nostyle li div table {
@@ -2637,7 +2638,7 @@ class VKAPI_Cloud extends WP_Widget
 <script type='text/javascript'>
     if( ! jQuery('#vkapi_cloud').tagcanvas({
         reverse: true,
-        maxSpeed: .5,
+        // maxSpeed: .5,
         initial: [0.3,-0.3],
         minSpeed: .05,
         textColour: '{$textColour}',
@@ -2648,9 +2649,9 @@ class VKAPI_Cloud extends WP_Widget
         shadow: '{$shadow}',
         depth: 1.1,
         minBrightness: .5,
-        weight: false,
-        weightMode: 'both',
-        zoom: .55,
+        weight: true,
+        weightMode: 'colour',
+        zoom: .888,
         weightSize: 3
     }, 'vkapi_tags')) {
         jQuery('#vkapi_CloudCanvasContainer').hide();

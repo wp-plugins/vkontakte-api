@@ -67,7 +67,7 @@ function vkapi_comm_plus(id, num, last_comment, date, sign) {
         sign:sign
     };
     var url = jQuery('#vkapi_wrapper').attr('data-vkapi-url');
-    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/mail.php', data);
+    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/php/mail.php', data);
     jqxhr.fail(function () {
         setTimeout(vkapi_comm_plus(id, num, last_comment, date, sign), 5000);
     });
@@ -79,7 +79,7 @@ function fbapi_comm_plus(id) {
         id:id
     }
     var url = jQuery('#vkapi_wrapper').attr('data-vkapi-url');
-    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/mail.php', data);
+    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/php/mail.php', data);
     jqxhr.fail(function () {
         setTimeout(fbapi_comm_plus(id), 5000);
     });
@@ -97,7 +97,7 @@ function vkapi_comm_minus(id, num, last_comment, date, sign) {
         sign:sign
     };
     var url = jQuery('#vkapi_wrapper').attr('data-vkapi-url');
-    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/count.php', data);
+    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/php/count.php', data);
     jqxhr.fail(function () {
         setTimeout(vkapi_comm_minus(id, num, last_comment, date, sign), 5000);
     });
@@ -109,7 +109,7 @@ function fbapi_comm_minus(id) {
         id:id
     }
     var url = jQuery("#vkapi_wrapper").attr("data-vkapi-url");
-    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/count.php', data);
+    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/php/count.php', data);
     jqxhr.fail(function () {
         setTimeout(fbapi_comm_minus(id), 5000);
     });
