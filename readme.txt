@@ -68,6 +68,10 @@ Yes, the plugin is completely free, without any advertising. Forever. And ever.
 
 == Changelog ==
 
+= 3.5 =
+Больше опций.
+Улучшения.
+
 = 3.4 =
 Исправления.
 
@@ -217,6 +221,9 @@ Better.
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 3.5 =
+Улучшения.
 
 = 3.4 =
 Исправления.

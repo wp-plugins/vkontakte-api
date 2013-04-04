@@ -518,8 +518,14 @@
         'vkapi_crosspost_link'
     ) ? 'checked' : '';?> /></div>
 </div>
+<div>
+    <div><label for="vkapi_crosspost_signed"><?php _e('Signed by author:', $this->plugin_domain); ?></label></div>
+    <div><input type="checkbox"
+                id="vkapi_crosspost_signed"
+                name="vkapi_crosspost_signed"
+                value="1" <?php echo get_option('vkapi_crosspost_signed') ? 'checked' : '';?> /></div>
 </div>
-
+</div>
 
 <!--facebook-->
 <div id="page_fb"
@@ -887,9 +893,12 @@
 
                 <p>
                     Donate YandexMoney <b>410011126761075</b>
+                </p>
+
+                <p>
                 <iframe frameborder="0" allowtransparency="true" scrolling="no"
-                        src="https://money.yandex.ru/embed/small.xml?uid=410011126761075&amp;button-text=06&amp;button-size=s&amp;button-color=orange&amp;targets=VKontakte+API&amp;default-sum=500&amp;fio=on"
-                        width="auto" height="31"></iframe>
+                        src="https://money.yandex.ru/embed/small.xml?uid=410011126761075&amp;button-text=06&amp;button-size=s&amp;button-color=white&amp;targets=VKontakte+API&amp;default-sum=500"
+                        width="146" height="31"></iframe>
                 </p>
                 <span class="description">
                     <?php _e('Thanks...', $this->plugin_domain) ?>
@@ -1039,6 +1048,10 @@
                 var speed = $(page).height();
                 $(page).slideDown(speed);
             }
+        });
+
+        jQuery.getJSON('http://api.wordpress.org/plugins/info/1.0/vkontakte-api.json&callback=?', function (data) {
+            console.log(data);
         });
     });
 

@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.4
+Version: 3.5
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -27,6 +27,9 @@ Author URI: http://www.kowack.info/
 */
 
 /** todo-dx:
+ * шорткод для соц. кнопок
+ * опцией подпись при кросспостинге
+ * статистика плагина, точно ВП, может ВК
  * стили соц.кнопок
  * соц.кнопки слева\справа\центр
  * ширина блока комментариев в процентах
@@ -44,21 +47,19 @@ function vkapi_can_start()
             "<div class='error'>
                     <p>
                         VKontakte API plugin requires WordPress 3.5.1 or newer.
-                        <a href='{$link}wp-admin/update-core.php'>Please update!</a>
+                        <a href='{$link}/wp-admin/update-core.php'>Please update!</a>
                         (current version is {$wp_version})
                     </p>
 		        </div>";
         }
 
-        // todo-dx: deactivate plugin
         add_action('admin_notices', 'vkapi_notice_update');
 
         return false;
     }
 
     if (!defined('DB_NAME')) {
-        die('Error: Plugin does not support standalone calls.');
-        // todo-dx: redirect somewhere
+        wp_redirect('http://darx.net');
     }
 
     if (isset($VK_api)) {
@@ -123,7 +124,8 @@ class VK_api
         add_filter('login_headerurl', array(&$this, 'login_href')); # login href
         $option = get_option('vkapi_close_wp');
         if ($option) {
-            add_filter('comments_template', array(&$this, 'close_wp'), 1); # vkapi comments only
+            add_filter('comments_template', array(&$this, 'close_wp'), 1); # no wp comments
+            add_action('vkapi_comments_template', array(&$this, 'add_tabs'), 888); # add comments
             add_filter('get_comments_number', array(&$this, 'do_empty'), 1); # recount
         } else {
             add_action('comments_template', array(&$this, 'add_tabs'), 888); # add comments
@@ -221,6 +223,7 @@ class VK_api
         add_option('vkapi_crosspost_default', '0');
         add_option('vkapi_crosspost_length', '888');
         add_option('vkapi_crosspost_link', '0');
+        add_option('vkapi_crosspost_signed', '1');
     }
 
     function uninstall()
@@ -699,11 +702,11 @@ class VK_api
 
     function do_empty()
     {
-        // todo-dx: add fb comment number
         global $post;
         $vkapi_comm = get_post_meta($post->ID, 'vkapi_comm', true);
+        $fbapi_comm = get_post_meta($post->ID, 'fbapi_comm', true);
 
-        return (int)$vkapi_comm;
+        return $vkapi_comm + $fbapi_comm;
     }
 
     function do_non_empty($args)
@@ -739,8 +742,11 @@ class VK_api
             // hook start buttons
             if ($count > 0) {
                 add_action('add_tabs_button_action', array(&$this, 'add_tabs_button_start'), 1);
-                add_action('add_tabs_button_action', array(&$this, 'add_tabs_button_wp'), 5);
                 add_action('add_tabs_button_action', create_function('', 'echo \'</table>\';'), 888);
+            }
+            $show_comm = get_option('vkapi_close_wp');
+            if (!$show_comm) {
+                add_action('add_tabs_button_action', array(&$this, 'add_tabs_button_wp'), 5);
             }
             do_action('add_tabs_button_action');
             do_action('add_tabs_comment_action');
@@ -1395,7 +1401,6 @@ class VK_api
             margin: 0;
             /*display: inline-block;*/
             float: left;
-            content: '';
         }
 
         ul.nostyle li div table {
@@ -1647,8 +1652,7 @@ class VK_api
         $body = array();
         $body['access_token'] = $vk_at;
         $body['from_group'] = 1;
-        // todo-dx: signed optioned
-        $body['signed'] = 1;
+        $body['signed'] = get_option('vkapi_crosspost_signed');
         // todo-dx: crosspost to facebook, check some fb plugin
         $vk_group = get_option('vkapi_vk_group');
         if (!is_numeric($vk_group)) {

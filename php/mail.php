@@ -27,7 +27,7 @@ if (isset($_POST['social'])) {
                 $notify_message = 'VKapi: ' . __('Page has just commented!', 'vkapi') . '<br />';
                 $notify_message .= get_permalink($post_id) . '<br /><br />';
                 $notify_message .= __('Comment: ', 'vkapi') . '<br />' . $last_comment . '<br /><br />';
-                $subject = '[VKapi]' . __('Website:', 'vkapi');
+                $subject = '[VKapi] ' . __('Website:', 'vkapi');
                 $subject .= ' "' . $blog_url . '"';
                 add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
                 wp_mail($email, $subject, $notify_message);
