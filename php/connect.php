@@ -1,9 +1,9 @@
 <?php
 
 define('VKAPI_AT', 'https://api.vk.com/oauth/access_token');
-define('VKAPI_M', 'https://api.vk.com/method/');
+define('VKAPI_SERVER', 'https://api.vk.com/method/');
 define('WP_USE_THEMES', false);
-require_once('../../../wp-load.php');
+require_once('../../../../wp-load.php');
 status_header(200);
 nocache_headers();
 main();
@@ -50,10 +50,10 @@ function authOpenAPIMember()
     return $member;
 }
 
-function doHttpRequest($urlreq)
+function doHttpRequest($url)
 {
     $ch = curl_init(); // start
-    curl_setopt($ch, CURLOPT_URL, "$urlreq"); // where
+    curl_setopt($ch, CURLOPT_URL, "$url"); // where
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // why
     $request_result = curl_exec($ch); // do this
     curl_close($ch); // close, free memory
@@ -62,20 +62,20 @@ function doHttpRequest($urlreq)
 
 function params($params)
 {
-    $pice = array();
+    $peace = array();
     foreach ($params as $k => $v) {
-        $pice[] = $k . '=' . urlencode($v);
+        $peace[] = $k . '=' . urlencode($v);
     }
 
-    return implode('&', $pice);
+    return implode('&', $peace);
 }
 
 function get_VkMethod($method_name, $parameters = array())
 {
     ksort($parameters);
     $parameters = params($parameters);
-    $urlreq = VKAPI_M . $method_name . "?" . $parameters; // . "&access_token=" . $access_token;
-    $result = doHttpRequest($urlreq);
+    $url = VKAPI_SERVER . $method_name . "?" . $parameters;
+    $result = doHttpRequest($url);
     $result = urldecode($result);
     $data = json_decode($result, true);
 
@@ -84,7 +84,6 @@ function get_VkMethod($method_name, $parameters = array())
 
 function main()
 {
-
     $member = authOpenAPIMember();
 
     if ($member === false) {
@@ -123,7 +122,7 @@ function oauth_new_user($id)
     $user = $users[0];
     $data = array();
     $data['user_pass'] = wp_generate_password();
-    $data['user_login'] = 'vk_' . $user['screen_name'];
+    $data['user_login'] = 'vk_id' . $user['uid'];
     $data['user_email'] = $data['user_login'] . '@vk.com';
     $data['nickname'] = $user['nickname'];
     $data['first_name'] = $user['first_name'];
@@ -139,11 +138,11 @@ function oauth_new_user($id)
     add_user_meta($uid, 'vkapi_ava', $user['photo_medium_rec'], false);
     add_user_meta($uid, 'vkapi_uid', $user, true);
 
-    $creds = array();
-    $creds['user_login'] = $data['user_login'];
-    $creds['user_password'] = $data['user_pass'];
-    $creds['remember'] = true;
-    $user = wp_signon($creds);
+    $array = array();
+    $array['user_login'] = $data['user_login'];
+    $array['user_password'] = $data['user_pass'];
+    $array['remember'] = true;
+    $user = wp_signon($array);
     if (is_wp_error($user)) {
         echo $user->get_error_message();
     } else {

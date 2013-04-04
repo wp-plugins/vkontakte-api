@@ -1,10 +1,10 @@
 === VKontakte API ===
 Contributors: kowack
 Donate link: http://www.kowack.info/projects/vk_api/
-Tags: social, share, comments, VKontakte, vk.com, Facebook, facebook.com, crosspost
-Requires at least: 3.4
+Tags: vkontakte, facebook, crosspost, comments, social, share, vk.com
+Requires at least: 3.5.1
 Tested up to: 3.5.1
-Stable tag: 2.7
+Stable tag: 3.5
 
 Добавляет функционал API сайта VKontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...
 
@@ -19,7 +19,7 @@ Stable tag: 2.7
 * А так же кнопка "+1" от Google.
 * А так же виджет "Сообщества" от ВК и FB.
 * А так же виджет "Популярного" по статистике кнопки "Мне нравится" от ВК.
-* А так же виджет "Последниe комментарии" от ВК.
+* А так же виджет "Последние комментарии" от ВК.
 * А так же виджет "Вход\регистрация" от ВК.
 * А так же вход\регистрация и привязка аккаунта ВКонтакте.
 * А так же облако тегов на HTML5 ( многие плагины облака тегов не поддерживают версию WordPress-a > 3 ).
@@ -67,6 +67,21 @@ Yes, the plugin is completely free, without any advertising. Forever. And ever.
 10. Виджеты.
 
 == Changelog ==
+
+= 3.5 =
+Больше опций.
+Улучшения.
+
+= 3.4 =
+Исправления.
+
+= 3.3 =
+Исправления.
+Поддержка всех типов постов.
+
+= 3.2 =
+Убраны страрые баги, добавлены новые.
+Вывод ошибок кросспостинга, если он не сработал.
 
 = 3.0 =
 Мажорное обновление.
@@ -206,6 +221,20 @@ Better.
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 3.5 =
+Улучшения.
+
+= 3.4 =
+Исправления.
+
+= 3.3 =
+Поддержка всех типов постов.
+Исправления.
+
+= 3.2 =
+Вывод ошибок кросспостинга, если он не сработал.
+Убраны страрые баги, добавлены новые.
 
 = 3.0 =
 Переработана страница настроек.
