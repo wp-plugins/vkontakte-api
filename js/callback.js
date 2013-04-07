@@ -42,7 +42,7 @@ function onSignon(response) {
         jQuery.post(wpurl + '/wp-content/plugins/vkontakte-api/php/connect.php', vkdata, function (text) {
             if (jQuery.trim(text) == 'Ok') {
                 jQuery("#vkapi_status").html("<span style='color:green'>Result: ✔ " + text + "</span>");
-                if ($_GET['redirect_to'].length) {
+                if (typeof $_GET['redirect_to'] != 'undefined') {
                     document.location.href = $_GET['redirect_to'];
                 } else {
                     document.location.href = document.location.href;

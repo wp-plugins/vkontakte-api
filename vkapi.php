@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.5
+Version: 3.4
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -102,7 +102,6 @@ class VK_api
         add_action('wp_print_scripts', array(&$this, 'add_head')); # init styles and scripts in header
         add_action('widgets_init', array(&$this, 'widget_init')); # widget
         add_action('wp_dashboard_setup', array(&$this, 'widget_dashboard')); # widget dashboard
-        add_action('save_post', array(&$this, 'post_save'), 1, 2); # check meta_box
         add_filter('wp_insert_post_data', array(&$this, 'post_insert'), 1, 2); # crosspost me
         add_action('admin_notices', array(&$this, 'post_notice')); # fix admin notice
         add_action('do_meta_boxes', array(&$this, 'add_custom_box'), 1); # add meta_box
@@ -122,6 +121,7 @@ class VK_api
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'own_actions_links')); # plug links
         add_filter('plugin_row_meta', array(&$this, 'plugin_meta'), 1, 2); # plugin meta
         add_filter('login_headerurl', array(&$this, 'login_href')); # login href
+        add_filter('get_avatar', array(&$this, 'get_avatar'), 5, 888);
         $option = get_option('vkapi_close_wp');
         if ($option) {
             add_filter('comments_template', array(&$this, 'close_wp'), 1); # no wp comments
@@ -131,6 +131,7 @@ class VK_api
             add_action('comments_template', array(&$this, 'add_tabs'), 888); # add comments
             add_filter('get_comments_number', array(&$this, 'do_non_empty'), 1); # recount
         }
+        add_action('vkapi_cron', array(&$this, 'cron'));
         // V V V V V V check V V V V V V
         $vkapi_some_revision_d = get_option('vkapi_some_revision_d');
         if ($vkapi_some_revision_d) {
@@ -157,17 +158,14 @@ class VK_api
     }
 
 ##### MAIN
-    function install()
+    static function install()
     {
-        add_rewrite_rule('^login/*+$', 'wp-login.php', 'top');
-        add_rewrite_rule('^admin/*+$', 'wp-admin.php', 'top');
-        flush_rewrite_rules();
+        wp_schedule_event(time(), 'hourly', 'vkapi_cron');
         // todo-dx: check with options.php
         // init platform
-        add_option('vkapi_appid', '');
-        add_option('vkapi_api_secret', '');
+        add_option('vkapi_appid');
+        add_option('vkapi_api_secret');
         add_option('vkapi_at');
-        add_option('fbapi_appid', '');
         // comments
         add_option('vkapi_comm_width', '600');
         add_option('vkapi_comm_limit', '15');
@@ -217,16 +215,32 @@ class VK_api
         add_option('mrc_share_cat', '0');
         add_option('ya_share_cat', '0');
         // tweet
-        add_option('tweet_account', '');
+        add_option('tweet_account');
         // crosspost
-        add_option('vkapi_vk_group', '');
+        add_option('vkapi_vk_group');
         add_option('vkapi_crosspost_default', '0');
         add_option('vkapi_crosspost_length', '888');
         add_option('vkapi_crosspost_link', '0');
         add_option('vkapi_crosspost_signed', '1');
+        add_option('vkapi_crosspost_anti', '0');
     }
 
-    function uninstall()
+    static function pause()
+    {
+        wp_clear_scheduled_hook(array('VK_api', 'cron'));
+        // todo-dx: notice about help page and link to group
+    }
+
+    public function cron()
+    {
+        if (get_option('vkapi_crosspost_anti')) {
+            self::notice_notice('Before CRON');
+            require_once(plugin_dir_path(__FILE__) . 'php/cron.php');
+            self::notice_notice('After CRON');
+        }
+    }
+
+    static function uninstall()
     {
         delete_option('vkapi_appid');
         delete_option('vkapi_api_secret');
@@ -276,11 +290,9 @@ class VK_api
         delete_option('vkapi_crosspost_default');
         delete_option('vkapi_crosspost_length');
         delete_option('vkapi_crosspost_link');
-    }
-
-    function pause()
-    {
-        // todo-dx: notice about help page and link to group
+        delete_option('vkapi_crosspost_signed');
+        delete_option('vkapi_crosspost_category');
+        delete_option('vkapi_crosspost_anti');
     }
 
     function widget_init()
@@ -411,70 +423,56 @@ class VK_api
         add_action('vkapi_body', array(&$this, 'js_async_vkapi'));
     }
 
-    function post_save($post_id, $post)
+    function post_insert($data, $post)
     {
+        if (!isset($post['ID'])) {
+            return $data;
+        }
         // do meta box
-        if (!wp_is_post_revision($post_id)) {
+        if (!wp_is_post_revision($post['ID'])) {
             if (isset($_REQUEST['vkapi_comments'])) {
-                update_post_meta($post_id, 'vkapi_comments', $_REQUEST['vkapi_comments']);
+                update_post_meta($post['ID'], 'vkapi_comments', $_REQUEST['vkapi_comments']);
             }
             if (isset($_REQUEST['vkapi_buttons'])) {
-                update_post_meta($post_id, 'vkapi_buttons', $_REQUEST['vkapi_buttons']);
+                update_post_meta($post['ID'], 'vkapi_buttons', $_REQUEST['vkapi_buttons']);
             }
         }
         // check what user want
-        $temp = isset($_REQUEST['vkapi_crosspost_submit']) ? $_REQUEST['vkapi_crosspost_submit'] : false;
+        $temp = isset($_REQUEST['vkapi_crosspost_submit'])
+            ? $_REQUEST['vkapi_crosspost_submit']
+            : get_option('vkapi_crosspost_default');
         if ($temp != '1') {
-            return $post_id;
+            return $data;
         }
-        // check if need
-        if ($post->post_status != 'publish') {
-            return $post_id;
-        }
-        // check already
-        $temp = get_post_meta($post_id, 'vkapi_crossposted', true);
-        if ($temp == 'true') {
-            self::notice_notice('VKapi: ' . __('Already crossposted.', $this->plugin_domain));
-
-            return $post_id;
-        }
-        // ckeck access token
-        $vk_at = get_option('vkapi_at');
-        if (empty($vk_at)) {
-            self::notice_notice('VKapi: ' . __('Access Token is empty.', $this->plugin_domain));
-
-            return $post_id;
-        }
-
-        // Start !!!
-        self::crosspost($vk_at, $post_id, $post->post_title, $post->post_content);
-
-        // End.
-        return $post_id;
-    }
-
-    function post_insert($data, $post)
-    {
-        // check if need
+        // check post status
         if ($post['post_status'] != 'publish') {
             return $data;
         }
-        // check option
-        $temp = get_option('vkapi_crosspost_default');
-        if ($temp != '1') {
+        // check post slug
+        if (in_array($post['post_type'], array('menu', 'link'))) {
             return $data;
         }
-        // check already
+        // check crossposted
         $temp = get_post_meta($post['ID'], 'vkapi_crossposted', true);
         if ($temp == 'true') {
+            self::notice_notice('VKapi: CrossPost: ' . __('Already crossposted.', $this->plugin_domain));
+
+            return $data;
+        }
+        // check anti crosspost
+        if ($post['crossposted']) {
+            $link = get_permalink($post['ID']);
+            self::notice_notice('VKapi: CrossPost: ' . __('AntiCrossPost detected.' . $link, $this->plugin_domain));
+
             return $data;
         }
         // check access token
         $vk_at = get_option('vkapi_at');
         if (empty($vk_at)) {
+            self::notice_notice('VKapi: CrossPost: ' . __('Access Token is empty.', $this->plugin_domain));
+
             return $data;
         }
-
         // Start !!!
         self::crosspost($vk_at, $post['ID'], $data['post_title'], $data['post_content']);
 
@@ -484,6 +482,19 @@ class VK_api
 
     function post_notice()
     {
+        if (get_option('vkapi_crosspost_anti')) {
+            $gmtOffset = get_option('gmt_offset');
+            $timestamp = wp_next_scheduled('vkapi_cron');
+            $date = new \DateTime();
+            $date->setTimestamp($timestamp);
+            $date->modify("+{$gmtOffset} hours");
+            $msg = $date->format('Y-m-d H:i:s');
+            $timestamp2 = current_time('timestamp');
+            $date2 = new \DateTime();
+            $date2->setTimestamp($timestamp2);
+            $msg2 = $date2->format('Y-m-d H:i:s');
+            echo "<div class='updated'><p>Next AntiCrossPost Time: {$msg}.<br>Current time: {$msg2}</p></div>";
+        }
         $array = get_option('vkapi_msg');
         if (empty($array)) {
             return;
@@ -740,15 +751,15 @@ class VK_api
                 $count++;
             }
             // hook start buttons
-            if ($count > 0) {
-                add_action('add_tabs_button_action', array(&$this, 'add_tabs_button_start'), 1);
-                add_action('add_tabs_button_action', create_function('', 'echo \'</table>\';'), 888);
-            }
             $show_comm = get_option('vkapi_close_wp');
             if (!$show_comm) {
                 add_action('add_tabs_button_action', array(&$this, 'add_tabs_button_wp'), 5);
             }
-            do_action('add_tabs_button_action');
+            if ($count > 1) {
+                add_action('add_tabs_button_action', array(&$this, 'add_tabs_button_start'), 1);
+                add_action('add_tabs_button_action', create_function('', 'echo \'</table>\';'), 888);
+                do_action('add_tabs_button_action');
+            }
             do_action('add_tabs_comment_action');
         }
     }
@@ -1124,6 +1135,17 @@ class VK_api
             }
             exit;
         }
+    }
+
+    function get_avatar($avatar, $id_or_email, $size, $default, $alt)
+    {
+        $user_id = get_current_user_id();
+        $src = get_user_meta($user_id, 'vkapi_ava', true);
+        if (!empty($src)) {
+            $avatar = "<img src='{$src}' class='avatar avatar-{$size}' width='{$size}' height='{$size}' />";
+        }
+
+        return $avatar;
     }
 
 ##### JS ASYNC LOADING
@@ -1653,7 +1675,7 @@ class VK_api
         $body['access_token'] = $vk_at;
         $body['from_group'] = 1;
         $body['signed'] = get_option('vkapi_crosspost_signed');
-        // todo-dx: crosspost to facebook, check some fb plugin
+        // todo-dx: crosspost to facebook
         $vk_group = get_option('vkapi_vk_group');
         if (!is_numeric($vk_group)) {
             $params = array();
@@ -1663,14 +1685,14 @@ class VK_api
             $result = wp_remote_get($this->vkapi_server . 'groups.getById?' . $query);
             if (is_wp_error($result)) {
                 $msg = $result->get_error_message();
-                self::notice_error('Crosspost: ' . $msg . ' wpx' . __LINE__);
+                self::notice_error('CrossPost: ' . $msg . ' wpx' . __LINE__);
 
                 return false;
             }
             $r_data = json_decode($result['body'], true);
             if (!$r_data['response']) {
                 $msg = $r_data['error']['error_msg'] . ' ' . $r_data['error']['error_code'];
-                self::notice_error('Crosspost: API Error Code: ' . $msg . 'x' . __LINE__);
+                self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
 
                 return false;
             }
@@ -1685,7 +1707,9 @@ class VK_api
         if ($image_path) {
             $att[] = $this->vk_upload_photo($vk_at, $vk_group, $image_path);
         }
-        $temp = get_option('vkapi_crosspost_link');
+        $temp = isset($_REQUEST['vkapi_crosspost_link'])
+            ? $_REQUEST['vkapi_crosspost_link']
+            : get_option('vkapi_crosspost_link');
         if (!empty($temp)) {
             $temp = get_permalink($post_id);
             if (!class_exists('Punycode')) {
@@ -1700,22 +1724,26 @@ class VK_api
         // Text
         $text = do_shortcode($post_content);
         $text = $this->html2text($text);
-        $temp = get_option('vkapi_crosspost_length');
-        $text_len = mb_strlen($text);
-        $text = mb_substr($text, 0, (int)$temp);
         $text = html_entity_decode($text, ENT_QUOTES);
-        $last_pos = strrpos($text, ' ');
-        if (!$last_pos) {
-            $last_pos = strrpos($text, "\n");
+        $temp = isset($_REQUEST['vkapi_crosspost_length'])
+            ? $_REQUEST['vkapi_crosspost_length']
+            : get_option('vkapi_crosspost_length');
+        if ((int)$temp > 0) {
+            $text_len = mb_strlen($text);
+            $text = mb_substr($text, 0, (int)$temp);
+            $last_pos = strrpos($text, ' ');
+            if (!$last_pos) {
+                $last_pos = strrpos($text, "\n");
+            }
+            if ($last_pos) {
+                $text = mb_substr($text, 0, $last_pos);
+            }
+            if (mb_strlen($text) != $text_len) {
+                $text .= '...';
+            }
+            $text = $post_title . "\r\n\r\n" . $text;
+            $body['message'] = $text;
         }
-        if (!$last_pos) {
-            $text = mb_substr($text, 0, $last_pos);
-        }
-        if (mb_strlen($text) != $text_len) {
-            $text .= '...';
-        }
-        $text = $post_title . "\r\n\r\n" . $text . '...';
-        $body['message'] = $text;
         // Call
         $curl = new Wp_Http_Curl();
         $result = $curl->request(
@@ -1727,21 +1755,21 @@ class VK_api
         );
         if (is_wp_error($result)) {
             $msg = $result->get_error_message();
-            self::notice_error('Crosspost: ' . $msg . ' wpx' . __LINE__);
+            self::notice_error('CrossPost: ' . $msg . ' wpx' . __LINE__);
 
             return false;
         }
         $r_data = json_decode($result['body'], true);
         if (isset($r_data['error'])) {
             $msg = $r_data['error']['error_msg'] . ' ' . $r_data['error']['error_code'];
-            self::notice_error('Crosspost: API Error Code: ' . $msg . 'x' . __LINE__);
+            self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
 
             return false;
         }
         $temp = isset($vk_group_screen_name) ? $vk_group_screen_name : 'club' . $vk_group;
         $post_link = "http://vk.com/{$temp}?w=wall{$vk_group}_{$r_data['response']['post_id']}%2Fall";
         $post_href = "<a href='{$post_link}' target='_blank'>{$temp}</a>";
-        self::notice_notice('Crosspost: Success ! ' . $post_href);
+        self::notice_notice('CrossPost: Success ! ' . $post_href);
         update_post_meta($post_id, 'vkapi_crossposted', 'true');
 
         return true;
@@ -1813,14 +1841,14 @@ class VK_api
         $result = wp_remote_get($this->vkapi_server . 'photos.getWallUploadServer?' . $query);
         if (is_wp_error($result)) {
             $msg = $result->get_error_message();
-            self::notice_error('Crosspost: ' . $msg . ' wpx' . __LINE__);
+            self::notice_error('CrossPost: ' . $msg . ' wpx' . __LINE__);
 
             return false;
         }
         $data = json_decode($result['body'], true);
         if (!$data['response']) {
             $msg = $data['error']['error_msg'] . ' ' . $data['error']['error_code'];
-            self::notice_error('Crosspost: API Error Code: ' . $msg . 'x' . __LINE__);
+            self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
 
             return false;
         }
@@ -1836,14 +1864,14 @@ class VK_api
         );
         if (is_wp_error($result)) {
             $msg = $data->get_error_message();
-            self::notice_error('Crosspost: ' . $msg . ' wpx' . __LINE__);
+            self::notice_error('CrossPost: ' . $msg . ' wpx' . __LINE__);
 
             return false;
         }
         $data = json_decode($result['body'], true);
         if (!isset($data['photo'])) {
             $msg = $data['error']['error_msg'] . ' ' . $data['error']['error_code'];
-            self::notice_error('Crosspost: API Error Code: ' . $msg . 'x' . __LINE__);
+            self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
 
             return false;
         }
@@ -1858,14 +1886,14 @@ class VK_api
         $result = wp_remote_get($this->vkapi_server . 'photos.saveWallPhoto?' . $query);
         if (is_wp_error($result)) {
             $msg = $result->get_error_message();
-            self::notice_error('Crosspost: ' . $msg . ' wpx' . __LINE__);
+            self::notice_error('CrossPost: ' . $msg . ' wpx' . __LINE__);
 
             return false;
         }
         $data = json_decode($result['body'], true);
         if (!$data['response']) {
             $msg = $data['error']['error_msg'] . ' ' . $data['error']['error_code'];
-            self::notice_error('Crosspost: API Error Code: ' . $msg . 'x' . __LINE__);
+            self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
 
             return false;
         }
@@ -1977,6 +2005,9 @@ class VK_api
         register_setting('vkapi-settings-group', 'vkapi_crosspost_default');
         register_setting('vkapi-settings-group', 'vkapi_crosspost_length');
         register_setting('vkapi-settings-group', 'vkapi_crosspost_link');
+        register_setting('vkapi-settings-group', 'vkapi_crosspost_signed');
+        register_setting('vkapi-settings-group', 'vkapi_crosspost_category');
+        register_setting('vkapi-settings-group', 'vkapi_crosspost_anti');
     }
 
     function contextual_help()
@@ -2400,26 +2431,19 @@ class VKAPI_Login extends WP_Widget
                 ) . "</a></li></div>";
             }
         } else {
-            $this->vkapi_link_vk();
-        }
-        echo '</ul></div>' . $after_widget;
-    }
-
-    function vkapi_link_vk()
-    {
-        $vkapi_url = get_bloginfo('wpurl');
-        echo '<button style="display:none" class="vkapi_vk_widget" vkapi_url="' . $vkapi_url . '"></button>';
-        echo '<ul style="list-style:none">';
-        echo '<li><a href="' . wp_login_url(home_url($_SERVER['REQUEST_URI'])) . '" title="">' . __(
-            'Login',
-            $this->plugin_domain
-        ) . '</a></li>';
-        echo '<li>';
-        echo wp_register('', '', home_url($_SERVER['REQUEST_URI']));
-        echo '</li>';
-        echo '<li>
-		<div id="vkapi_status"></div>
-		<div id="login_button" style="padding: 0px; border: 0px; width: 125px;" onclick="VK.Auth.login(onSignon)"><a>ВойтиВКонтакте</a></div></li>
+            $vkapi_url = get_bloginfo('wpurl');
+            echo "<button style='display:none' id='vkapi_connect' class='vkapi_vk_widget' data-vkapi-url='{$vkapi_url}'></button>";
+            echo '<ul style="list-style:none">';
+            $href = wp_login_url(home_url($_SERVER['REQUEST_URI']));
+            $text = __('Login', $this->plugin_domain);
+            $link = wp_register('', '', home_url($_SERVER['REQUEST_URI']));
+            echo "<li><a href='{$href}' title=''>{$text}</a></li>";
+            echo "<li>{$link}</li>";
+            echo '<li>
+		        <div id="login_button" style="padding: 0px; border: 0px; width: 125px;" onclick="VK.Auth.login(onSignon)">
+		            <a>ВойтиВКонтакте</a>
+		    </div><div id="vkapi_status"></div>
+		    </li>
 		<style type="text/css">
 			#login_button td, #login_button tr {
 				padding: 0px !important;
@@ -2431,28 +2455,13 @@ class VKAPI_Login extends WP_Widget
 			}
 		</style>
 		<script type="text/javascript">
-			function VK_UI_button() {
+			jQuery(window).on("vkapi_vk", function(){
 				VK.UI.button("login_button");
-				if ( typeof VK !== "undefined" )
-				    VK_UI_button();
-				else
-			        setTimeout(VK_UI_button,1000);
-			}
-			VK_UI_button();
+		    });
 		</script>
-		<div style="display:none" id="vk_auth"></div>
-			<script type="text/javascript">
-				function VK_Widgets_Auth() {
-					VK.Widgets.Auth("vk_auth", {width: "200px", onAuth: function(data) {
-						alert("user "+data["uid"]+" authorized");
-					} });
-					if ( typeof VK !== "undefined" )
-					    VK_Widgets_Auth();
-				    else
-				        setTimeout(VK_Widgets_Auth,1000);
-				};
-				VK_Widgets_Auth();
-		</script>';
+		';
+        }
+        echo '</ul></div>' . $after_widget;
     }
 
     function update($new_instance, $old_instance)
@@ -2644,7 +2653,7 @@ class VKAPI_Cloud extends WP_Widget
         reverse: true,
         // maxSpeed: .5,
         initial: [0.3,-0.3],
-        minSpeed: .05,
+        minSpeed: .025,
         textColour: '{$textColour}',
         textFont: null,
         outlineColour: '{$activeLink}',

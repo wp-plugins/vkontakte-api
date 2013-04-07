@@ -14,16 +14,16 @@
     #mymenu li {
         float: left;
         padding: 10px;
-        border-top: 1px solid #21759b;
-        border-right: 1px solid #21759b;
-        border-left: 1px solid #21759b;
+        border-top: 1px solid #0074a2; /*#21759b;*/
+        border-right: 1px solid #0074a2;
+        border-left: 1px solid #0074a2;
         border-radius: 5px 5px 0 0;
         margin: 5px 5px 0 5px;
         cursor: pointer;
     }
 
     #pages {
-        border-top: 1px solid #21759b;
+        border-top: 1px solid #0074a2;
         padding: 10px 5px;
     }
 
@@ -60,12 +60,12 @@
 
     #vk_at_input {
         width: 580px;
-        border-color: #21759b !important;
+        border-color: #0074a2 !important;
     }
 
     #fbapi_admin_id {
         width: 115px;
-        border-color: #21759b !important;
+        border-color: #0074a2 !important;
     }
 </style>
 
@@ -445,10 +445,9 @@
                 value="<?php echo get_option('vkapi_share_text'); ?>"/></div>
 </div>
 <div>
-    <div><label for="vkapi_share_cat"><?php _e(
-        'Show in Categories page and Home:',
-        $this->plugin_domain
-    ); ?></label></div>
+    <div><label for="vkapi_share_cat">
+        <?php _e('Show in Categories page and Home:', $this->plugin_domain); ?>
+    </label></div>
     <div>
         <input type="checkbox"
                id="vkapi_share_cat"
@@ -456,6 +455,52 @@
                value="1" <?php echo get_option(
             'vkapi_share_cat'
         ) ? 'checked' : '';?> />
+    </div>
+</div>
+<!-- Anti Cross Post -->
+<div>
+    <div class="section-title"><h3><?php echo '(Beta)' . __('AntiCrossPost: ', $this->plugin_domain); ?></h3>
+    </div>
+</div>
+<div>
+    <div><label for="vkapi_crosspost_category"><?php _e('Category ID:', $this->plugin_domain); ?></label></div>
+    <div>
+        <?php $temp = get_option('vkapi_crosspost_category'); ?>
+        <?php wp_dropdown_categories(array('name' => 'vkapi_crosspost_category', 'class' => 'widefat')); ?>
+    </div>
+</div>
+<div>
+    <div>
+        <?php _e('Path for Cron:', $this->plugin_domain)?>
+    </div>
+    <div>
+        <?php
+        $path = getcwd();
+        $path = explode(DIRECTORY_SEPARATOR, $path);
+        array_pop($path);
+        array_push(
+            $path,
+            'wp-content' . DIRECTORY_SEPARATOR .
+                'plugins' . DIRECTORY_SEPARATOR .
+                'vkontakte-api' . DIRECTORY_SEPARATOR .
+                'php' . DIRECTORY_SEPARATOR . 'cron.php'
+        );
+        $path = implode(DIRECTORY_SEPARATOR, $path);
+        echo $path;
+        ?>
+    </div>
+</div>
+<div>
+    <?php _e('Or', $this->plugin_domain); ?>
+</div>
+<div>
+    <div><label for="vkapi_crosspost_anti"><?php _e('Enable WP_Cron:', $this->plugin_domain); ?></label></div>
+    <div>
+        <input type="checkbox"
+               id="vkapi_crosspost_anti"
+               name="vkapi_crosspost_anti"
+               value="1"
+            <?php echo get_option('vkapi_crosspost_anti') ? 'checked' : '';?> />
     </div>
 </div>
 <!-- Cross Post -->
@@ -940,6 +985,8 @@
                         </a>
                     </span>
                 </p>
+
+                <p id="stats"></p>
             </div>
         </div>
     </div>
@@ -1050,8 +1097,34 @@
             }
         });
 
-        jQuery.getJSON('http://api.wordpress.org/plugins/info/1.0/vkontakte-api.json&callback=?', function (data) {
-            console.log(data);
+        $.getJSON('http://api.wordpress.org/stats/plugin/1.0/downloads.php?slug=vkontakte-api&limit=730&callback=?', function (data) {
+            var sum = 0;
+            var yesterday = 0;
+            var lastWeek = 0;
+            var lastMonth = 0
+            var count = 1;
+            var arr = [];
+            for (value in data) {
+                arr.unshift(data[value]);
+            }
+            $.each(arr, function (key, value) {
+                sum += parseInt(value);
+                if (count == 1) {
+                    yesterday = parseInt(value);
+                }
+                if (count < 8) {
+                    lastWeek += parseInt(value);
+                }
+                if (count < 32) {
+                    lastMonth += parseInt(value);
+                }
+                count++;
+            });
+            var string = "Вчера плагин скачали " + yesterday;
+            string += ", за неделю " + lastWeek;
+            string += ", а за последний месяц " + lastMonth;
+            string += " и уже переступили черту в " + sum + " скачиваний.";
+            $('#stats').html(string);
         });
     });
 
