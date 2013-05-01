@@ -38,17 +38,17 @@ function onSignon(response) {
             $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
         }
 
-        var wpurl = jQuery("#vkapi_connect").attr("data-vkapi-url");
+        var wpurl = jQuery("meta[property='vkapi:wpurl']").attr("content");
         jQuery.post(wpurl + '/wp-content/plugins/vkontakte-api/php/connect.php', vkdata, function (text) {
             if (jQuery.trim(text) == 'Ok') {
-                jQuery("#vkapi_status").html("<span style='color:green'>Result: ✔ " + text + "</span>");
+                jQuery("div.vkapi_vk_login").html("<span style='color:green'>Result: ✔ " + text + "</span>");
                 if (typeof $_GET['redirect_to'] != 'undefined') {
                     document.location.href = $_GET['redirect_to'];
                 } else {
                     document.location.href = document.location.href;
                 }
             } else {
-                jQuery("#vkapi_status").html('<span style="color:red">Result: ' + text + '</span>');
+                jQuery("div.vkapi_vk_login").html('<span style="color:red">Result: ' + text + '</span>');
             }
         });
     } else {
@@ -66,8 +66,8 @@ function vkapi_comm_plus(id, num, last_comment, date, sign) {
         date:date,
         sign:sign
     };
-    var url = jQuery('#vkapi_wrapper').attr('data-vkapi-url');
-    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/php/mail.php', data);
+    var wpurl = jQuery("meta[property='vkapi:wpurl']").attr("content");
+    var jqxhr = jQuery.post(wpurl + '/wp-content/plugins/vkontakte-api/php/mail.php', data);
     jqxhr.fail(function () {
         setTimeout(vkapi_comm_plus(id, num, last_comment, date, sign), 5000);
     });
@@ -77,9 +77,9 @@ function fbapi_comm_plus(id) {
     var data = {
         social:'fb',
         id:id
-    }
-    var url = jQuery('#vkapi_wrapper').attr('data-vkapi-url');
-    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/php/mail.php', data);
+    };
+    var wpurl = jQuery("meta[property='vkapi:wpurl']").attr("content");
+    var jqxhr = jQuery.post(wpurl + '/wp-content/plugins/vkontakte-api/php/mail.php', data);
     jqxhr.fail(function () {
         setTimeout(fbapi_comm_plus(id), 5000);
     });
@@ -96,20 +96,20 @@ function vkapi_comm_minus(id, num, last_comment, date, sign) {
         date:date,
         sign:sign
     };
-    var url = jQuery('#vkapi_wrapper').attr('data-vkapi-url');
-    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/php/count.php', data);
+    var wpurl = jQuery("meta[property='vkapi:wpurl']").attr("content");
+    var jqxhr = jQuery.post(wpurl + '/wp-content/plugins/vkontakte-api/php/count.php', data);
     jqxhr.fail(function () {
         setTimeout(vkapi_comm_minus(id, num, last_comment, date, sign), 5000);
     });
-};
+}
 
 function fbapi_comm_minus(id) {
     var data = {
         social:'fb',
         id:id
-    }
-    var url = jQuery("#vkapi_wrapper").attr("data-vkapi-url");
-    var jqxhr = jQuery.post(url + '/wp-content/plugins/vkontakte-api/php/count.php', data);
+    };
+    var wpurl = jQuery("meta[property='vkapi:wpurl']").attr("content");
+    var jqxhr = jQuery.post(wpurl + '/wp-content/plugins/vkontakte-api/php/count.php', data);
     jqxhr.fail(function () {
         setTimeout(fbapi_comm_minus(id), 5000);
     });
@@ -126,12 +126,12 @@ function onChangePlusVK(num, last_comment, date, sign) {
     vkapi_comm_plus(id, num, last_comment, date, sign);
     onChange(num, last_comment, date, sign);
     onChangeRecalc(num);
-};
+}
 // On VK del comment
 function onChangeMinusVK(num, last_comment, datee, sign) {
     var id = jQuery("#vkapi_wrapper").attr("data-vkapi-notify");
     vkapi_comm_minus(id, num, last_comment, datee, sign);
-};
+}
 
 // On FB add comment
 function onChangePlusFB(array) {
@@ -152,12 +152,12 @@ function html_entity_decode(str) {
 }
 
 // Subscriber
-jQuery(window).on('vkapi_vk', function () {
+jQuery("body").on('vkapi_vk', function () {
     VK.Observer.subscribe('widgets.comments.new_comment', onChangePlusVK);
     VK.Observer.subscribe('widgets.comments.delete_comment', onChangeMinusVK);
 });
 
-jQuery(window).on('vkapi_fb', function () {
+jQuery("body").on('vkapi_fb', function () {
     FB.Event.subscribe('comment.create', onChangePlusFB);
     FB.Event.subscribe('comment.remove', onChangeMinusFB);
 });

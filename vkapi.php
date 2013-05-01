@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.4
+Version: 3.6
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -28,12 +28,13 @@ Author URI: http://www.kowack.info/
 
 /** todo-dx:
  * шорткод для соц. кнопок
- * опцией подпись при кросспостинге
- * статистика плагина, точно ВП, может ВК
  * стили соц.кнопок
  * соц.кнопки слева\справа\центр
  * ширина блока комментариев в процентах
  * кросспост: твиттер, фейсбук, гугл
+ * плавающий блок лайков
+ * исправить произвольный логотип входа
+ * сломались отложеные записи, исправить
  */
 function vkapi_can_start()
 {
@@ -132,12 +133,16 @@ class VK_api
             add_filter('get_comments_number', array(&$this, 'do_non_empty'), 1); # recount
         }
         add_action('vkapi_cron', array(&$this, 'cron'));
+        $option = get_option('vkapi_some_logo_e');
+        if ($option) {
+            add_action('login_head', array(&$this, 'change_login_logo'));
+        }
         // V V V V V V check V V V V V V
         $vkapi_some_revision_d = get_option('vkapi_some_revision_d');
         if ($vkapi_some_revision_d) {
             add_action(
                 'admin_init',
-                create_function('', "define ('WP_POST_REVISIONS', false);")
+                create_function('', "if(!defined('WP_POST_REVISIONS'))define('WP_POST_REVISIONS',false);")
             );
             remove_action('pre_post_update', 'wp_save_post_revision');
         }
@@ -325,7 +330,7 @@ class VK_api
         echo
         '<div id="vkapi_groups"></div>
 			<script type="text/javascript">
-				jQuery(window).on("vkapi_vk", function(){
+				jQuery("body").on("vkapi_vk", function(){
 					VK.Widgets.Group("vkapi_groups", {mode: 2, width: "auto", height: "290"}, 28197069);
 				});
 			</script>';
@@ -353,18 +358,19 @@ class VK_api
 
     function add_head()
     {
-        $temp = get_option('vkapi_login');
         // VK API
-        if (!is_admin() || defined('IS_PROFILE_PAGE') && $temp == 'true') {
+        if (!is_admin() || defined('IS_PROFILE_PAGE')) {
             $id = get_option('vkapi_appid');
+            $wp_url = get_bloginfo('wpurl');
             echo "<meta property='vk:app_id' content='{$id}' />\n";
+            echo "<meta property='vkapi:wpurl' content='{$wp_url}' />\n";
         }
         // Fix WP 3.4 Bug
         // todo-dx: check in WP 3.5
-        if (in_array($GLOBALS['pagenow'], array('wp-login.php', 'wp-register.php')) && $temp == 'true') {
+        if (in_array($GLOBALS['pagenow'], array('wp-login.php', 'wp-register.php'))) {
             add_action('vkapi_body', array(&$this, 'js_async_vkapi'));
             wp_enqueue_script('jquery');
-            wp_enqueue_script('vkapi', plugins_url('js/callback.js'));
+            wp_enqueue_script('vkapi', plugins_url('vkontakte-api/js/callback.js'));
         }
         // FB API
         $temp = get_option('fbapi_show_comm');
@@ -600,7 +606,6 @@ class VK_api
 
     function site_enqueue_scripts()
     {
-        // todo-dx: move social buttons action on vkapi_body to their call
         wp_enqueue_script('vkapi_callback', $this->plugin_url . 'js/callback.js', array('jquery'));
         add_action('vkapi_body', array(&$this, 'js_async_vkapi'));
         $option = get_option('vkapi_show_share');
@@ -918,7 +923,7 @@ class VK_api
         echo "
 			<div id='vkapi' onclick='showNotification()'></div>
 			<script type='text/javascript'>
-				jQuery(window).on('vkapi_vk', function(){
+				jQuery('body').on('vkapi_vk', function(){
                     VK.Widgets.Comments(
                         'vkapi', {
                             width: {$width},
@@ -1000,6 +1005,20 @@ class VK_api
 			</div>";
     }
 
+    function change_login_logo()
+    {
+        $logo = get_option('vkapi_some_logo');
+        echo '<style type="text/css">
+			#login { width: 380px !important}
+			h1 a {
+			    background-image:url(' . $logo . ') !important;
+			    width: 380px !important;
+			    height: 130px !important;
+			    background-size: contain !important;
+			}
+		</style>';
+    }
+
 ##### PROFILE USER INTEGRATIONS
     function add_profile_html($profile)
     {
@@ -1035,7 +1054,7 @@ class VK_api
                         }
                     </style>
                     <script language="text/javascript">
-                        jQuery(window).on('vkapi_vk', function () {
+                        jQuery("body").on('vkapi_vk', function () {
                             VK.UI.button('vkapi_login_button');
                         });
                     </script>
@@ -1159,7 +1178,7 @@ class VK_api
                 VK.init({
                     apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
                 });
-                jQuery(window).trigger('vkapi_vk');
+                jQuery("body").trigger('vkapi_vk');
             };
 
             setTimeout(function () {
@@ -1218,7 +1237,7 @@ class VK_api
                     cookie:true,
                     xfbml:true
                 });
-                jQuery(window).trigger('vkapi_fb');
+                jQuery("body").trigger('vkapi_fb');
             };
 
             (function (d) {
@@ -1475,7 +1494,7 @@ class VK_api
         echo "
 						<script type=\"text/javascript\">
 							<!--
-							    jQuery(window).on('vkapi_vk', function(){
+							    jQuery('body').on('vkapi_vk', function(){
 							        var temp = Math.random()%1;
 								    jQuery('#{$div_id}').attr('id',temp);
 									VK.Widgets.Like(temp, {
@@ -2105,6 +2124,32 @@ class VK_api
         echo $temp == 0 ? ' checked />' : '/>';
         echo __('Disable', $this->plugin_domain);
     }
+
+    static function get_vk_login()
+    {
+        $random_string = wp_generate_password(12, false, false);
+
+        return "
+<div id=\"{$random_string}\"
+     class=\"vkapi_vk_login\"
+     style=\"padding: 0px; border: 0px; width: 125px;\"
+     onclick=\"VK.Auth.login(onSignon)\">
+   <a>ВойтиВКонтакте</a>
+</div>
+<style type=\"text/css\">
+	#login_button td, #login_button tr {
+		padding: 0px !important;
+		margin: 0px !important;
+		vertical-align: top !important;
+	}
+</style>
+<script type=\"text/javascript\">
+	jQuery(\"body\").on(\"vkapi_vk\", function(){
+		VK.UI.button(\"{$random_string}\");
+    });
+</script>
+        ";
+    }
 }
 
 /* =Vkapi Widgets
@@ -2401,67 +2446,27 @@ class VKAPI_Login extends WP_Widget
         /** @var $after_title string */
         /** @var $after_widget string */
         echo $before_widget . $before_title . $instance['Message'] . $after_title . '<div id="' . $vkapi_divid . '_wrapper">';
-        $vkapi_divid .= "_wrapper";
         if (is_user_logged_in()) {
-            $vkapi_wp_id = get_current_user_id();
-            $vkapi_meta_ava = get_user_meta($vkapi_wp_id, 'vkapi_ava', true);
-            if (!empty($vkapi_meta_ava{0})) {
-                echo "<div style='float:left; padding-right:20px'><img alt='' src='$vkapi_meta_ava' class='avatar avatar-75' height='75' width='75' /></div>";
-                echo "\r\n<div>";
-                echo '<ul style="list-style:none">';
-                echo "<li><a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __(
-                    'Profile',
-                    $this->plugin_domain
-                ) . "</a></li>";
-                echo "<li><a href='" . wp_logout_url(home_url($_SERVER['REQUEST_URI'])) . "' title=''>" . __(
-                    'Logout',
-                    $this->plugin_domain
-                ) . "</a></li></div>";
-            } else {
-                echo "<div style='float:left; padding-right:20px'>" . get_avatar($vkapi_wp_id, 75) . "</div>";
-                echo "\r\n<div>";
-                echo '<ul style="list-style:none">';
-                echo "<li><a href='" . site_url('/wp-admin/profile.php') . "' title=''>" . __(
-                    'Profile',
-                    $this->plugin_domain
-                ) . "</a></li>";
-                echo "<li><a href='" . wp_logout_url(home_url($_SERVER['REQUEST_URI'])) . "' title=''>" . __(
-                    'Logout',
-                    $this->plugin_domain
-                ) . "</a></li></div>";
-            }
+            $wp_uid = get_current_user_id();
+            $ava = get_avatar($wp_uid, 75);
+            echo "<div style='display: inline-block; padding-right:20px'>{$ava}</div>";
+            echo '<div style="display: inline-block;">';
+            $href = site_url('/wp-admin/profile.php');
+            $text = __('Profile', $this->plugin_domain);
+            echo "<a href='{$href}' title=''>{$text}</a><br /><br />";
+            $href = wp_logout_url(home_url($_SERVER['REQUEST_URI']));
+            $text = __('Logout', $this->plugin_domain);
+            echo "<a href='{$href}' title=''>{$text}</a>";
+            echo '</div>';
         } else {
-            $vkapi_url = get_bloginfo('wpurl');
-            echo "<button style='display:none' id='vkapi_connect' class='vkapi_vk_widget' data-vkapi-url='{$vkapi_url}'></button>";
-            echo '<ul style="list-style:none">';
             $href = wp_login_url(home_url($_SERVER['REQUEST_URI']));
             $text = __('Login', $this->plugin_domain);
-            $link = wp_register('', '', home_url($_SERVER['REQUEST_URI']));
-            echo "<li><a href='{$href}' title=''>{$text}</a></li>";
-            echo "<li>{$link}</li>";
-            echo '<li>
-		        <div id="login_button" style="padding: 0px; border: 0px; width: 125px;" onclick="VK.Auth.login(onSignon)">
-		            <a>ВойтиВКонтакте</a>
-		    </div><div id="vkapi_status"></div>
-		    </li>
-		<style type="text/css">
-			#login_button td, #login_button tr {
-				padding: 0px !important;
-				margin: 0px !important;
-				vertical-align: top !important;
-			}
-			.widget li {
-				list-style: none !important;
-			}
-		</style>
-		<script type="text/javascript">
-			jQuery(window).on("vkapi_vk", function(){
-				VK.UI.button("login_button");
-		    });
-		</script>
-		';
+            $link = wp_register('', '', false);
+            echo "<div><a href='{$href}' title=''>{$text}</a></div><br />";
+            echo "<div>{$link}</div><br />";
+            echo VK_api::get_vk_login();
         }
-        echo '</ul></div>' . $after_widget;
+        echo '</div>' . $after_widget;
     }
 
     function update($new_instance, $old_instance)
@@ -2518,11 +2523,11 @@ class VKAPI_Comments extends WP_Widget
         $vkapi_divid .= "_wrapper";
         echo "
 			<div class=\"wrap\">
-				<div id=\"vkapi_comments\"></div>
+				<div id=\"vkapi_comments_browse\"></div>
 				<script type=\"text/javascript\">
 					function VK_Widgets_CommentsBrowse() {
                         if ( typeof VK !== 'undefined' )
-                            VK.Widgets.CommentsBrowse('vkapi_comments', {
+                            VK.Widgets.CommentsBrowse('vkapi_comments_browse', {
                                 {$vkapi_width}limit: '{$vkapi_limit}',
                                 height: '{$vkapi_height}',
                                 mini: 1

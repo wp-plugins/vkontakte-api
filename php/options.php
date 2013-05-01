@@ -288,6 +288,16 @@
         </select>
     </div>
 </div>
+<div>
+    <div>
+        <p>
+            <?php _e('Can also be used in a template', $this->plugin_domain); ?>:
+        </p>
+        <textarea readonly="true" cols="71" rows="1" style="width: auto; resize: none; overflow: hidden;"><?php
+            echo htmlentities('<?php echo class_exists(\'VK_api\') ? VK_api::get_vk_login() : null; ?>');
+            ?></textarea>
+    </div>
+</div>
 <!-- VK Like -->
 <div>
     <div class="section-title"><h3><?php _e('Like button: ', $this->plugin_domain); $temp = get_option(
@@ -475,32 +485,9 @@
     </div>
     <div>
         <?php
-        $path = getcwd();
-        $path = explode(DIRECTORY_SEPARATOR, $path);
-        array_pop($path);
-        array_push(
-            $path,
-            'wp-content' . DIRECTORY_SEPARATOR .
-                'plugins' . DIRECTORY_SEPARATOR .
-                'vkontakte-api' . DIRECTORY_SEPARATOR .
-                'php' . DIRECTORY_SEPARATOR . 'cron.php'
-        );
-        $path = implode(DIRECTORY_SEPARATOR, $path);
-        echo $path;
+        $url = get_bloginfo('wpurl');
+        echo $url .= '/wp-content/plugins/vkontakte-api/php/cron.php';
         ?>
-    </div>
-</div>
-<div>
-    <?php _e('Or', $this->plugin_domain); ?>
-</div>
-<div>
-    <div><label for="vkapi_crosspost_anti"><?php _e('Enable WP_Cron:', $this->plugin_domain); ?></label></div>
-    <div>
-        <input type="checkbox"
-               id="vkapi_crosspost_anti"
-               name="vkapi_crosspost_anti"
-               value="1"
-            <?php echo get_option('vkapi_crosspost_anti') ? 'checked' : '';?> />
     </div>
 </div>
 <!-- Cross Post -->

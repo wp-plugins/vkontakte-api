@@ -1,11 +1,11 @@
 <?php
 if (isset($_POST['social'])) {
     define('WP_USE_THEMES', false);
-    require_once('../../../wp-load.php');
+    require_once('../../../../wp-load.php');
     status_header(200);
     nocache_headers();
     switch ($_POST['social']) {
-        case'vk':
+        case 'vk':
             $post_id = $_POST['id'];
             $num = $_POST['num'];
             $last_comment = $_POST['last_comment'];
