@@ -1034,7 +1034,7 @@
         );
 
         $('#vk_at').click(function () {
-                    myBuben = window.open('http://oauth.vk.com/authorize?client_id=2742215&scope=photos,wall,friends,offline&redirect_uri=blank.html&display=page&response_type=token',
+                    myBuben = window.open('http://oauth.vk.com/authorize?client_id=2742215&scope=groups,photos,wall,friends,offline&redirect_uri=blank.html&display=page&response_type=token',
                             'CrossPost',
                             '');
                     setTimeout(myBubenFunc2, 1000);

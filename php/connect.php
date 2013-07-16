@@ -119,6 +119,7 @@ function oauth_new_user($id)
         'getProfiles',
         array('uids' => $id, 'fields' => 'uid,first_name,nickname,last_name,screen_name,photo_medium_rec')
     );
+    // todo-dx: validate request
     $user = $users[0];
     $data = array();
     $data['user_pass'] = wp_generate_password();

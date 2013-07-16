@@ -33,8 +33,9 @@ Author URI: http://www.kowack.info/
  * ширина блока комментариев в процентах
  * кросспост: твиттер, фейсбук, гугл
  * плавающий блок лайков
- * исправить произвольный логотип входа
  * сломались отложеные записи, исправить
+ * реализовать опросы
+ * bbpress, пофиксить кросспост форумных записей
  */
 function vkapi_can_start()
 {
@@ -455,7 +456,7 @@ class VK_api
             return $data;
         }
         // check post slug
-        if (in_array($post['post_type'], array('menu', 'link'))) {
+        if (in_array($post['post_type'], array('link', 'nav_menu_item'))) {
             return $data;
         }
         // check crossposted
@@ -759,6 +760,7 @@ class VK_api
             $show_comm = get_option('vkapi_close_wp');
             if (!$show_comm) {
                 add_action('add_tabs_button_action', array(&$this, 'add_tabs_button_wp'), 5);
+                $count++;
             }
             if ($count > 1) {
                 add_action('add_tabs_button_action', array(&$this, 'add_tabs_button_start'), 1);
@@ -1232,7 +1234,7 @@ class VK_api
         <script>
             window.fbAsyncInit = function () {
                 FB.init({
-                    appId: <?php echo get_option('fbapi_appid') . "\n"; ?>,
+                    appId: <?php echo get_option('fbapi_appid'); ?>,
                     status:true,
                     cookie:true,
                     xfbml:true
@@ -2035,7 +2037,7 @@ class VK_api
         $screen = get_current_screen();
         /* main */
         $help = '<p>Добавляет функционал API сайта ВКонтакте(vk.com) на ваш блог.<br />
-                Комментарии, социальные кнопки, виджеты...</p>';
+                Комментарии, кросспостинг, социальные кнопки, виджеты,...</p>';
         $screen->add_help_tab(
             array(
                 'id' => 'vkapi_main',
