@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.6
+Version: 3.7
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -40,7 +40,7 @@ Author URI: http://www.kowack.info/
 function vkapi_can_start()
 {
     global $wp_version;
-    if (version_compare($wp_version, '3.5.1', '<')) {
+    if (version_compare($wp_version, '3.5', '<')) {
         function vkapi_notice_update()
         {
             global $wp_version;
@@ -1180,6 +1180,8 @@ class VK_api
                 VK.init({
                     apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
                 });
+                VK.Observer.subscribe('widgets.comments.new_comment', onChangePlusVK);
+                VK.Observer.subscribe('widgets.comments.delete_comment', onChangeMinusVK);
                 jQuery("body").trigger('vkapi_vk');
             };
 
@@ -1239,6 +1241,8 @@ class VK_api
                     cookie:true,
                     xfbml:true
                 });
+                FB.Event.subscribe('comment.create', onChangePlusFB);
+                FB.Event.subscribe('comment.remove', onChangeMinusFB);
                 jQuery("body").trigger('vkapi_fb');
             };
 

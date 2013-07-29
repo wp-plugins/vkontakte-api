@@ -150,14 +150,3 @@ function html_entity_decode(str) {
     text_area.innerHTML = str;
     return text_area.value;
 }
-
-// Subscriber
-jQuery("body").on('vkapi_vk', function () {
-    VK.Observer.subscribe('widgets.comments.new_comment', onChangePlusVK);
-    VK.Observer.subscribe('widgets.comments.delete_comment', onChangeMinusVK);
-});
-
-jQuery("body").on('vkapi_fb', function () {
-    FB.Event.subscribe('comment.create', onChangePlusFB);
-    FB.Event.subscribe('comment.remove', onChangeMinusFB);
-});

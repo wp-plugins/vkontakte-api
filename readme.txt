@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: vkontakte, facebook, crosspost, comments, social, share, vk.com
 Requires at least: 3.5.1
 Tested up to: 3.5.1
-Stable tag: 3.6
+Stable tag: 3.7
 
 Добавляет функционал API сайта VKontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...
 
@@ -67,6 +67,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And ever.
 10. Виджеты.
 
 == Changelog ==
+
+= 3.7 =
+Починен счетчик комментариев.
 
 = 3.6 =
 Всякие улучшения и исправления появившихся багов.
@@ -224,6 +227,9 @@ Better.
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 3.7 =
+Починен счетчик комментариев.
 
 = 3.6 =
 Возможны баги. Был не в чистом сознании.
