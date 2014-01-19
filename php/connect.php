@@ -93,20 +93,18 @@ function main()
         die;
     }
 
+    /** @var $wpdb wpdb */
     global $wpdb;
-    $get_id = $wpdb->get_var(
+    $wp_user_id = $wpdb->get_var(
         $wpdb->prepare(
-            "
-SELECT `user_id`
-FROM {$wpdb->usermeta}
-WHERE `meta_key` = 'vkapi_uid'
-AND `meta_value` = %s
-				",
+            "SELECT `user_id` FROM {$wpdb->usermeta} WHERE `meta_key` = 'vkapi_uid' AND `meta_value` = %s LIMIT 1",
             $member['id']
         )
     );
-    if ($get_id !== null) {
-        wp_set_auth_cookie($get_id);
+    if ($wp_user_id !== null) {
+        wp_set_auth_cookie($wp_user_id);
+        // todo-dx: check if it is working
+        do_action('wp_login', $wp_user_id);
         echo 'Ok';
     } else {
         oauth_new_user($member['id']);
@@ -119,34 +117,36 @@ function oauth_new_user($id)
         'getProfiles',
         array('uids' => $id, 'fields' => 'uid,first_name,nickname,last_name,screen_name,photo_medium_rec')
     );
-    // todo-dx: validate request
     $user = $users[0];
-    $data = array();
-    $data['user_pass'] = wp_generate_password();
-    $data['user_login'] = 'vk_id' . $user['uid'];
-    $data['user_email'] = $data['user_login'] . '@vk.com';
-    $data['nickname'] = $user['nickname'];
-    $data['first_name'] = $user['first_name'];
-    $data['last_name'] = $user['last_name'];
-    $data['rich_editing'] = true;
-    $data['jabber'] = $data['user_email'];
-    $data['display_name'] = "{$data['first_name']} {$data['last_name']}";
-    $uid = wp_insert_user($data);
-    if (is_wp_error($uid)) {
-        echo $uid->get_error_message();
-        exit;
-    }
-    add_user_meta($uid, 'vkapi_ava', $user['photo_medium_rec'], false);
-    add_user_meta($uid, 'vkapi_uid', $user, true);
+    if (strlen($user["uid"]) > 0) {
+        $data = array();
+        $data['user_pass'] = wp_generate_password();
+        $data['user_login'] = 'vk_id' . $user['uid'];
+        $data['user_email'] = $data['user_login'] . '@vk.com';
+        $data['nickname'] = $user['nickname'];
+        $data['first_name'] = $user['first_name'];
+        $data['last_name'] = $user['last_name'];
+        $data['rich_editing'] = true;
+        $data['jabber'] = $data['user_email'];
+        $data['display_name'] = "{$data['first_name']} {$data['last_name']}";
+        $uid = wp_insert_user($data);
+        if (is_wp_error($uid)) {
+            echo $uid->get_error_message();
+            exit;
+        }
+        add_user_meta($uid, 'vkapi_ava', $user['photo_medium_rec'], false);
+        add_user_meta($uid, 'vkapi_uid', $user['uid'], true);
 
-    $array = array();
-    $array['user_login'] = $data['user_login'];
-    $array['user_password'] = $data['user_pass'];
-    $array['remember'] = true;
-    $user = wp_signon($array);
-    if (is_wp_error($user)) {
-        echo $user->get_error_message();
-    } else {
-        echo 'Ok';
+        $array = array();
+        $array['user_login'] = $data['user_login'];
+        $array['user_password'] = $data['user_pass'];
+        $array['remember'] = true;
+        $user = wp_signon($array);
+        if (is_wp_error($user)) {
+            echo $user->get_error_message();
+        } else {
+            echo 'Ok';
+        }
     }
+    echo print_r($user);
 }

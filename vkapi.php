@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.7
+Version: 3.8
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -27,15 +27,19 @@ Author URI: http://www.kowack.info/
 */
 
 /** todo-dx:
+ * ! счётчик комментариев — пересчёт
  * шорткод для соц. кнопок
- * стили соц.кнопок
  * соц.кнопки слева\справа\центр
- * ширина блока комментариев в процентах
- * кросспост: твиттер, фейсбук, гугл
+ * кросспост: твиттер, фейсбук, гуглоплюс
  * плавающий блок лайков
- * сломались отложеные записи, исправить
  * реализовать опросы
- * bbpress, пофиксить кросспост форумных записей
+ * кирилица -- тест
+ * обновление записи в группе при изменение в ВП
+ *
+ * идеи:
+ * изображение для кросспоста по умолчанию или прямое указание.
+ * галерея медиа
+ * категория записей на сайте из медиа юзверя ВК
  */
 function vkapi_can_start()
 {
@@ -104,21 +108,25 @@ class VK_api
         add_action('wp_print_scripts', array(&$this, 'add_head')); # init styles and scripts in header
         add_action('widgets_init', array(&$this, 'widget_init')); # widget
         add_action('wp_dashboard_setup', array(&$this, 'widget_dashboard')); # widget dashboard
-        add_filter('wp_insert_post_data', array(&$this, 'post_insert'), 1, 2); # crosspost me
+        add_filter('transition_post_status', array(&$this, 'post_publish'), 1, 3); # crosspost me
         add_action('admin_notices', array(&$this, 'post_notice')); # fix admin notice
         add_action('do_meta_boxes', array(&$this, 'add_custom_box'), 1); # add meta_box
         $option = get_option('vkapi_login');
         if ($option == 'true') {
-            add_action('profile_personal_options', array(&$this, 'add_profile_html')); # profile echo
+            add_action('profile_personal_options', array(&$this, 'add_profile_login')); # profile echo
             add_action('admin_footer', array(&$this, 'add_profile_js'), 88); # profile js
             add_action('wp_ajax_vkapi_update_user_meta', array(&$this, 'vkapi_update_user_meta')); # update user meta
             add_action('login_form', array(&$this, 'add_login_form')); # login
             add_action('register_form', array(&$this, 'add_login_form')); # register
             add_action('admin_bar_menu', array(&$this, 'user_links')); # admin bar add
         }
-        add_action('wp_enqueue_scripts', array(&$this, 'site_enqueue_scripts'), 1); # enqueue script
+        add_action('wp_enqueue_scripts', array(&$this, 'wp_enqueue_scripts'), 1); # enqueue script
+        add_action('admin_enqueue_scripts', array(&$this, 'admin_enqueue_scripts'), 1); # enqueue script
+        add_action('login_enqueue_scripts', array(&$this, 'login_enqueue_scripts'), 1); # enqueue script
         add_action('post_submitbox_misc_actions', array(&$this, 'add_post_submit')); # add before post submit
         add_action('wp_footer', array(&$this, 'vkapi_body_fix'), 1); # body fix
+        add_action('admin_footer', array(&$this, 'vkapi_body_fix'), 1); # body fix
+        add_action('login_footer', array(&$this, 'vkapi_body_fix'), 1); # body fix
         add_filter('the_content', array(&$this, 'add_buttons'), 888); # buttons
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'own_actions_links')); # plug links
         add_filter('plugin_row_meta', array(&$this, 'plugin_meta'), 1, 2); # plugin meta
@@ -138,6 +146,8 @@ class VK_api
         if ($option) {
             add_action('login_head', array(&$this, 'change_login_logo'));
         }
+        add_action('profile_personal_options', array(&$this, 'add_profile_notice_comments_show')); # profile echo
+        add_action('personal_options_update', array(&$this, 'add_profile_notice_comments_update')); # profile echo
         // V V V V V V check V V V V V V
         $vkapi_some_revision_d = get_option('vkapi_some_revision_d');
         if ($vkapi_some_revision_d) {
@@ -183,6 +193,7 @@ class VK_api
         add_option('vkapi_comm_autoPublish', '1');
         add_option('vkapi_comm_height', '0');
         add_option('vkapi_show_first', 'wp');
+        add_option('vkapi_notice_admin', '1');
         // button align
         add_option('vkapi_align', 'left');
         add_option('vkapi_like_top', '0');
@@ -331,51 +342,51 @@ class VK_api
         echo
         '<div id="vkapi_groups"></div>
 			<script type="text/javascript">
-				jQuery("body").on("vkapi_vk", function(){
-					VK.Widgets.Group("vkapi_groups", {mode: 2, width: "auto", height: "290"}, 28197069);
-				});
+                $("body").on("vkapi_vk", function(){
+                    VK.Widgets.Group("vkapi_groups", {mode: 2, width: "auto", height: "290"}, 28197069);
+                });
 			</script>';
         if (get_option('vkapi_appid')):
             ?>
-        <div id="vk_api_transport"></div>
-        <script type="text/javascript">
-            window.vkAsyncInit = function () {
-                VK.init({
-                    apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
-                });
-                jQuery(window).trigger('vkapi_vk');
-            };
+            <div id="vk_api_transport"></div>
+            <script type="text/javascript">
+                jQuery(function($){
+                    window.vkAsyncInit = function () {
+                        VK.init({
+                            apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
+                        });
+                        $('body').trigger('vkapi_vk');
+                    };
 
-            setTimeout(function () {
-                var el = document.createElement("script");
-                el.type = "text/javascript";
-                el.src = "https://vk.com/js/api/openapi.js";
-                el.async = true;
-                document.getElementById("vk_api_transport").appendChild(el);
-            }, 0);
-        </script>
+                    setTimeout(function () {
+                        var el = document.createElement("script");
+                        el.type = "text/javascript";
+                        el.src = "https://vk.com/js/api/openapi.js";
+                        el.async = true;
+                        document.getElementById("vk_api_transport").appendChild(el);
+                    }, 0);
+                });
+            </script>
         <?php endif;
     }
 
     function add_head()
     {
+        $is_login_page = in_array($GLOBALS['pagenow'], array('wp-login.php', 'wp-register.php'));
         // VK API
-        if (!is_admin() || defined('IS_PROFILE_PAGE')) {
+        if (!is_admin() || defined('IS_PROFILE_PAGE') || $is_login_page) {
             $id = get_option('vkapi_appid');
-            $wp_url = get_bloginfo('wpurl');
             echo "<meta property='vk:app_id' content='{$id}' />\n";
-            echo "<meta property='vkapi:wpurl' content='{$wp_url}' />\n";
         }
         // Fix WP 3.4 Bug
-        // todo-dx: check in WP 3.5
-        if (in_array($GLOBALS['pagenow'], array('wp-login.php', 'wp-register.php'))) {
+        if ($is_login_page) {
             add_action('vkapi_body', array(&$this, 'js_async_vkapi'));
             wp_enqueue_script('jquery');
             wp_enqueue_script('vkapi', plugins_url('vkontakte-api/js/callback.js'));
         }
         // FB API
         $temp = get_option('fbapi_show_comm');
-        if (!is_admin() && $temp == 'true') {
+        if ($temp == 'true' && !is_admin()) {
             $id = get_option('fbapi_admin_id');
             echo '<meta property="fb:admins" content="' . $id . '"/>' . "\n";
         }
@@ -430,61 +441,59 @@ class VK_api
         add_action('vkapi_body', array(&$this, 'js_async_vkapi'));
     }
 
-    function post_insert($data, $post)
+    function post_publish($new_status, $old_status, $post)
     {
-        if (!isset($post['ID'])) {
-            return $data;
+        /** @var $post WP_Post */
+        // check status
+        if ($new_status !== 'publish') {
+            return;
+        }
+        // check post slug
+        if (in_array($post->post_type, array('revision', 'link', 'nav_menu_item'))) {
+            if (substr($post->post_type, 0, 4) !== 'bbp_') {
+                return;
+            }
         }
         // do meta box
-        if (!wp_is_post_revision($post['ID'])) {
-            if (isset($_REQUEST['vkapi_comments'])) {
-                update_post_meta($post['ID'], 'vkapi_comments', $_REQUEST['vkapi_comments']);
-            }
-            if (isset($_REQUEST['vkapi_buttons'])) {
-                update_post_meta($post['ID'], 'vkapi_buttons', $_REQUEST['vkapi_buttons']);
-            }
+        if (isset($_REQUEST['vkapi_comments'])) {
+            update_post_meta($post->ID, 'vkapi_comments', $_REQUEST['vkapi_comments']);
+        }
+        if (isset($_REQUEST['vkapi_buttons'])) {
+            update_post_meta($post->ID, 'vkapi_buttons', $_REQUEST['vkapi_buttons']);
         }
         // check what user want
         $temp = isset($_REQUEST['vkapi_crosspost_submit'])
             ? $_REQUEST['vkapi_crosspost_submit']
             : get_option('vkapi_crosspost_default');
         if ($temp != '1') {
-            return $data;
-        }
-        // check post status
-        if ($post['post_status'] != 'publish') {
-            return $data;
-        }
-        // check post slug
-        if (in_array($post['post_type'], array('link', 'nav_menu_item'))) {
-            return $data;
+            return;
         }
         // check crossposted
-        $temp = get_post_meta($post['ID'], 'vkapi_crossposted', true);
+        $temp = get_post_meta($post->ID, 'vkapi_crossposted', true);
         if ($temp == 'true') {
             self::notice_notice('VKapi: CrossPost: ' . __('Already crossposted.', $this->plugin_domain));
 
-            return $data;
+            return;
         }
         // check anti crosspost
-        if ($post['crossposted']) {
-            $link = get_permalink($post['ID']);
-            self::notice_notice('VKapi: CrossPost: ' . __('AntiCrossPost detected.' . $link, $this->plugin_domain));
-
-            return $data;
-        }
+//        if ($post['crossposted']) {
+//            $link = get_permalink($post['ID']);
+//            self::notice_notice('VKapi: CrossPost: ' . __('AntiCrossPost detected.' . $link, $this->plugin_domain));
+//
+//            return;
+//        }
         // check access token
         $vk_at = get_option('vkapi_at');
         if (empty($vk_at)) {
             self::notice_notice('VKapi: CrossPost: ' . __('Access Token is empty.', $this->plugin_domain));
 
-            return $data;
+            return;
         }
         // Start !!!
-        self::crosspost($vk_at, $post['ID'], $data['post_title'], $data['post_content']);
+        self::crosspost($vk_at, $post->ID, $post->post_title, $post->post_content);
 
         // End.
-        return $data;
+        return;
     }
 
     function post_notice()
@@ -554,14 +563,18 @@ class VK_api
             echo
             "<br style='display: none' id='vkapi_connect' data-vkapi-url='{$wp_url}' />
 			    <div id='vkapi_status'></div>
-			    <div id='login_button' onclick='VK.Auth.login(onSignon)'>
+			    <div id='vkapi_login_button' onclick='VK.Auth.login(onSignon)'>
 			        <a>
 			            ВойтиВКонтакте
 			        </a>
 			    </div>
-                <script language='text/javascript'>
-                    VK.UI.button('login_button');
-                </script>
+                        <script>
+                            jQuery(function($){
+                                $('body').on('vkapi_vk', function () {
+                                    VK.UI.button('vkapi_login_button');
+                                });
+                            });
+                        </script>
                 <br />";
         }
         if (($action == 'login' || $action == 'register') && is_user_logged_in()) {
@@ -605,10 +618,28 @@ class VK_api
         );
     }
 
-    function site_enqueue_scripts()
+    function login_enqueue_scripts()
     {
         wp_enqueue_script('vkapi_callback', $this->plugin_url . 'js/callback.js', array('jquery'));
         add_action('vkapi_body', array(&$this, 'js_async_vkapi'));
+        wp_localize_script('vkapi_callback', 'vkapi', array('wpurl' => get_bloginfo('wpurl')));
+    }
+
+    function admin_enqueue_scripts()
+    {
+        if (defined('IS_PROFILE_PAGE')) {
+            wp_enqueue_script('vkapi_callback', $this->plugin_url . 'js/callback.js', array('jquery'));
+            add_action('vkapi_body', array(&$this, 'js_async_vkapi'));
+            wp_localize_script('vkapi_callback', 'vkapi', array('wpurl' => get_bloginfo('wpurl')));
+        }
+    }
+
+    function wp_enqueue_scripts()
+    {
+        wp_enqueue_script('vkapi_callback', $this->plugin_url . 'js/callback.js', array('jquery'));
+        add_action('vkapi_body', array(&$this, 'js_async_vkapi'));
+        wp_localize_script('vkapi_callback', 'vkapi', array('wpurl' => get_bloginfo('wpurl')));
+
         $option = get_option('vkapi_show_share');
         if ($option == 'true') {
             add_action('vkapi_body', array(&$this, 'js_async_vkshare'));
@@ -642,29 +673,29 @@ class VK_api
         $temp2 = get_option('vkapi_at');
         if (!(empty($temp1) || empty($temp2))) {
             ?>
-        <div class="misc-pub-section">
+            <div class="misc-pub-section">
             <input type="checkbox"
                    value="1"
                    name="vkapi_crosspost_submit"
-                <?php echo get_option('vkapi_crosspost_default') ? 'checked' : '';?>
-                    />
+                <?php echo get_option('vkapi_crosspost_default') ? 'checked' : ''; ?>
+                />
             <?php _e('CrossPost to VK.com Wall', $this->plugin_domain); ?>
             <br/>
             <?php _e('Text length:', $this->plugin_domain); ?>
             <input type="text"
                    name="vkapi_crosspost_length"
                    value="<?php echo get_option('vkapi_crosspost_length'); ?>"
-                    />
+                />
             <br/>
             <input type="checkbox"
                    name="vkapi_crosspost_link"
                    value="1"
-                <?php echo get_option('vkapi_crosspost_link') ? 'checked' : '';?>
-                    /> <?php _e('Show Post link:', $this->plugin_domain); ?>
-        </div><?php } else { ?>
-        <div class="misc-pub-section">
-            <p>Cross-Post <a href="options-general.php?page=vkapi_settings#vkapi_vk_group">not configured<a><p>
-        </div><?php
+                <?php echo get_option('vkapi_crosspost_link') ? 'checked' : ''; ?>
+                /> <?php _e('Show Post link:', $this->plugin_domain); ?>
+            </div><?php } else { ?>
+            <div class="misc-pub-section">
+                <p>Cross-Post <a href="options-general.php?page=vkapi_settings#vkapi_vk_group">not configured<a><p>
+            </div><?php
         }
     }
 
@@ -694,9 +725,9 @@ class VK_api
     {
         if ($file == plugin_basename(__FILE__)) {
             $links[] = '<a href="' . admin_url('options-general.php?page=vkapi_settings') . '">' . __(
-                'Settings',
-                $this->plugin_domain
-            ) . '</a>';
+                    'Settings',
+                    $this->plugin_domain
+                ) . '</a>';
             $links[] = 'Code is poetry!';
         }
 
@@ -1022,65 +1053,107 @@ class VK_api
     }
 
 ##### PROFILE USER INTEGRATIONS
-    function add_profile_html($profile)
+    function add_profile_notice_comments_show($profile)
+    {
+        if (current_user_can('publish_posts')) {
+            $meta_value = get_user_meta($profile->ID, 'vkapi_notice_comments', true);
+            ?>
+            <table class="form-table">
+                <tr>
+                    <th scope="row">
+                        <label for="vkapi_notice_comments">
+                            <?php _e('Social email notice:', $this->plugin_domain); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <input
+                            type="checkbox"
+                            value="1"
+                            id="vkapi_notice_comments"
+                            name="vkapi_notice_comments"
+                            <?php echo $meta_value == '1' ? 'checked' : ''; ?>
+                            />
+                    </td>
+                </tr>
+            </table>
+        <?php
+        }
+    }
+
+    function add_profile_notice_comments_update($user_id)
+    {
+        if (current_user_can('edit_user', $user_id))
+            update_user_meta($user_id, 'vkapi_notice_comments', $_POST['vkapi_notice_comments']);
+    }
+
+    function add_profile_login($profile)
     {
         ?>
-    <table class="form-table">
-        <tr>
-            <th scope="row">
-                <label>
-                    <?php _e('VKontakte', $this->plugin_domain); ?>
-                </label>
-            </th>
-            <?php
-            $uid = get_user_meta($profile->ID, 'vkapi_uid', true);
-            if (empty($uid)) {
-                ?>
-                <td>
-                    <div id="vkapi_login_button"
-                         onclick="VK.Auth.login(onSignonProfile)">
-                        <a>
-                            ВойтиВКонтакте
-                        </a>
-                    </div>
-                    <div id="vkapi_status_off"></div>
-                    <style type="text/css">
-                        #vkapi_login_button {
-                            padding: 0 !important;
-                            border: 0 !important;
-                        }
+        <table class="form-table">
 
-                        .form-table td #vkapi_login_button td {
-                            padding: 0 !important;
-                            margin: 0 !important;
-                        }
-                    </style>
-                    <script language="text/javascript">
-                        jQuery("body").on('vkapi_vk', function () {
-                            VK.UI.button('vkapi_login_button');
-                        });
-                    </script>
-                </td>
+            <tr>
+                <th scope="row"><?php _e('VKontakte', $this->plugin_domain); ?></th>
                 <?php
-            } else {
-                ?>
-                <td>
-                    <p>
-                        <?php _e('Connected User Id: ', $this->plugin_domain); echo $uid; ?>
-                    </p>
-                    <input type="button"
-                           class="button-primary"
-                           style="display: inline-block"
-                           value="<?php _e('Disconnect from VKontakte', $this->plugin_domain); ?>"
-                           onclick="vkapi_profile_update(0)"/>
+                $uid = get_user_meta($profile->ID, 'vkapi_uid', true);
+                if (empty($uid)) {
+                    ?>
+                    <td>
+                        <div id="vkapi_login_button" onclick="VK.Auth.login(onSignonProfile)"><a>ВойтиВКонтакте</a>
+                        </div>
+                        <div id="vkapi_status_off"></div>
+                        <style type="text/css">
+                            #vkapi_login_button {
+                                padding: 0 !important;
+                                border: 0 !important;
+                            }
 
-                    <div id="vkapi_status_on"></div>
-                </td>
+                            #vkapi_login_button td {
+                                padding: 0 !important;
+                                margin: 0 !important;
+                            }
+
+                            #vkapi_login_button div {
+                                font-size: 10px !important;
+                            }
+
+                            #vkapi_login_button {
+                                float: left;
+                                margin-right: 5px;
+                            }
+                        </style>
+                        <script>
+                            jQuery(function ($) {
+                                $('body').on('vkapi_vk', function () {
+                                    VK.UI.button('vkapi_login_button');
+                                });
+                            });
+                        </script>
+                    </td>
                 <?php
-            }
-            ?>
-        </tr>
-    </table>
+                } else {
+                    ?>
+                    <td>
+                        <input type="button"
+                               id="vkapi_logout_button"
+                               class="button-primary"
+                               style="display: inline-block"
+                               value="<?php _e('Disconnect from VKontakte', $this->plugin_domain); ?>"
+                               onclick="vkapi_profile_update(0)"/>
+
+                        <style type="text/css">
+                            #vkapi_logout_button {
+                                float: left;
+                                margin-right: 5px;
+                            }
+                        </style>
+
+                        <div id="vkapi_status_on"></div>
+                    </td>
+                <?php
+                }
+                ?>
+            </tr>
+        </table>
     <?php
     }
 
@@ -1088,43 +1161,43 @@ class VK_api
     {
         if (defined('IS_PROFILE_PAGE')) {
             ?>
-        <script type="text/javascript">
-            function vkapi_profile_update(args) {
-                var ajax_url = ' <?php echo admin_url("admin-ajax.php"); ?>';
-                var data = {
-                    action:'vkapi_update_user_meta',
-                    vkapi_action:args
-                };
-                if (args == 0) {
-                    jQuery.post(ajax_url, data, function (response) {
-                        if (response == 'Ok') {
-                            jQuery("#vkapi_status_on").html("<span style='color:green'>Result: ✔ " + response + "</span>");
-                            document.location.reload(true);
-                        } else {
-                            jQuery("#vkapi_status_on").html("<span style='color:red'>Result: " + response + "</span>");
-                        }
-                    });
+            <script type="text/javascript">
+                function vkapi_profile_update(args) {
+                    var ajax_url = ' <?php echo admin_url("admin-ajax.php"); ?>';
+                    var data = {
+                        action: 'vkapi_update_user_meta',
+                        vkapi_action: args
+                    };
+                    if (args == 0) {
+                        jQuery.post(ajax_url, data, function (response) {
+                            if (response == 'Ok') {
+                                jQuery("#vkapi_status_on").html("<span style='color:green'>Result: ✔ " + response + "</span>");
+                                document.location.reload(true);
+                            } else {
+                                jQuery("#vkapi_status_on").html("<span style='color:red'>Result: " + response + "</span>");
+                            }
+                        });
+                    }
+                    if (args == 1) {
+                        jQuery.post(ajax_url, data, function (response) {
+                            if (response == 'Ok') {
+                                jQuery("#vkapi_status_off").html("<span style='color:green'>Result: ✔ " + response + "</span>");
+                                document.location.reload(true);
+                            } else {
+                                jQuery("#vkapi_status_off").html("<span style='color:red'>Result: " + response + "</span>");
+                            }
+                        });
+                    }
                 }
-                if (args == 1) {
-                    jQuery.post(ajax_url, data, function (response) {
-                        if (response == 'Ok') {
-                            jQuery("#vkapi_status_off").html("<span style='color:green'>Result: ✔ " + response + "</span>");
-                            document.location.reload(true);
-                        } else {
-                            jQuery("#vkapi_status_off").html("<span style='color:red'>Result: " + response + "</span>");
-                        }
-                    });
-                }
-            }
 
-            function onSignonProfile(response) {
-                if (response.session) {
-                    vkapi_profile_update(1);
-                } else {
-                    VK.Auth.login(onSignonProfile);
+                function onSignonProfile(response) {
+                    if (response.session) {
+                        vkapi_profile_update(1);
+                    } else {
+                        VK.Auth.login(onSignonProfile);
+                    }
                 }
-            }
-        </script>
+            </script>
         <?php
         }
     }
@@ -1150,6 +1223,7 @@ class VK_api
             }
             $return = add_user_meta($user->ID, 'vkapi_uid', $member['id'], true);
             if ($return) {
+                add_user_meta($user->ID, 'vkapi_ava', $member['photo_medium_rec'], false);
                 echo 'Ok';
             } else {
                 echo 'Failed add meta data';
@@ -1174,57 +1248,59 @@ class VK_api
     {
         if (get_option('vkapi_appid')):
             ?>
-        <div id="vk_api_transport"></div>
-        <script type="text/javascript">
-            window.vkAsyncInit = function () {
-                VK.init({
-                    apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
-                });
-                VK.Observer.subscribe('widgets.comments.new_comment', onChangePlusVK);
-                VK.Observer.subscribe('widgets.comments.delete_comment', onChangeMinusVK);
-                jQuery("body").trigger('vkapi_vk');
-            };
+            <div id="vk_api_transport"></div>
+            <script type="text/javascript">
+                jQuery(function ($) {
+                    window.vkAsyncInit = function () {
+                        VK.init({
+                            apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
+                        });
+                        VK.Observer.subscribe('widgets.comments.new_comment', onChangePlusVK);
+                        VK.Observer.subscribe('widgets.comments.delete_comment', onChangeMinusVK);
+                        $("body").trigger('vkapi_vk');
+                    };
 
-            setTimeout(function () {
-                var el = document.createElement("script");
-                el.type = "text/javascript";
-                el.src = "https://vk.com/js/api/openapi.js";
-                el.async = true;
-                document.getElementById("vk_api_transport").appendChild(el);
-            }, 0);
-        </script>
+                    setTimeout(function () {
+                        var el = document.createElement("script");
+                        el.type = "text/javascript";
+                        el.src = "https://vk.com/js/api/openapi.js";
+                        el.async = true;
+                        document.getElementById("vk_api_transport").appendChild(el);
+                    }, 0);
+                });
+            </script>
         <?php endif;
     }
 
     function js_async_vkshare()
     {
         ?>
-    <div id="vk_share_transport"></div>
-    <script type="text/javascript">
-        setTimeout(function () {
-            var el = document.createElement("script");
-            el.type = "text/javascript";
-            el.src = "https://vk.com/js/api/share.js";
-            el.async = true;
-            document.getElementById("vk_share_transport").appendChild(el);
-        }, 0);
-    </script>
+        <div id="vk_share_transport"></div>
+        <script type="text/javascript">
+            setTimeout(function () {
+                var el = document.createElement("script");
+                el.type = "text/javascript";
+                el.src = "https://vk.com/js/api/share.js";
+                el.async = true;
+                document.getElementById("vk_share_transport").appendChild(el);
+            }, 0);
+        </script>
     <?php
     }
 
     function js_async_plusone()
     {
         ?>
-    <div id="gp_plusone_transport"></div>
-    <script type="text/javascript">
-        setTimeout(function () {
-            var el = document.createElement("script");
-            el.type = "text/javascript";
-            el.src = "https://apis.google.com/js/plusone.js";
-            el.async = true;
-            document.getElementById("gp_plusone_transport").appendChild(el);
-        }, 0);
-    </script>
+        <div id="gp_plusone_transport"></div>
+        <script type="text/javascript">
+            setTimeout(function () {
+                var el = document.createElement("script");
+                el.type = "text/javascript";
+                el.src = "https://apis.google.com/js/plusone.js";
+                el.async = true;
+                document.getElementById("gp_plusone_transport").appendChild(el);
+            }, 0);
+        </script>
     <?php
     }
 
@@ -1232,83 +1308,89 @@ class VK_api
     {
         if (get_option('fbapi_appid')):
             ?>
-        <div id="fb-root"></div>
-        <script>
-            window.fbAsyncInit = function () {
-                FB.init({
-                    appId: <?php echo get_option('fbapi_appid'); ?>,
-                    status:true,
-                    cookie:true,
-                    xfbml:true
-                });
-                FB.Event.subscribe('comment.create', onChangePlusFB);
-                FB.Event.subscribe('comment.remove', onChangeMinusFB);
-                jQuery("body").trigger('vkapi_fb');
-            };
+            <div id="fb-root"></div>
+            <script>
+                jQuery(function($){
+                    window.fbAsyncInit = function () {
+                        FB.init({
+                            appId: <?php echo get_option('fbapi_appid'); ?>,
+                            status: true,
+                            cookie: true,
+                            xfbml: true
+                        });
+                        FB.Event.subscribe('comment.create', onChangePlusFB);
+                        FB.Event.subscribe('comment.remove', onChangeMinusFB);
+                        jQuery("body").trigger('vkapi_fb');
+                    };
 
-            (function (d) {
-                var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-                if (d.getElementById(id)) {
-                    return;
-                }
-                js = d.createElement('script');
-                js.id = id;
-                js.async = true;
-                js.src = "//connect.facebook.net/ru_RU/all.js";
-                ref.parentNode.insertBefore(js, ref);
-            }(document));
-        </script>
+                    (function (d) {
+                        var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+                        if (d.getElementById(id)) {
+                            return;
+                        }
+                        js = d.createElement('script');
+                        js.id = id;
+                        js.async = true;
+                        js.src = "//connect.facebook.net/ru_RU/all.js";
+                        ref.parentNode.insertBefore(js, ref);
+                    }(document));
+                });
+            </script>
         <?php endif;
     }
 
     function js_async_tw()
     {
         ?>
-    <script type="text/javascript"> !function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (!d.getElementById(id)) {
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "//platform.twitter.com/widgets.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }
-    }(document, "script", "twitter-wjs");</script>
+        <script type="text/javascript">
+            !function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (!d.getElementById(id)) {
+                    js = d.createElement(s);
+                    js.id = id;
+                    js.async = true;
+                    js.src = "//platform.twitter.com/widgets.js";
+                    fjs.parentNode.insertBefore(js, fjs);
+                }
+            }(document, "script", "twitter-wjs");
+        </script>
     <?php
     }
 
     function js_async_mrc()
     {
         ?>
-    <script src="https://connect.mail.ru/js/loader.js"
-            type="text/javascript"
-            charset="UTF-8">
-    </script>
+        <script src="https://connect.mail.ru/js/loader.js"
+                type="text/javascript"
+                async
+                charset="UTF-8">
+        </script>
     <?php
     }
 
     function js_async_ya()
     {
         ?>
-    <script charset="utf-8"
-            type="text/javascript">
-        if (window.Ya && window.Ya.Share) {
-            Ya.Share.update();
-        } else {
-            (function () {
-                if (!window.Ya) {
-                    window.Ya = {}
-                }
-                Ya.STATIC_BASE = 'https:\/\/yandex.st\/wow\/2.7.7\/static';
-                Ya.START_BASE = 'https:\/\/my.ya.ru\/';
-                var shareScript = document.createElement("script");
-                shareScript.type = "text/javascript";
-                shareScript.async = "true";
-                shareScript.charset = "utf-8";
-                shareScript.src = Ya.STATIC_BASE + "/js/api/Share.js";
-                (document.getElementsByTagName("head")[0] || document.body).appendChild(shareScript);
-            })();
-        }
-    </script>
+        <script charset="utf-8"
+                type="text/javascript">
+            if (window.Ya && window.Ya.Share) {
+                Ya.Share.update();
+            } else {
+                (function () {
+                    if (!window.Ya) {
+                        window.Ya = {}
+                    }
+                    Ya.STATIC_BASE = 'https:\/\/yandex.st\/wow\/2.7.7\/static';
+                    Ya.START_BASE = 'https:\/\/my.ya.ru\/';
+                    var shareScript = document.createElement("script");
+                    shareScript.type = "text/javascript";
+                    shareScript.async = true;
+                    shareScript.charset = "utf-8";
+                    shareScript.src = Ya.STATIC_BASE + "/js/api/Share.js";
+                    (document.getElementsByTagName("head")[0] || document.body).appendChild(shareScript);
+                })();
+            }
+        </script>
     <?php
     }
 
@@ -1434,39 +1516,43 @@ class VK_api
     function social_button_style()
     {
         ?>
-    <style type="text/css">
-        ul.nostyle,
-        ul.nostyle li {
-            list-style: none;
-            background: none;
-        }
+        <style type="text/css">
+            ul.nostyle,
+            ul.nostyle li {
+                list-style: none;
+                background: none;
+            }
 
-        ul.nostyle li {
-            height: 20px;
-            line-height: 20px;
-            padding: 5px;
-            margin: 0;
-            /*display: inline-block;*/
-            float: left;
-        }
+            ul.nostyle li {
+                height: 20px;
+                line-height: 20px;
+                padding: 5px;
+                margin: 0;
+                /*display: inline-block;*/
+                float: left;
+            }
 
-        ul.nostyle li div table {
-            margin: 0;
-            padding: 0;
-        }
+            ul.nostyle a {
+                border: none !important;
+            }
 
-        .vkapishare {
-            padding: 0 3px 0 0;
-        }
+            ul.nostyle li div table {
+                margin: 0;
+                padding: 0;
+            }
 
-        .vkapishare td,
-        .vkapishare tr {
-            border: 0 !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            vertical-align: top !important;
-        }
-    </style>
+            .vkapishare {
+                padding: 0 3px 0 0;
+            }
+
+            .vkapishare td,
+            .vkapishare tr {
+                border: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                vertical-align: top !important;
+            }
+        </style>
     <?php
     }
 
@@ -1686,7 +1772,7 @@ class VK_api
             if (!empty($temp)) {
                 $array = array_merge($array, $temp);
             }
-            $array[] = $array[] = array(
+            $array[] = array(
                 'type' => 'updated',
                 'msg' => $msg
             );
@@ -1768,6 +1854,10 @@ class VK_api
             }
             $text = $post_title . "\r\n\r\n" . $text;
             $body['message'] = $text;
+        } else {
+            if ((int)$temp === -1) {
+                $body['message'] = "";
+            }
         }
         // Call
         $curl = new Wp_Http_Curl();
@@ -1792,7 +1882,7 @@ class VK_api
             return false;
         }
         $temp = isset($vk_group_screen_name) ? $vk_group_screen_name : 'club' . $vk_group;
-        $post_link = "http://vk.com/{$temp}?w=wall{$vk_group}_{$r_data['response']['post_id']}%2Fall";
+        $post_link = "https://vk.com/{$temp}?w=wall{$vk_group}_{$r_data['response']['post_id']}%2Fall";
         $post_href = "<a href='{$post_link}' target='_blank'>{$temp}</a>";
         self::notice_notice('CrossPost: Success ! ' . $post_href);
         update_post_meta($post_id, 'vkapi_crossposted', 'true');
@@ -2033,6 +2123,7 @@ class VK_api
         register_setting('vkapi-settings-group', 'vkapi_crosspost_signed');
         register_setting('vkapi-settings-group', 'vkapi_crosspost_category');
         register_setting('vkapi-settings-group', 'vkapi_crosspost_anti');
+        register_setting('vkapi-settings-group', 'vkapi_notice_admin');
     }
 
     function contextual_help()
@@ -2162,6 +2253,7 @@ class VK_api
 -------------------------------------------------------------- */
 
 /* Community Widget */
+
 class VKAPI_Community extends WP_Widget
 {
 
@@ -2240,64 +2332,68 @@ class VKAPI_Community extends WP_Widget
         $height = esc_attr($instance['height']);
 
         ?><p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('title'); ?>"
-               name="<?php echo $this->get_field_name('title'); ?>"
-               type="text"
-               value="<?php echo $title; ?>"/>
-    </label></p>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('title'); ?>"
+                   name="<?php echo $this->get_field_name('title'); ?>"
+                   type="text"
+                   value="<?php echo $title; ?>"/>
+        </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('gid'); ?>"><?php _e(
-        'ID of group (can be seen by reference to statistics):',
-        $this->plugin_domain
-    ); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('gid'); ?>"
-               name="<?php echo $this->get_field_name('gid'); ?>"
-               type="text"
-               value="<?php echo $gid; ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('gid'); ?>"><?php _e(
+                    'ID of group (can be seen by reference to statistics):',
+                    $this->plugin_domain
+                ); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('gid'); ?>"
+                       name="<?php echo $this->get_field_name('gid'); ?>"
+                       type="text"
+                       value="<?php echo $gid; ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:', $this->plugin_domain); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('width'); ?>"
-               name="<?php echo $this->get_field_name('width'); ?>"
-               type="text"
-               value="<?php echo $width; ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:', $this->plugin_domain); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('width'); ?>"
+                       name="<?php echo $this->get_field_name('width'); ?>"
+                       type="text"
+                       value="<?php echo $width; ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('height'); ?>"><?php _e('Height:', $this->plugin_domain); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('height'); ?>"
-               name="<?php echo $this->get_field_name('height'); ?>"
-               type="text"
-               value="<?php echo $height; ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('height'); ?>"><?php _e('Height:', $this->plugin_domain); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('height'); ?>"
+                       name="<?php echo $this->get_field_name('height'); ?>"
+                       type="text"
+                       value="<?php echo $height; ?>"/>
+            </label></p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('type'); ?>"><?php _e('Layout:', $this->plugin_domain); ?></label>
-        <select name="<?php echo $this->get_field_name('type'); ?>"
-                id="<?php echo $this->get_field_id('type'); ?>"
-                class="widefat">
-            <option value="users"<?php selected($instance['type'], 'users'); ?>><?php _e(
-                'Members',
-                $this->plugin_domain
-            ); ?></option>
-            <option value="news"<?php selected($instance['type'], 'news'); ?>><?php _e(
-                'News',
-                $this->plugin_domain
-            ); ?></option>
-            <option value="name"<?php selected($instance['type'], 'name'); ?>><?php _e(
-                'Only Name',
-                $this->plugin_domain
-            ); ?></option>
-        </select>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('type'); ?>"><?php _e(
+                    'Layout:',
+                    $this->plugin_domain
+                ); ?></label>
+            <select name="<?php echo $this->get_field_name('type'); ?>"
+                    id="<?php echo $this->get_field_id('type'); ?>"
+                    class="widefat">
+                <option value="users"<?php selected($instance['type'], 'users'); ?>><?php _e(
+                        'Members',
+                        $this->plugin_domain
+                    ); ?></option>
+                <option value="news"<?php selected($instance['type'], 'news'); ?>><?php _e(
+                        'News',
+                        $this->plugin_domain
+                    ); ?></option>
+                <option value="name"<?php selected($instance['type'], 'name'); ?>><?php _e(
+                        'Only Name',
+                        $this->plugin_domain
+                    ); ?></option>
+            </select>
+        </p>
     <?php
     }
 }
 
 /* Recommend Widget */
+
 class VKAPI_Recommend extends WP_Widget
 {
 
@@ -2362,75 +2458,79 @@ class VKAPI_Recommend extends WP_Widget
         $width = esc_attr($instance['width']);
 
         ?><p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('title'); ?>"
-               name="<?php echo $this->get_field_name('title'); ?>"
-               type="text"
-               value="<?php echo $title; ?>"/>
-    </label></p>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('title'); ?>"
+                   name="<?php echo $this->get_field_name('title'); ?>"
+                   type="text"
+                   value="<?php echo $title; ?>"/>
+        </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('limit'); ?>"><?php _e('Number of posts:', $this->plugin_domain); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('limit'); ?>"
-               name="<?php echo $this->get_field_name('limit'); ?>"
-               type="text"
-               value="<?php echo $limit; ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('limit'); ?>"><?php _e(
+                    'Number of posts:',
+                    $this->plugin_domain
+                ); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('limit'); ?>"
+                       name="<?php echo $this->get_field_name('limit'); ?>"
+                       type="text"
+                       value="<?php echo $limit; ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:', $this->plugin_domain); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('width'); ?>"
-               name="<?php echo $this->get_field_name('width'); ?>"
-               type="text"
-               value="<?php echo $width; ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:', $this->plugin_domain); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('width'); ?>"
+                       name="<?php echo $this->get_field_name('width'); ?>"
+                       type="text"
+                       value="<?php echo $width; ?>"/>
+            </label></p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('period'); ?>"><?php _e(
-            'Selection period:',
-            $this->plugin_domain
-        ); ?></label>
-        <select name="<?php echo $this->get_field_name('period'); ?>"
-                id="<?php echo $this->get_field_id('period'); ?>"
-                class="widefat">
-            <option value="day"<?php selected($instance['period'], 'day'); ?>><?php _e(
-                'Day',
-                $this->plugin_domain
-            ); ?></option>
-            <option value="week"<?php selected($instance['period'], 'week'); ?>><?php _e(
-                'Week',
-                $this->plugin_domain
-            ); ?></option>
-            <option value="month"<?php selected($instance['period'], 'month'); ?>><?php _e(
-                'Month',
-                $this->plugin_domain
-            ); ?></option>
-        </select>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('period'); ?>"><?php _e(
+                    'Selection period:',
+                    $this->plugin_domain
+                ); ?></label>
+            <select name="<?php echo $this->get_field_name('period'); ?>"
+                    id="<?php echo $this->get_field_id('period'); ?>"
+                    class="widefat">
+                <option value="day"<?php selected($instance['period'], 'day'); ?>><?php _e(
+                        'Day',
+                        $this->plugin_domain
+                    ); ?></option>
+                <option value="week"<?php selected($instance['period'], 'week'); ?>><?php _e(
+                        'Week',
+                        $this->plugin_domain
+                    ); ?></option>
+                <option value="month"<?php selected($instance['period'], 'month'); ?>><?php _e(
+                        'Month',
+                        $this->plugin_domain
+                    ); ?></option>
+            </select>
+        </p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('verb'); ?>"><?php _e(
-            'Formulation:',
-            $this->plugin_domain
-        ); ?></label>
-        <select name="<?php echo $this->get_field_name('verb'); ?>"
-                id="<?php echo $this->get_field_id('verb'); ?>"
-                class="widefat">
-            <option value="0"<?php selected($instance['verb'], '0'); ?>><?php _e(
-                '... people like this',
-                $this->plugin_domain
-            ); ?></option>
-            <option value="1"<?php selected($instance['verb'], '1'); ?>><?php _e(
-                '... people find it intersting',
-                $this->plugin_domain
-            ); ?></option>
-        </select>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('verb'); ?>"><?php _e(
+                    'Formulation:',
+                    $this->plugin_domain
+                ); ?></label>
+            <select name="<?php echo $this->get_field_name('verb'); ?>"
+                    id="<?php echo $this->get_field_id('verb'); ?>"
+                    class="widefat">
+                <option value="0"<?php selected($instance['verb'], '0'); ?>><?php _e(
+                        '... people like this',
+                        $this->plugin_domain
+                    ); ?></option>
+                <option value="1"<?php selected($instance['verb'], '1'); ?>><?php _e(
+                        '... people find it intersting',
+                        $this->plugin_domain
+                    ); ?></option>
+            </select>
+        </p>
     <?php
     }
 }
 
 /* Login Widget */
+
 class VKAPI_Login extends WP_Widget
 {
 
@@ -2486,17 +2586,18 @@ class VKAPI_Login extends WP_Widget
         $title = esc_attr($instance['Message']);
 
         ?><p><label for="<?php echo $this->get_field_id('Message'); ?>"><?php _e('Message:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('Message'); ?>"
-               name="<?php echo $this->get_field_name('Message'); ?>"
-               type="text"
-               value="<?php echo $title; ?>"/>
-    </label></p>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('Message'); ?>"
+                   name="<?php echo $this->get_field_name('Message'); ?>"
+                   type="text"
+                   value="<?php echo $title; ?>"/>
+        </label></p>
     <?php
     }
 }
 
 /* Comments Widget */
+
 class VKAPI_Comments extends WP_Widget
 {
 
@@ -2565,44 +2666,45 @@ class VKAPI_Comments extends WP_Widget
         $height = esc_attr($instance['height']);
 
         ?><p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('title'); ?>"
-               name="<?php echo $this->get_field_name('title'); ?>"
-               type="text"
-               value="<?php echo $title; ?>"/>
-    </label></p>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('title'); ?>"
+                   name="<?php echo $this->get_field_name('title'); ?>"
+                   type="text"
+                   value="<?php echo $title; ?>"/>
+        </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('limit'); ?>"><?php _e(
-        'Number of comments:',
-        $this->plugin_domain
-    ); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('limit'); ?>"
-               name="<?php echo $this->get_field_name('limit'); ?>"
-               type="text"
-               value="<?php echo $limit; ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('limit'); ?>"><?php _e(
+                    'Number of comments:',
+                    $this->plugin_domain
+                ); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('limit'); ?>"
+                       name="<?php echo $this->get_field_name('limit'); ?>"
+                       type="text"
+                       value="<?php echo $limit; ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:', $this->plugin_domain); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('width'); ?>"
-               name="<?php echo $this->get_field_name('width'); ?>"
-               type="text"
-               value="<?php echo $width; ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:', $this->plugin_domain); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('width'); ?>"
+                       name="<?php echo $this->get_field_name('width'); ?>"
+                       type="text"
+                       value="<?php echo $width; ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('height'); ?>"><?php _e('Height:', $this->plugin_domain); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('height'); ?>"
-               name="<?php echo $this->get_field_name('height'); ?>"
-               type="text"
-               value="<?php echo $height; ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('height'); ?>"><?php _e('Height:', $this->plugin_domain); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('height'); ?>"
+                       name="<?php echo $this->get_field_name('height'); ?>"
+                       type="text"
+                       value="<?php echo $height; ?>"/>
+            </label></p>
     <?php
     }
 }
 
 /* Cloud Widget */
+
 class VKAPI_Cloud extends WP_Widget
 {
 
@@ -2720,108 +2822,109 @@ class VKAPI_Cloud extends WP_Widget
         $cats = esc_attr($instance['cats']);
 
         ?>
-    <p>
-        <label for="<?php echo $this->get_field_id('title'); ?>">
-            <?php _e('Title:'); ?>
-        </label>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('title'); ?>"
-               name="<?php echo $this->get_field_name('title'); ?>"
-               type="text"
-               value="<?php echo $title; ?>"/>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('title'); ?>">
+                <?php _e('Title:'); ?>
+            </label>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('title'); ?>"
+                   name="<?php echo $this->get_field_name('title'); ?>"
+                   type="text"
+                   value="<?php echo $title; ?>"/>
+        </p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('width'); ?>">
-            <?php _e('Width:', $this->plugin_domain); ?>
-        </label>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('width'); ?>"
-               name="<?php echo $this->get_field_name('width'); ?>"
-               type="text"
-               value="<?php echo $width; ?>"/>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('width'); ?>">
+                <?php _e('Width:', $this->plugin_domain); ?>
+            </label>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('width'); ?>"
+                   name="<?php echo $this->get_field_name('width'); ?>"
+                   type="text"
+                   value="<?php echo $width; ?>"/>
+        </p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('height'); ?>">
-            <?php _e('Height:', $this->plugin_domain); ?>
-        </label>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('height'); ?>"
-               name="<?php echo $this->get_field_name('height'); ?>"
-               type="text"
-               value="<?php echo $height; ?>"/>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('height'); ?>">
+                <?php _e('Height:', $this->plugin_domain); ?>
+            </label>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('height'); ?>"
+                   name="<?php echo $this->get_field_name('height'); ?>"
+                   type="text"
+                   value="<?php echo $height; ?>"/>
+        </p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('textColor'); ?>">
-            <?php _e('Color of text:', $this->plugin_domain); ?>
-        </label>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('textColor'); ?>"
-               name="<?php echo $this->get_field_name('textColor'); ?>"
-               type="text"
-               value="<?php echo $textColor; ?>"/>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('textColor'); ?>">
+                <?php _e('Color of text:', $this->plugin_domain); ?>
+            </label>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('textColor'); ?>"
+                   name="<?php echo $this->get_field_name('textColor'); ?>"
+                   type="color"
+                   value="<?php echo $textColor; ?>"/>
+        </p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('activeLink'); ?>">
-            <?php _e('Color of active link:', $this->plugin_domain); ?>
-        </label>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('activeLink'); ?>"
-               name="<?php echo $this->get_field_name('activeLink'); ?>"
-               type="text"
-               value="<?php echo $activeLink; ?>"/>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('activeLink'); ?>">
+                <?php _e('Color of active link:', $this->plugin_domain); ?>
+            </label>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('activeLink'); ?>"
+                   name="<?php echo $this->get_field_name('activeLink'); ?>"
+                   type="color"
+                   value="<?php echo $activeLink; ?>"/>
+        </p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('shadow'); ?>">
-            <?php _e('Color of shadow:', $this->plugin_domain); ?>
-        </label>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('shadow'); ?>"
-               name="<?php echo $this->get_field_name('shadow'); ?>"
-               type="text"
-               value="<?php echo $shadow; ?>"/>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('shadow'); ?>">
+                <?php _e('Color of shadow:', $this->plugin_domain); ?>
+            </label>
+            <input class="widefat"
+                   id="<?php echo $this->get_field_id('shadow'); ?>"
+                   name="<?php echo $this->get_field_name('shadow'); ?>"
+                   type="color"
+                   value="<?php echo $shadow; ?>"/>
+        </p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('tags'); ?>">
-            <?php _e('Show tags:', $this->plugin_domain); ?>
-        </label>
-        <select name="<?php echo $this->get_field_name('tags'); ?>"
-                id="<?php echo $this->get_field_id('tags'); ?>"
-                class="widefat">
-            <option value="1"<?php selected($instance['tags'], '1'); ?>>
-                <?php _e('Show', $this->plugin_domain); ?>
-            </option>
-            <option value="0"<?php selected($instance['tags'], '0'); ?>>
-                <?php _e('Dont show', $this->plugin_domain); ?>
-            </option>
-        </select>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('tags'); ?>">
+                <?php _e('Show tags:', $this->plugin_domain); ?>
+            </label>
+            <select name="<?php echo $this->get_field_name('tags'); ?>"
+                    id="<?php echo $this->get_field_id('tags'); ?>"
+                    class="widefat">
+                <option value="1"<?php selected($instance['tags'], '1'); ?>>
+                    <?php _e('Show', $this->plugin_domain); ?>
+                </option>
+                <option value="0"<?php selected($instance['tags'], '0'); ?>>
+                    <?php _e('Dont show', $this->plugin_domain); ?>
+                </option>
+            </select>
+        </p>
 
-    <p>
-        <label for="<?php echo $this->get_field_id('cats'); ?>">
-            <?php _e('Show categories:', $this->plugin_domain); ?>
-        </label>
-        <select name="<?php echo $this->get_field_name('cats'); ?>"
-                id="<?php echo $this->get_field_id('cats'); ?>"
-                class="widefat">
-            <option value="1"<?php selected($instance['cats'], '1'); ?>>
-                <?php _e('Show', $this->plugin_domain); ?>
-            </option>
-            <option value="0"<?php selected($instance['cats'], '0'); ?>>
-                <?php _e('Dont show', $this->plugin_domain); ?>
-            </option>
-        </select>
-    </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('cats'); ?>">
+                <?php _e('Show categories:', $this->plugin_domain); ?>
+            </label>
+            <select name="<?php echo $this->get_field_name('cats'); ?>"
+                    id="<?php echo $this->get_field_id('cats'); ?>"
+                    class="widefat">
+                <option value="1"<?php selected($instance['cats'], '1'); ?>>
+                    <?php _e('Show', $this->plugin_domain); ?>
+                </option>
+                <option value="0"<?php selected($instance['cats'], '0'); ?>>
+                    <?php _e('Dont show', $this->plugin_domain); ?>
+                </option>
+            </select>
+        </p>
     <?php
     }
 }
 
 /* Facebook LikeBox Widget */
+
 class FBAPI_LikeBox extends WP_Widget
 {
 
@@ -2883,61 +2986,61 @@ class FBAPI_LikeBox extends WP_Widget
         );
 
         ?>
-    <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('title'); ?>"
-               name="<?php echo $this->get_field_name('title'); ?>"
-               type="text"
-               value="<?php echo esc_attr($instance['title']); ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('title'); ?>"
+                       name="<?php echo $this->get_field_name('title'); ?>"
+                       type="text"
+                       value="<?php echo esc_attr($instance['title']); ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('page'); ?>"><?php _e('Facebook Page URL:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('page'); ?>"
-               name="<?php echo $this->get_field_name('page'); ?>"
-               type="text"
-               value="<?php echo esc_attr($instance['page']); ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('page'); ?>"><?php _e('Facebook Page URL:'); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('page'); ?>"
+                       name="<?php echo $this->get_field_name('page'); ?>"
+                       type="text"
+                       value="<?php echo esc_attr($instance['page']); ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('width'); ?>"
-               name="<?php echo $this->get_field_name('width'); ?>"
-               type="text"
-               value="<?php echo esc_attr($instance['width']); ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:'); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('width'); ?>"
+                       name="<?php echo $this->get_field_name('width'); ?>"
+                       type="text"
+                       value="<?php echo esc_attr($instance['width']); ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('height'); ?>"><?php _e('Height:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('height'); ?>"
-               name="<?php echo $this->get_field_name('height'); ?>"
-               type="text"
-               value="<?php echo esc_attr($instance['height']); ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('height'); ?>"><?php _e('Height:'); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('height'); ?>"
+                       name="<?php echo $this->get_field_name('height'); ?>"
+                       type="text"
+                       value="<?php echo esc_attr($instance['height']); ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('face'); ?>"><?php _e('Show Faces:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('face'); ?>"
-               name="<?php echo $this->get_field_name('face'); ?>"
-               type="text"
-               value="<?php echo esc_attr($instance['face']); ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('face'); ?>"><?php _e('Show Faces:'); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('face'); ?>"
+                       name="<?php echo $this->get_field_name('face'); ?>"
+                       type="text"
+                       value="<?php echo esc_attr($instance['face']); ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('news'); ?>"><?php _e('Stream:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('news'); ?>"
-               name="<?php echo $this->get_field_name('news'); ?>"
-               type="text"
-               value="<?php echo esc_attr($instance['news']); ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('news'); ?>"><?php _e('Stream:'); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('news'); ?>"
+                       name="<?php echo $this->get_field_name('news'); ?>"
+                       type="text"
+                       value="<?php echo esc_attr($instance['news']); ?>"/>
+            </label></p>
 
-    <p><label for="<?php echo $this->get_field_id('header'); ?>"><?php _e('Header:'); ?>
-        <input class="widefat"
-               id="<?php echo $this->get_field_id('header'); ?>"
-               name="<?php echo $this->get_field_name('header'); ?>"
-               type="text"
-               value="<?php echo esc_attr($instance['header']); ?>"/>
-    </label></p>
+        <p><label for="<?php echo $this->get_field_id('header'); ?>"><?php _e('Header:'); ?>
+                <input class="widefat"
+                       id="<?php echo $this->get_field_id('header'); ?>"
+                       name="<?php echo $this->get_field_name('header'); ?>"
+                       type="text"
+                       value="<?php echo esc_attr($instance['header']); ?>"/>
+            </label></p>
     <?php
     }
 }

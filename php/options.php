@@ -223,6 +223,19 @@
                 value="1" <?php echo get_option(
         'vkapi_close_wp'
     ) ? 'checked' : '';?> /></div>
+
+    <div>
+        <label for="vkapi_notice_admin">
+            <span>
+                <?php _e('Notice by email about new comment', $this->plugin_domain); ?>
+            </span>
+        </label>
+    </div>
+    <div>
+        <input type="checkbox" id="vkapi_notice_admin" name="vkapi_notice_admin" value="1"
+            <?php echo get_option('vkapi_notice_admin') ? 'checked' : '';?>
+        />
+    </div>
 </div>
 <!-- Comments Media -->
 <div>
@@ -293,7 +306,7 @@
         <p>
             <?php _e('Can also be used in a template', $this->plugin_domain); ?>:
         </p>
-        <textarea readonly="true" cols="71" rows="1" style="width: auto; resize: none; overflow: hidden;"><?php
+        <textarea readonly cols="71" rows="1" style="width: auto; resize: none; overflow: hidden;"><?php
             echo htmlentities('<?php echo class_exists(\'VK_api\') ? VK_api::get_vk_login() : null; ?>');
             ?></textarea>
     </div>
@@ -533,7 +546,7 @@
     ) ? 'checked' : '';?> /></div>
 </div>
 <div>
-    <div><label for="vkapi_crosspost_length"><?php _e('Text length(0=unlimited):', $this->plugin_domain); ?></label>
+    <div><label for="vkapi_crosspost_length"><?php _e('Text length(0=unlimited, -1=Don\'t send text):', $this->plugin_domain); ?></label>
     </div>
     <div><input type="text"
                 id="vkapi_crosspost_length"

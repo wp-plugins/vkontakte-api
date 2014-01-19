@@ -13,44 +13,32 @@ if (isset($_POST['social'])) {
             $sign = $_POST['sign'];
             $api_secret = get_option('vkapi_api_secret');
             $hash = md5($api_secret . $date . $num . $last_comment);
-            if ($hash == $sign) {
-                update_post_meta($post_id, 'vkapi_comm', $num, false);
-                $email = get_bloginfo('admin_email');
-                $blog_url = site_url();
-                if (substr($blog_url, 0, 7) == 'http://') {
-                    $blog_url = substr($blog_url, 7);
-                }
-                if (substr($blog_url, 0, 8) == 'https://') {
-                    $blog_url = substr($blog_url, 8);
-                }
-                load_plugin_textdomain('vkapi', false, dirname(plugin_basename(__FILE__)) . '/translate/');
-                $notify_message = 'VKapi: ' . __('Page has just commented!', 'vkapi') . '<br />';
-                $notify_message .= get_permalink($post_id) . '<br /><br />';
-                $notify_message .= __('Comment: ', 'vkapi') . '<br />' . $last_comment . '<br /><br />';
-                $subject = '[VKapi] ' . __('Website:', 'vkapi');
-                $subject .= ' "' . $blog_url . '"';
-                add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
-                wp_mail($email, $subject, $notify_message);
-            } else {
-                update_post_meta($post_id, 'vkapi_comm', $num, false);
-                $email = get_bloginfo('admin_email');
-                $blog_url = site_url();
-                if (substr($blog_url, 0, 7) == 'http://') {
-                    $blog_url = substr($blog_url, 7);
-                }
-                if (substr($blog_url, 0, 8) == 'https://') {
-                    $blog_url = substr($blog_url, 8);
-                }
-                load_plugin_textdomain('vkapi', false, dirname(plugin_basename(__FILE__)) . '/translate/');
-                $notify_message = 'VKapi: ' . __('Page has just commented!', 'vkapi') . '<br />';
-                $notify_message .= get_permalink($post_id) . '<br /><br />';
-                $notify_message .= __('Comment: ', 'vkapi') . '<br />' . $last_comment . '<br /><br />';
-                $subject = '[VKapi] ' . __('Website:', 'vkapi');
-                $subject .= ' "' . $blog_url . '"';
-                $notify_message .= '<br /><br /><br />sign not true';
-                add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
-                wp_mail($email, $subject, $notify_message);
+            update_post_meta($post_id, 'vkapi_comm', $num, false);
+            $emails = Array();
+            if (get_option('vkapi_notice_admin') == '1') {
+                $emails[] = get_bloginfo('admin_email');
             }
+            // todo-dx: optimize this
+            if ( get_user_meta($profile->ID, 'vkapi_notice_comments', true) == '1' ) {
+                $post = get_post($post_id);
+                $emails[] = get_the_author_meta('email', $post->post_author);
+            }
+            $blog_url = get_bloginfo("url");
+            if (substr($blog_url, 0, 7) == 'http://') {
+                $blog_url = substr($blog_url, 7);
+            }
+            if (substr($blog_url, 0, 8) == 'https://') {
+                $blog_url = substr($blog_url, 8);
+            }
+            load_plugin_textdomain('vkapi', false, dirname(plugin_basename(__FILE__)) . '/translate/');
+            $notify_message = 'VKapi: ' . __('Page has just commented!', 'vkapi') . '<br />';
+            $notify_message .= get_permalink($post_id) . '<br /><br />';
+            $notify_message .= __('Comment: ', 'vkapi') . '<br />' . $last_comment . '<br /><br />';
+            $notify_message .= $hash == $sign ? '' : '<br /><br /><br />sign not true';
+            $subject = '[VKapi] ' . __('Website:', 'vkapi');
+            $subject .= ' "' . $blog_url . '"';
+            add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
+            wp_mail($emails, $subject, $notify_message);
             break;
         case 'fb':
             $post_id = $_POST['id'];
@@ -66,7 +54,14 @@ if (isset($_POST['social'])) {
             if (isset($num)) {
                 update_post_meta($post_id, 'fbapi_comm', $num, false);
             }
-            $email = get_bloginfo('admin_email');
+            $emails = Array();
+            if (get_option('vkapi_notice_admin') == '1') {
+                $emails[] = get_bloginfo('admin_email');
+            }
+            if ( get_user_meta($profile->ID, 'vkapi_notice_comments', true) == '1' ) {
+                $post = get_post($post_id);
+                $emails[] = get_the_author_meta('email', $post->post_author);
+            }
             $blog_url = site_url();
             if (substr($blog_url, 0, 7) == 'http://') {
                 $blog_url = substr($blog_url, 7);
@@ -83,7 +78,7 @@ if (isset($_POST['social'])) {
             $subject .= ' "' . $blog_url . '"';
             $notify_message .= '<br /><br /><br />sign not true';
             add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
-            wp_mail($email, $subject, $notify_message);
+            wp_mail($emails, $subject, $notify_message);
             break;
     }
 }
