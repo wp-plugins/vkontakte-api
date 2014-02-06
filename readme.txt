@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: vkontakte, facebook, crosspost, comments, social, share, vk.com
 Requires at least: 3.5.1
 Tested up to: 3.5.1
-Stable tag: 3.7
+Stable tag: 3.9
 
 Добавляет функционал API сайта VKontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...
 
@@ -24,7 +24,6 @@ Stable tag: 3.7
 * А так же вход\регистрация и привязка аккаунта ВКонтакте.
 * А так же облако тегов на HTML5 ( многие плагины облака тегов не поддерживают версию WordPress-a > 3 ).
 * Для переводчиков: поддерживает перевод.
-* Требуется актуальная версия PHP (>= 5.3)
 
 == Installation ==
 
@@ -37,21 +36,13 @@ Stable tag: 3.7
 
 Для подключения каких-либо функций к сайту у Вас должен быть **ID приложения**, для кросспостинга — **Защищенный ключ**.
 Если они у Вас уже есть — укажите их в настройках плагина.
-Если нет — перейдите по этой ссылке [http://vk.com/editapp?act=create&site=1](http://vk.com/editapp?act=create&site=1) и подключите ваш сайт(тип приложения должен быть **Веб-сайт**).
+Если нет — перейдите по этой ссылке [http://vk.com/editapp?act=create&site=1](http://vk.com/editapp?act=create&site=1)
+и подключите ваш сайт(тип приложения должен быть **Веб-сайт**).
 
 = Плагин бесплатный ? =
 
 Да, плагин абсолютно бесплатен, без какой либо рекламы. На веки вечные.
 
-= Configure plugin =
-
-To connect any features to the site You should have **Application ID** and **Secure key**.
-If you have this already, specify it in the plugin settings.
-If not - click on this [http://vk.com/apps.php?act=add&site=1](http://vk.com/apps.php?act=add&site=1) and register your website (blog).
-
-= Plugin is free? =
-
-Yes, the plugin is completely free, without any advertising. Forever. And ever.
 
 == Screenshots ==
 
@@ -67,6 +58,9 @@ Yes, the plugin is completely free, without any advertising. Forever. And ever.
 10. Виджеты.
 
 == Changelog ==
+
+= 3.9 =
+Небольшое улучшение.
 
 = 3.8 =
 Актуализация под новые версии ВКонтакте и Wordpress.
@@ -232,6 +226,12 @@ Better.
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 3.9 =
+Небольшое улучшение.
+
+= 3.8 =
+Актуализация под новые версии.
 
 = 3.7 =
 Починен счетчик комментариев.

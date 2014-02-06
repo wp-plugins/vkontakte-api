@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.8
+Version: 3.9
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -27,6 +27,7 @@ Author URI: http://www.kowack.info/
 */
 
 /** todo-dx:
+ * * проверить кирилические домены
  * ! счётчик комментариев — пересчёт
  * шорткод для соц. кнопок
  * соц.кнопки слева\справа\центр
@@ -93,6 +94,7 @@ class VK_api
     private $vkapi_page_settings;
     private $vkapi_page_comments;
     private $vkapi_server = 'https://api.vk.com/method/';
+    private $vkapi_version = 5.7;
 
     function __construct()
     {
@@ -501,12 +503,12 @@ class VK_api
         if (get_option('vkapi_crosspost_anti')) {
             $gmtOffset = get_option('gmt_offset');
             $timestamp = wp_next_scheduled('vkapi_cron');
-            $date = new \DateTime();
+            $date = new DateTime();
             $date->setTimestamp($timestamp);
             $date->modify("+{$gmtOffset} hours");
             $msg = $date->format('Y-m-d H:i:s');
             $timestamp2 = current_time('timestamp');
-            $date2 = new \DateTime();
+            $date2 = new DateTime();
             $date2->setTimestamp($timestamp2);
             $msg2 = $date2->format('Y-m-d H:i:s');
             echo "<div class='updated'><p>Next AntiCrossPost Time: {$msg}.<br>Current time: {$msg2}</p></div>";
@@ -1552,6 +1554,12 @@ class VK_api
                 margin: 0 !important;
                 vertical-align: top !important;
             }
+
+            .fb-like span {
+                overflow:visible !important;
+                width:450px !important;
+                margin-right:-375px;
+            }
         </style>
     <?php
     }
@@ -1783,17 +1791,18 @@ class VK_api
     private function crosspost($vk_at, $post_id, $post_title, $post_content)
     {
         $body = array();
+
+        // todo-dx: crosspost to facebook
+
         $body['access_token'] = $vk_at;
         $body['from_group'] = 1;
         $body['signed'] = get_option('vkapi_crosspost_signed');
-        // todo-dx: crosspost to facebook
-        $vk_group = get_option('vkapi_vk_group');
-        if (!is_numeric($vk_group)) {
+        $vk_group_id = get_option('vkapi_vk_group');
+        if (!is_numeric($vk_group_id)) {
             $params = array();
-            $params['access_token'] = $vk_at;
-            $params['gid'] = $vk_group;
-            $query = http_build_query($params);
-            $result = wp_remote_get($this->vkapi_server . 'groups.getById?' . $query);
+            $params['group_id'] = $vk_group_id;
+            $params['fields'] = 'screen_name';
+            $result = wp_remote_get($this->vkapi_server . 'groups.getById?' . http_build_query($params));
             if (is_wp_error($result)) {
                 $msg = $result->get_error_message();
                 self::notice_error('CrossPost: ' . $msg . ' wpx' . __LINE__);
@@ -1803,20 +1812,22 @@ class VK_api
             $r_data = json_decode($result['body'], true);
             if (!$r_data['response']) {
                 $msg = $r_data['error']['error_msg'] . ' ' . $r_data['error']['error_code'];
-                self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
+                self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
 
                 return false;
             }
-            $vk_group = $r_data['response'][0]['gid'];
+            $vk_group_id = $r_data['response'][0]['id'];
             $vk_group_screen_name = $r_data['response'][0]['screen_name'];
         }
-        $vk_group = -$vk_group;
-        $body['owner_id'] = $vk_group;
+        $vk_group_id = -$vk_group_id;
+
+
+        $body['owner_id'] = $vk_group_id;
         // Attachment
         $att = array();
         $image_path = $this->crosspost_get_image($post_id);
         if ($image_path) {
-            $att[] = $this->vk_upload_photo($vk_at, $vk_group, $image_path);
+            $att[] = $this->vk_upload_photo($vk_at, $vk_group_id, $image_path);
         }
         $temp = isset($_REQUEST['vkapi_crosspost_link'])
             ? $_REQUEST['vkapi_crosspost_link']
@@ -1824,6 +1835,7 @@ class VK_api
         if (!empty($temp)) {
             $temp = get_permalink($post_id);
             if (!class_exists('Punycode')) {
+                // todo-dx: глянуть, говорят сломалось...
                 require_once($this->plugin_path . 'php/punycode.php');
                 $temp = Punycode::urldecode($temp);
             }
@@ -1868,6 +1880,7 @@ class VK_api
                 'method' => 'POST'
             )
         );
+        /** @var $result WP_Error */
         if (is_wp_error($result)) {
             $msg = $result->get_error_message();
             self::notice_error('CrossPost: ' . $msg . ' wpx' . __LINE__);
@@ -1877,12 +1890,12 @@ class VK_api
         $r_data = json_decode($result['body'], true);
         if (isset($r_data['error'])) {
             $msg = $r_data['error']['error_msg'] . ' ' . $r_data['error']['error_code'];
-            self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
+            self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
 
             return false;
         }
-        $temp = isset($vk_group_screen_name) ? $vk_group_screen_name : 'club' . $vk_group;
-        $post_link = "https://vk.com/{$temp}?w=wall{$vk_group}_{$r_data['response']['post_id']}%2Fall";
+        $temp = isset($vk_group_screen_name) ? $vk_group_screen_name : 'club' . $vk_group_id;
+        $post_link = "https://vk.com/{$temp}?w=wall{$vk_group_id}_{$r_data['response']['post_id']}%2Fall";
         $post_href = "<a href='{$post_link}' target='_blank'>{$temp}</a>";
         self::notice_notice('CrossPost: Success ! ' . $post_href);
         update_post_meta($post_id, 'vkapi_crossposted', 'true');
@@ -1963,7 +1976,7 @@ class VK_api
         $data = json_decode($result['body'], true);
         if (!$data['response']) {
             $msg = $data['error']['error_msg'] . ' ' . $data['error']['error_code'];
-            self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
+            self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
 
             return false;
         }
@@ -1986,7 +1999,7 @@ class VK_api
         $data = json_decode($result['body'], true);
         if (!isset($data['photo'])) {
             $msg = $data['error']['error_msg'] . ' ' . $data['error']['error_code'];
-            self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
+            self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
 
             return false;
         }
@@ -2008,7 +2021,7 @@ class VK_api
         $data = json_decode($result['body'], true);
         if (!$data['response']) {
             $msg = $data['error']['error_msg'] . ' ' . $data['error']['error_code'];
-            self::notice_error('CrossPost: API Error Code: ' . $msg . 'x' . __LINE__);
+            self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
 
             return false;
         }
