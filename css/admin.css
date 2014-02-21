@@ -15,7 +15,7 @@ input {
 }
 
 .description {
-    font-width: normal;
+    font-weight: normal;
 }
 
 .webmoney {
@@ -42,8 +42,8 @@ input {
 .info {
     padding: 5px 10px;
     width: 57%;
-    top: 70px;
-    left: 0px;
+    top: 30px;
+    left: 0;
     background: #f1f1f1;
     border: 1px solid #d4d4d4;
     font-size: 12px;
@@ -56,7 +56,7 @@ input {
 
 .kowack {
     width: 33%;
-    top: 70px;
+    top: 30px;
     right: 10px;
     padding: 10px;
     box-shadow: 0 0 50px 6px rgba(0, 0, 0, 0.2);
@@ -69,7 +69,7 @@ input {
 
 .sponsor {
     width: 33%;
-    top: 180px;
+    top: 140px;
     right: 10px;
     padding: 10px;
     box-shadow: 0 0 50px 6px rgba(0, 0, 0, 0.2);

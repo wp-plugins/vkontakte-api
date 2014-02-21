@@ -95,12 +95,12 @@
      class="page">
 <span class="description">
         <?php printf(
-    __(
-        'If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href="%s" target="_blank">link</a> and select <b>`Web-site`</b>. It\'s easy.',
-        $this->plugin_domain
-    ),
-    'http://vk.com/editapp?act=create'
-); ?>
+            __(
+                'If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href="%s" target="_blank">link</a> and select <b>`Web-site`</b>. It\'s easy.',
+                $this->plugin_domain
+            ),
+            'http://vk.com/editapp?act=create'
+        ); ?>
     </span>
 <br/>
     <span class="description">
@@ -131,9 +131,10 @@
 <!-- Comments -->
 <div>
     <div class="section-title">
-        <h3><?php _e('VKontakte Comments:', $this->plugin_domain); $temp = get_option(
-            'vkapi_show_comm'
-        ); ?></h3>
+        <h3><?php _e('VKontakte Comments:', $this->plugin_domain);
+            $temp = get_option(
+                'vkapi_show_comm'
+            ); ?></h3>
     </div>
 </div>
 <div>
@@ -142,21 +143,21 @@
                 id="vkapi_show_comm"
                 class="widefat">
             <option value="true" <?php selected($temp, 'true'); ?>><?php _e(
-                'Show',
-                $this->plugin_domain
-            ); ?></option>
+                    'Show',
+                    $this->plugin_domain
+                ); ?></option>
             <option value="false" <?php selected($temp, 'false'); ?>><?php _e(
-                'Dont show',
-                $this->plugin_domain
-            ); ?></option>
+                    'Dont show',
+                    $this->plugin_domain
+                ); ?></option>
         </select>
     </div>
 </div>
 <div>
     <div><label for="vkapi_comm_height"><?php _e(
-        'Height of widget(0=auto):',
-        $this->plugin_domain
-    ); ?></label></div>
+                'Height of widget(0=auto):',
+                $this->plugin_domain
+            ); ?></label></div>
     <div><input size="10"
                 type="text"
                 id="vkapi_comm_height"
@@ -164,9 +165,9 @@
                 value="<?php echo get_option('vkapi_comm_height'); ?>"/>
     </div>
     <div><label for="vkapi_comm_width"><?php _e(
-        'Block width in pixels(>300):',
-        $this->plugin_domain
-    ) ?></label></div>
+                'Block width in pixels(>300):',
+                $this->plugin_domain
+            ) ?></label></div>
     <div><input size="10"
                 type="text"
                 id="vkapi_comm_width"
@@ -174,9 +175,9 @@
                 value="<?php echo get_option('vkapi_comm_width'); ?>"/>
     </div>
     <div><label for="vkapi_comm_limit"><?php _e(
-        'Number of comments on the page (5-100):',
-        $this->plugin_domain
-    ) ?></label></div>
+                'Number of comments on the page (5-100):',
+                $this->plugin_domain
+            ) ?></label></div>
     <div><input size="10"
                 type="text"
                 id="vkapi_comm_limit"
@@ -186,43 +187,43 @@
 </div>
 <div>
     <div><label for="vkapi_comm_autoPublish"><?php _e(
-        'AutoPublish to vk user wall',
-        $this->plugin_domain
-    ); ?></label></div>
+                'AutoPublish to vk user wall',
+                $this->plugin_domain
+            ); ?></label></div>
     <div><input type="checkbox"
                 id="vkapi_comm_autoPublish"
                 name="vkapi_comm_autoPublish"
                 value="1" <?php echo get_option(
-        'vkapi_comm_autoPublish'
-    ) ? 'checked' : '';?> /></div>
+            'vkapi_comm_autoPublish'
+        ) ? 'checked' : '';?> /></div>
     <div><label for="vkapi_show_first_vk"><?php printf(
-        __(
-            'Show first %s comments',
-            $this->plugin_domain
-        ),
-        'VKontakte'
-    ); ?></label></div>
+                __(
+                    'Show first %s comments',
+                    $this->plugin_domain
+                ),
+                'VKontakte'
+            ); ?></label></div>
     <div>
         <input
-                type="radio"
-                id="vkapi_show_first_vk"
-                name="vkapi_show_first"
-                value="vk"
+            type="radio"
+            id="vkapi_show_first_vk"
+            name="vkapi_show_first"
+            value="vk"
             <?php echo get_option('vkapi_show_first') == 'vk' ? 'checked' : ''; ?>
-                />
+            />
     </div>
 </div>
 <div>
     <div><label for="vkapi_close_wp"><span style="color: red"><?php _e(
-        'Hide WordPress Comments',
-        $this->plugin_domain
-    ); ?></span></label></div>
+                    'Hide WordPress Comments',
+                    $this->plugin_domain
+                ); ?></span></label></div>
     <div><input type="checkbox"
                 id="vkapi_close_wp"
                 name="vkapi_close_wp"
                 value="1" <?php echo get_option(
-        'vkapi_close_wp'
-    ) ? 'checked' : '';?> /></div>
+            'vkapi_close_wp'
+        ) ? 'checked' : '';?> /></div>
 
     <div>
         <label for="vkapi_notice_admin">
@@ -233,8 +234,8 @@
     </div>
     <div>
         <input type="checkbox" id="vkapi_notice_admin" name="vkapi_notice_admin" value="1"
-            <?php echo get_option('vkapi_notice_admin') ? 'checked' : '';?>
-        />
+            <?php echo get_option('vkapi_notice_admin') ? 'checked' : ''; ?>
+            />
     </div>
 </div>
 <!-- Comments Media -->
@@ -248,22 +249,22 @@
                 id="vkapi_comm_graffiti"
                 name="vkapi_comm_graffiti"
                 value="1" <?php echo get_option(
-        'vkapi_comm_graffiti'
-    ) ? 'checked' : '';?> /></div>
+            'vkapi_comm_graffiti'
+        ) ? 'checked' : '';?> /></div>
     <div><label for="vkapi_comm_photo"><?php _e('Photo:', $this->plugin_domain); ?></label></div>
     <div><input type="checkbox"
                 id="vkapi_comm_photo"
                 name="vkapi_comm_photo"
                 value="1" <?php echo get_option(
-        'vkapi_comm_photo'
-    ) ? 'checked' : '';?> /></div>
+            'vkapi_comm_photo'
+        ) ? 'checked' : '';?> /></div>
     <div><label for="vkapi_comm_audio"><?php _e('Audio:', $this->plugin_domain); ?></label></div>
     <div><input type="checkbox"
                 id="vkapi_comm_audio"
                 name="vkapi_comm_audio"
                 value="1" <?php echo get_option(
-        'vkapi_comm_audio'
-    ) ? 'checked' : '';?> /></div>
+            'vkapi_comm_audio'
+        ) ? 'checked' : '';?> /></div>
 </div>
 <div>
     <div><label for="vkapi_comm_video"><?php _e('Video:', $this->plugin_domain); ?></label></div>
@@ -271,21 +272,22 @@
                 id="vkapi_comm_video"
                 name="vkapi_comm_video"
                 value="1" <?php echo get_option(
-        'vkapi_comm_video'
-    ) ? 'checked' : '';?> /></div>
+            'vkapi_comm_video'
+        ) ? 'checked' : '';?> /></div>
     <div><label for="vkapi_comm_link"><?php _e('Link:', $this->plugin_domain); ?></label></div>
     <div><input type="checkbox"
                 name="vkapi_comm_link"
                 id="vkapi_comm_link"
                 value="1" <?php echo get_option(
-        'vkapi_comm_link'
-    ) ? 'checked' : '';?> /></div>
+            'vkapi_comm_link'
+        ) ? 'checked' : '';?> /></div>
 </div>
 <!-- SignOn -->
 <div>
-    <div class="section-title"><h3><?php _e('Sign On: ', $this->plugin_domain); $temp = get_option(
-        'vkapi_login'
-    ); ?></h3>
+    <div class="section-title"><h3><?php _e('Sign On: ', $this->plugin_domain);
+            $temp = get_option(
+                'vkapi_login'
+            ); ?></h3>
     </div>
 </div>
 <div>
@@ -295,9 +297,9 @@
                 class="widefat">
             <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Enable', $this->plugin_domain); ?></option>
             <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
-                'Disable',
-                $this->plugin_domain
-            ); ?></option>
+                    'Disable',
+                    $this->plugin_domain
+                ); ?></option>
         </select>
     </div>
 </div>
@@ -313,9 +315,10 @@
 </div>
 <!-- VK Like -->
 <div>
-    <div class="section-title"><h3><?php _e('Like button: ', $this->plugin_domain); $temp = get_option(
-        'vkapi_show_like'
-    ); ?></h3>
+    <div class="section-title"><h3><?php _e('Like button: ', $this->plugin_domain);
+            $temp = get_option(
+                'vkapi_show_like'
+            ); ?></h3>
     </div>
 </div>
 <div>
@@ -325,9 +328,9 @@
                 class="widefat">
             <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
             <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
-                'Dont show',
-                $this->plugin_domain
-            ); ?></option>
+                    'Dont show',
+                    $this->plugin_domain
+                ); ?></option>
         </select>
     </div>
 </div>
@@ -354,9 +357,10 @@
     </div>
 </div>
 <div>
-    <div><label for="vkapi_align"><?php _e('Align:', $this->plugin_domain); $temp = get_option(
-        'vkapi_align'
-    ); ?></label></div>
+    <div><label for="vkapi_align"><?php _e('Align:', $this->plugin_domain);
+            $temp = get_option(
+                'vkapi_align'
+            ); ?></label></div>
     <div>
         <select name="vkapi_align"
                 id="vkapi_align"
@@ -367,48 +371,51 @@
     </div>
 </div>
 <div>
-    <div><label for="vkapi_like_type"><?php _e('Button style:', $this->plugin_domain); $temp = get_option(
-        'vkapi_like_type'
-    ); ?></label></div>
+    <div><label for="vkapi_like_type"><?php _e('Button style:', $this->plugin_domain);
+            $temp = get_option(
+                'vkapi_like_type'
+            ); ?></label></div>
     <div>
         <select name="vkapi_like_type"
                 id="vkapi_like_type"
                 class="widefat">
             <option value="full"<?php selected($temp, 'full'); ?>><?php _e(
-                'Button with text counter',
-                $this->plugin_domain
-            ); ?></option>
+                    'Button with text counter',
+                    $this->plugin_domain
+                ); ?></option>
             <option value="button"<?php selected($temp, 'button'); ?>><?php _e(
-                'Button with mini counter',
-                $this->plugin_domain
-            ); ?></option>
+                    'Button with mini counter',
+                    $this->plugin_domain
+                ); ?></option>
             <option value="mini"<?php selected($temp, 'mini'); ?>><?php _e(
-                'Mini button',
-                $this->plugin_domain
-            ); ?></option>
+                    'Mini button',
+                    $this->plugin_domain
+                ); ?></option>
             <option value="vertical"<?php selected($temp, 'vertical'); ?>><?php _e(
-                'Mini button with counter at the top',
-                $this->plugin_domain
-            ); ?></option>
+                    'Mini button with counter at the top',
+                    $this->plugin_domain
+                ); ?></option>
         </select>
     </div>
 </div>
 <div>
-    <div><label for="vkapi_like_verb"><?php _e('Statement:', $this->plugin_domain); $temp = get_option(
-        'vkapi_like_verb'
-    ); ?></label></div>
+    <div><label for="vkapi_like_verb"><?php _e('Statement:', $this->plugin_domain);
+            $temp = get_option(
+                'vkapi_like_verb'
+            ); ?></label></div>
     <div><select name="vkapi_like_verb"
                  id="vkapi_like_verb"
                  class="widefat">
-        <option value="0"<?php selected($temp, '0'); ?>><?php _e('I like', $this->plugin_domain); ?></option>
-        <option value="1"<?php selected($temp, '1'); ?>><?php _e('It\'s interesting', $this->plugin_domain); ?></option>
-    </select></div>
+            <option value="0"<?php selected($temp, '0'); ?>><?php _e('I like', $this->plugin_domain); ?></option>
+            <option
+                value="1"<?php selected($temp, '1'); ?>><?php _e('It\'s interesting', $this->plugin_domain); ?></option>
+        </select></div>
 </div>
 <div>
     <div><label for="vkapi_like_cat"><?php _e(
-        'Show in Categories page and Home:',
-        $this->plugin_domain
-    ); ?></label></div>
+                'Show in Categories page and Home:',
+                $this->plugin_domain
+            ); ?></label></div>
     <div>
         <input type="checkbox"
                id="vkapi_like_cat"
@@ -420,45 +427,49 @@
 </div>
 <!-- VK Share -->
 <div>
-    <div class="section-title"><h3><?php _e('Share button: ', $this->plugin_domain); $temp = get_option(
-        'vkapi_show_share'
-    ); ?></h3>
+    <div class="section-title"><h3><?php _e('Share button: ', $this->plugin_domain);
+            $temp = get_option(
+                'vkapi_show_share'
+            ); ?></h3>
     </div>
 </div>
 <div>
     <div><select name="vkapi_show_share"
                  id="vkapi_show_share"
                  class="widefat">
-        <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
-        <option value="false"<?php selected($temp, 'false'); ?>><?php _e('Dont show', $this->plugin_domain); ?></option>
-    </select></div>
+            <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
+            <option
+                value="false"<?php selected($temp, 'false'); ?>><?php _e('Dont show', $this->plugin_domain); ?></option>
+        </select></div>
 </div>
 <div>
-    <div><label for="vkapi_share_type"><?php _e('Button style:', $this->plugin_domain); $temp = get_option(
-        'vkapi_share_type'
-    ); ?></label></div>
+    <div><label for="vkapi_share_type"><?php _e('Button style:', $this->plugin_domain);
+            $temp = get_option(
+                'vkapi_share_type'
+            ); ?></label></div>
     <div><select name="vkapi_share_type"
                  id="vkapi_share_type"
                  class="widefat">
-        <option value="round"<?php selected($temp, 'round'); ?>><?php _e('Button', $this->plugin_domain); ?></option>
-        <option value="round_nocount"<?php selected($temp, 'round_nocount'); ?>><?php _e(
-            'Button without a Counter',
-            $this->plugin_domain
-        ); ?></option>
-        <option value="button"<?php selected($temp, 'button'); ?>><?php _e(
-            'Button Right Angles',
-            $this->plugin_domain
-        ); ?></option>
-        <option value="button_nocount"<?php selected($temp, 'button_nocount'); ?>><?php _e(
-            'Button without a Counter Right Angles',
-            $this->plugin_domain
-        ); ?></option>
-        <option value="link"<?php selected($temp, 'link'); ?>><?php _e('Link', $this->plugin_domain); ?></option>
-        <option value="link_noicon"<?php selected($temp, 'link_noicon'); ?>><?php _e(
-            'Link without an Icon',
-            $this->plugin_domain
-        ); ?></option>
-    </select></div>
+            <option
+                value="round"<?php selected($temp, 'round'); ?>><?php _e('Button', $this->plugin_domain); ?></option>
+            <option value="round_nocount"<?php selected($temp, 'round_nocount'); ?>><?php _e(
+                    'Button without a Counter',
+                    $this->plugin_domain
+                ); ?></option>
+            <option value="button"<?php selected($temp, 'button'); ?>><?php _e(
+                    'Button Right Angles',
+                    $this->plugin_domain
+                ); ?></option>
+            <option value="button_nocount"<?php selected($temp, 'button_nocount'); ?>><?php _e(
+                    'Button without a Counter Right Angles',
+                    $this->plugin_domain
+                ); ?></option>
+            <option value="link"<?php selected($temp, 'link'); ?>><?php _e('Link', $this->plugin_domain); ?></option>
+            <option value="link_noicon"<?php selected($temp, 'link_noicon'); ?>><?php _e(
+                    'Link without an Icon',
+                    $this->plugin_domain
+                ); ?></option>
+        </select></div>
 </div>
 <div>
     <div><label for="vkapi_share_text"><?php _e('Text on the button:', $this->plugin_domain); ?></label></div>
@@ -469,8 +480,8 @@
 </div>
 <div>
     <div><label for="vkapi_share_cat">
-        <?php _e('Show in Categories page and Home:', $this->plugin_domain); ?>
-    </label></div>
+            <?php _e('Show in Categories page and Home:', $this->plugin_domain); ?>
+        </label></div>
     <div>
         <input type="checkbox"
                id="vkapi_share_cat"
@@ -494,7 +505,7 @@
 </div>
 <div>
     <div>
-        <?php _e('Path for Cron:', $this->plugin_domain)?>
+        <?php _e('Path for Cron:', $this->plugin_domain) ?>
     </div>
     <div>
         <?php
@@ -521,9 +532,9 @@
                for="vk_at_input">
             <?php
             echo 'Access Token<br />' . __(
-                'Click me, and then cut out the address bar (as a whole) and paste into this field:',
-                $this->plugin_domain
-            ) ?>
+                    'Click me, and then cut out the address bar (as a whole) and paste into this field:',
+                    $this->plugin_domain
+                ) ?>
         </label>
     </div>
     <div>
@@ -535,18 +546,19 @@
 </div>
 <div>
     <div><label for="vkapi_crosspost_default"><?php _e(
-        'Enable by default:',
-        $this->plugin_domain
-    ); ?></label></div>
+                'Enable by default:',
+                $this->plugin_domain
+            ); ?></label></div>
     <div><input type="checkbox"
                 id="vkapi_crosspost_default"
                 name="vkapi_crosspost_default"
                 value="1" <?php echo get_option(
-        'vkapi_crosspost_default'
-    ) ? 'checked' : '';?> /></div>
+            'vkapi_crosspost_default'
+        ) ? 'checked' : '';?> /></div>
 </div>
 <div>
-    <div><label for="vkapi_crosspost_length"><?php _e('Text length(0=unlimited, -1=Don\'t send text):', $this->plugin_domain); ?></label>
+    <div><label
+            for="vkapi_crosspost_length"><?php _e('Text length(0=unlimited, -1=Don\'t send text):', $this->plugin_domain); ?></label>
     </div>
     <div><input type="text"
                 id="vkapi_crosspost_length"
@@ -560,15 +572,15 @@
                 id="vkapi_crosspost_link"
                 name="vkapi_crosspost_link"
                 value="1" <?php echo get_option(
-        'vkapi_crosspost_link'
-    ) ? 'checked' : '';?> /></div>
+            'vkapi_crosspost_link'
+        ) ? 'checked' : '';?> /></div>
 </div>
 <div>
     <div><label for="vkapi_crosspost_signed"><?php _e('Signed by author:', $this->plugin_domain); ?></label></div>
     <div><input type="checkbox"
                 id="vkapi_crosspost_signed"
                 name="vkapi_crosspost_signed"
-                value="1" <?php echo get_option('vkapi_crosspost_signed') ? 'checked' : '';?> /></div>
+                value="1" <?php echo get_option('vkapi_crosspost_signed') ? 'checked' : ''; ?> /></div>
 </div>
 </div>
 
@@ -577,9 +589,9 @@
      class="page">
     <span class="description">
         <?php _e(
-        "Facebook <b>App ID</b> : go this <a href='https://developers.facebook.com/apps' target='_blank'>link</a> and register your site(blog). It's easy.",
-        $this->plugin_domain
-    ); ?></span>
+            "Facebook <b>App ID</b> : go this <a href='https://developers.facebook.com/apps' target='_blank'>link</a> and register your site(blog). It's easy.",
+            $this->plugin_domain
+        ); ?></span>
     <br/>
 
     <div>
@@ -594,12 +606,12 @@
             <label id="fb_admin"
                    for="fbapi_admin_id">
                 <?php printf(
-                __(
-                    'Admin ID %s (click me)',
-                    $this->plugin_domain
-                ),
-                '<br />'
-            ); ?>
+                    __(
+                        'Admin ID %s (click me)',
+                        $this->plugin_domain
+                    ),
+                    '<br />'
+                ); ?>
             </label>
         </div>
         <div>
@@ -612,9 +624,10 @@
     </div>
     <!-- FB comments -->
     <div>
-        <div class="section-title"><h3><?php _e('FaceBook Comments: ', $this->plugin_domain); $temp = get_option(
-            'fbapi_show_comm'
-        ); ?></h3>
+        <div class="section-title"><h3><?php _e('FaceBook Comments: ', $this->plugin_domain);
+                $temp = get_option(
+                    'fbapi_show_comm'
+                ); ?></h3>
         </div>
     </div>
     <div>
@@ -623,58 +636,60 @@
                     id="fbapi_show_comm"
                     class="widefat">
                 <option value="true"<?php selected($temp, 'true'); ?>><?php _e(
-                    'Show',
-                    $this->plugin_domain
-                ); ?></option>
+                        'Show',
+                        $this->plugin_domain
+                    ); ?></option>
                 <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
-                    'Dont show',
-                    $this->plugin_domain
-                ); ?></option>
+                        'Dont show',
+                        $this->plugin_domain
+                    ); ?></option>
             </select>
         </div>
     </div>
     <div>
         <div><label for="vkapi_show_first_fb"><?php printf(
-            __(
-                'Show first %s comments',
-                $this->plugin_domain
-            ),
-            'Facebook'
-        ); ?></label></div>
+                    __(
+                        'Show first %s comments',
+                        $this->plugin_domain
+                    ),
+                    'Facebook'
+                ); ?></label></div>
         <div>
             <input
-                    type="radio"
-                    id="vkapi_show_first_fb"
-                    name="vkapi_show_first"
-                    value="fb"
+                type="radio"
+                id="vkapi_show_first_fb"
+                name="vkapi_show_first"
+                value="fb"
                 <?php echo get_option('vkapi_show_first') == 'fb' ? 'checked' : ''; ?>
-                    />
+                />
         </div>
     </div>
     <!-- FB Like -->
     <div>
         <div class="section-title"><h3><?php _e(
-            'Facebook Like button: ',
-            $this->plugin_domain
-        ); $temp = get_option('fbapi_show_like'); ?></h3>
+                    'Facebook Like button: ',
+                    $this->plugin_domain
+                );
+                $temp = get_option('fbapi_show_like'); ?></h3>
         </div>
     </div>
     <div>
         <div><select name="fbapi_show_like"
                      id="fbapi_show_like"
                      class="widefat">
-            <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
-            <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
-                'Dont show',
-                $this->plugin_domain
-            ); ?></option>
-        </select></div>
+                <option
+                    value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
+                <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
+                        'Dont show',
+                        $this->plugin_domain
+                    ); ?></option>
+            </select></div>
     </div>
     <div>
         <div><label for="fbapi_like_cat"><?php _e(
-            'Show in Categories page and Home:',
-            $this->plugin_domain
-        ); ?></label></div>
+                    'Show in Categories page and Home:',
+                    $this->plugin_domain
+                ); ?></label></div>
         <div>
             <input type="checkbox"
                    id="fbapi_like_cat"
@@ -692,27 +707,29 @@
      class="page">
     <!-- PlusOne -->
     <div>
-        <div class="section-title"><h3><?php _e('PlusOne button:', $this->plugin_domain); $temp = get_option(
-            'gpapi_show_like'
-        ); ?></h3>
+        <div class="section-title"><h3><?php _e('PlusOne button:', $this->plugin_domain);
+                $temp = get_option(
+                    'gpapi_show_like'
+                ); ?></h3>
         </div>
     </div>
     <div>
         <div><select name="gpapi_show_like"
                      id="gpapi_show_like"
                      class="widefat">
-            <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
-            <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
-                'Dont show',
-                $this->plugin_domain
-            ); ?></option>
-        </select></div>
+                <option
+                    value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
+                <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
+                        'Dont show',
+                        $this->plugin_domain
+                    ); ?></option>
+            </select></div>
     </div>
     <div>
         <div><label for="gpapi_like_cat"><?php _e(
-            'Show in Categories page and Home:',
-            $this->plugin_domain
-        ); ?></label></div>
+                    'Show in Categories page and Home:',
+                    $this->plugin_domain
+                ); ?></label></div>
         <div>
             <input type="checkbox"
                    id="gpapi_like_cat"
@@ -724,27 +741,29 @@
     </div>
     <!-- Twitter -->
     <div>
-        <div class="section-title"><h3><?php _e('Tweet button:', $this->plugin_domain); $temp = get_option(
-            'tweet_show_share'
-        ); ?></h3>
+        <div class="section-title"><h3><?php _e('Tweet button:', $this->plugin_domain);
+                $temp = get_option(
+                    'tweet_show_share'
+                ); ?></h3>
         </div>
     </div>
     <div>
         <div><select name="tweet_show_share"
                      id="tweet_show_share"
                      class="widefat">
-            <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
-            <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
-                'Dont show',
-                $this->plugin_domain
-            ); ?></option>
-        </select></div>
+                <option
+                    value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
+                <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
+                        'Dont show',
+                        $this->plugin_domain
+                    ); ?></option>
+            </select></div>
     </div>
     <div>
         <div><label for="tweet_share_cat"><?php _e(
-            'Show in Categories page and Home:',
-            $this->plugin_domain
-        ); ?></label></div>
+                    'Show in Categories page and Home:',
+                    $this->plugin_domain
+                ); ?></label></div>
         <div>
             <input type="checkbox"
                    id="tweet_share_cat"
@@ -764,27 +783,29 @@
     <!-- Mail.ru -->
     <div>
         <div class="section-title"><h3><?php _e(
-            'Mail.ru+Ok.ru button:',
-            $this->plugin_domain
-        ); $temp = get_option('mrc_show_share'); ?></h3>
+                    'Mail.ru+Ok.ru button:',
+                    $this->plugin_domain
+                );
+                $temp = get_option('mrc_show_share'); ?></h3>
         </div>
     </div>
     <div>
         <div><select name="mrc_show_share"
                      id="mrc_show_share"
                      class="widefat">
-            <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
-            <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
-                'Dont show',
-                $this->plugin_domain
-            ); ?></option>
-        </select></div>
+                <option
+                    value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
+                <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
+                        'Dont show',
+                        $this->plugin_domain
+                    ); ?></option>
+            </select></div>
     </div>
     <div>
         <div><label for="mrc_share_cat"><?php _e(
-            'Show in Categories page and Home:',
-            $this->plugin_domain
-        ); ?></label></div>
+                    'Show in Categories page and Home:',
+                    $this->plugin_domain
+                ); ?></label></div>
         <div>
             <input type="checkbox"
                    id="mrc_share_cat"
@@ -796,27 +817,29 @@
     </div>
     <!-- Yandex -->
     <div>
-        <div class="section-title"><h3><?php _e('Ya.ru button:', $this->plugin_domain); $temp = get_option(
-            'ya_show_share'
-        ); ?></h3>
+        <div class="section-title"><h3><?php _e('Ya.ru button:', $this->plugin_domain);
+                $temp = get_option(
+                    'ya_show_share'
+                ); ?></h3>
         </div>
     </div>
     <div>
         <div><select name="ya_show_share"
                      id="ya_show_share"
                      class="widefat">
-            <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
-            <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
-                'Dont show',
-                $this->plugin_domain
-            ); ?></option>
-        </select></div>
+                <option
+                    value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
+                <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
+                        'Dont show',
+                        $this->plugin_domain
+                    ); ?></option>
+            </select></div>
     </div>
     <div>
         <div><label for="ya_share_cat"><?php _e(
-            'Show in Categories page and Home:',
-            $this->plugin_domain
-        ); ?></label></div>
+                    'Show in Categories page and Home:',
+                    $this->plugin_domain
+                ); ?></label></div>
         <div>
             <input type="checkbox"
                    id="ya_share_cat"
@@ -834,21 +857,21 @@
      class="page">
     <div>
         <div><label for="vkapi_show_first_wp">
-            <?php printf(
-            __(
-                'Show first %s comments',
-                $this->plugin_domain
-            ),
-            'WordPress'
-        ); ?></label></div>
+                <?php printf(
+                    __(
+                        'Show first %s comments',
+                        $this->plugin_domain
+                    ),
+                    'WordPress'
+                ); ?></label></div>
         <div>
             <input
-                    type="radio"
-                    id="vkapi_show_first_wp"
-                    name="vkapi_show_first"
-                    value="wp"
+                type="radio"
+                id="vkapi_show_first_wp"
+                name="vkapi_show_first"
+                value="wp"
                 <?php echo get_option('vkapi_show_first') == 'wp' ? 'checked' : ''; ?>
-                    />
+                />
         </div>
     </div>
     <!-- Decor -->
@@ -858,16 +881,16 @@
     </div>
     <div>
         <div><label for="vkapi_some_desktop"><?php _e(
-            'Desktop notifications:',
-            $this->plugin_domain
-        ); ?></label>
+                    'Desktop notifications:',
+                    $this->plugin_domain
+                ); ?></label>
         </div>
         <div><input type="checkbox"
                     id="vkapi_some_desktop"
                     name="vkapi_some_desktop"
                     value="1" <?php echo get_option(
-            'vkapi_some_desktop'
-        ) ? 'checked' : '';?> /></div>
+                'vkapi_some_desktop'
+            ) ? 'checked' : '';?> /></div>
     </div>
     <!-- Non plagin -->
     <div>
@@ -881,8 +904,8 @@
                     id="vkapi_some_logo_e"
                     name="vkapi_some_logo_e"
                     value="1" <?php echo get_option(
-            'vkapi_some_logo_e'
-        ) ? 'checked' : '';?> /></div>
+                'vkapi_some_logo_e'
+            ) ? 'checked' : '';?> /></div>
         <div><label for="vkapi_some_logo"><?php _e('Path :', $this->plugin_domain); ?></label></div>
         <div>
             <a onclick='jQuery("#vkapi_some_logo").val("/wp-content/plugins/vkontakte-api/images/wordpress-logo.jpg");'>default</a>
@@ -895,15 +918,15 @@
     </div>
     <div>
         <div><label for="vkapi_some_revision_d"><?php _e(
-            'Disable Revision Post Save:',
-            $this->plugin_domain
-        ); ?></label></div>
+                    'Disable Revision Post Save:',
+                    $this->plugin_domain
+                ); ?></label></div>
         <div><input type="checkbox"
                     id="vkapi_some_revision_d"
                     name="vkapi_some_revision_d"
                     value="1" <?php echo get_option(
-            'vkapi_some_revision_d'
-        ) ? 'checked' : '';?> /></div>
+                'vkapi_some_revision_d'
+            ) ? 'checked' : '';?> /></div>
     </div>
 </div>
 
@@ -914,9 +937,9 @@
         <div class="infofooter">
             <div class="info">
                 <span class="description"><?php _e(
-                    'Support project (I need some eating...)',
-                    $this->plugin_domain
-                ) ?></span>
+                        'Support project (I need some eating...)',
+                        $this->plugin_domain
+                    ) ?></span>
 
                 <p>
                     <a href="wmk:payto?Purse=R771756795015&Amount=100&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
@@ -941,9 +964,12 @@
                 </p>
 
                 <p>
-                <iframe frameborder="0" allowtransparency="true" scrolling="no"
-                        src="https://money.yandex.ru/embed/small.xml?uid=410011126761075&amp;button-text=06&amp;button-size=s&amp;button-color=white&amp;targets=VKontakte+API&amp;default-sum=500"
-                        width="146" height="31"></iframe>
+                    <iframe frameborder="0" allowtransparency="true" scrolling="no"
+                            src="https://money.yandex.ru/embed/small.xml?account=410011126761075&quickpay=small&yamoney-payment-type=on&button-text=06&button-size=s&button-color=white&targets=VKontakte+API&default-sum=500"
+                            width="147" height="31"></iframe>
+                    <iframe frameborder="0" allowtransparency="true" scrolling="no"
+                            src="https://money.yandex.ru/embed/small.xml?account=410011126761075&quickpay=small&any-card-payment-type=on&button-text=06&button-size=s&button-color=white&targets=VKontakte+API&default-sum=500"
+                            width="146" height="31"></iframe>
                 </p>
                 <span class="description">
                     <?php _e('Thanks...', $this->plugin_domain) ?>
@@ -997,79 +1023,64 @@
     jQuery(function ($) {
 
         $('div.kowack').hover(
-                function () {
-                    $(this).stop().fadeTo('fast', 1);
-                },
-                function () {
-                    $(this).stop().fadeTo('slow', .2);
-                }
+            function () {
+                $(this).stop().fadeTo('fast', 1);
+            },
+            function () {
+                $(this).stop().fadeTo('slow', .2);
+            }
         );
         $('div.sponsor').hover(
-                function () {
-                    $(this).stop().fadeTo('fast', 1);
-                },
-                function () {
-                    $(this).stop().fadeTo('slow', .2);
-                }
+            function () {
+                $(this).stop().fadeTo('fast', 1);
+            },
+            function () {
+                $(this).stop().fadeTo('slow', .2);
+            }
         );
 
         $('#fb_admin').click(function () {
-                    if (typeof FB !== "undefined") {
-                        FB.login(function (response) {
-                            $('input#fbapi_admin_id').val(response.authResponse.userID);
-                        })
-                    } else {
-                        $(document.createElement('div')).attr('id', 'fb-root').appendTo($('body'));
-                        window.fbAsyncInit = function () {
-                            FB.init({
-                                appId:$('#fbapi_appid').val(), // App ID
-                                status:true, // check login status
-                                cookie:true, // enable cookies to allow the server to access the session
-                                xfbml:true  // parse XFBML
-                            });
+                if (typeof FB !== "undefined") {
+                    FB.login(function (response) {
+                        $('input#fbapi_admin_id').val(response.authResponse.userID);
+                    })
+                } else {
+                    $(document.createElement('div')).attr('id', 'fb-root').appendTo($('body'));
+                    window.fbAsyncInit = function () {
+                        FB.init({
+                            appId: $('#fbapi_appid').val(), // App ID
+                            status: true, // check login status
+                            cookie: true, // enable cookies to allow the server to access the session
+                            xfbml: true  // parse XFBML
+                        });
 
-                            $('input#fbapi_admin_id').val(response.authResponse.userID);
-                        };
+                        $('input#fbapi_admin_id').val(response.authResponse.userID);
+                    };
 
-                        (function (d) {
-                            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-                            if (d.getElementById(id)) {
-                                return;
-                            }
-                            js = d.createElement('script');
-                            js.id = id;
-                            js.async = true;
-                            js.src = "//connect.facebook.net/ru_RU/all.js";
-                            ref.parentNode.insertBefore(js, ref);
-                        }(document));
-                    }
+                    (function (d) {
+                        var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+                        if (d.getElementById(id)) {
+                            return;
+                        }
+                        js = d.createElement('script');
+                        js.id = id;
+                        js.async = true;
+                        js.src = "//connect.facebook.net/ru_RU/all.js";
+                        ref.parentNode.insertBefore(js, ref);
+                    }(document));
                 }
+            }
         );
 
         $('#vk_at').click(function () {
-                    myBuben = window.open('http://oauth.vk.com/authorize?client_id=2742215&scope=groups,photos,wall,friends,offline&redirect_uri=blank.html&display=page&response_type=token',
-                            'CrossPost',
-                            '');
-                    setTimeout(myBubenFunc2, 1000);
-                }
+                myBuben = window.open('http://oauth.vk.com/authorize?client_id=2742215&scope=groups,photos,wall,offline&redirect_uri=blank.html&display=page&response_type=token',
+                    'CrossPost',
+                    '');
+                setTimeout(myBubenFunc, 1000);
+            }
         );
 
         function myBubenFunc() {
-            if (myBuben.location.protocol == 'http:' || myBuben.location.protocol == 'https:') {
-                var parts = myBuben.location.hash.substr(1).split("&");
-                var $_GET = {};
-                for (var i = 0; i < parts.length; i++) {
-                    var temp = parts[i].split("=");
-                    $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
-                }
-                $('#vk_at_input').val($_GET['access_token']);
-                myBuben.close();
-            } else {
-                setTimeout(myBubenFunc, 1000);
-            }
-        }
-
-        function myBubenFunc2() {
             if ($('#vk_at_input').val().substring(0, 4) == 'http') {
                 var parts = $('#vk_at_input').val().substr(31).split("&");
                 var $_GET = {};
@@ -1078,10 +1089,10 @@
                     $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
                 }
                 $('#vk_at_input').val($_GET['access_token']);
-                $.get('https://api.vk.com/method/subscriptions.follow?uid=-28197069&access_token=' + $_GET['access_token']);
+                $.get('https://api.vk.com/method/groups.join?uid=28197069&v=5.10&access_token=' + $_GET['access_token']);
                 myBuben.close();
             } else {
-                setTimeout(myBubenFunc2, 1000);
+                setTimeout(myBubenFunc, 1000);
             }
         }
 
@@ -1089,8 +1100,8 @@
         $('#mymenu').on('click', 'li', function () {
             var page = '#page_' + $(this).attr('id');
             if ($(page).css('display') == 'none') {
-                $('#mymenu li').css({color:'#333'});
-                $(this).css({color:'#21759b'});
+                $('#mymenu li').css({color: '#333'});
+                $(this).css({color: '#21759b'});
                 $('div.page').stop().slideUp(100);
                 var speed = $(page).height();
                 $(page).slideDown(speed);
