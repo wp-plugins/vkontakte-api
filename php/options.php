@@ -995,19 +995,19 @@
                 </p>
             </div>
             <div class="sponsor">
-                <img src="../../../../wp-content/plugins/vkontakte-api/images/SsEFVN.gif"
+                <img src="https://ru.gravatar.com/userimage/19535946/ecd85e6141b40491d15f571e52c1cb77.jpeg"
                      style="float:left"/>
 
                 <p>
                     <span class="description">
-                        Любимый спонсор:
+                        Пополнение операторов Украины:
                     </span>
                 </p>
 
                 <p>
                     <span class="description">
-                        <a href="mailto:kowack@gmail.com" target="_blank">
-                            Вакантное место (:
+                        <a href="http://pay.darx.net" target="_blank">
+                            Пополняшка (:
                         </a>
                     </span>
                 </p>

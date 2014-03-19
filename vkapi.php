@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.9
+Version: 3.10
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -1930,6 +1930,9 @@ class VK_api
                     </form>
                     ";
                 self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
+            } elseif ($r_data['error']['error_code'] == 17) {
+                $msg = "ВК просит верификацию пользователя (с выдачей нового Access Token): <a href='{$r_data['error']['redirect_uri']}'>link</a>";
+                self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
             } else {
                 $msg = $r_data['error']['error_msg'] . ' ' . $r_data['error']['error_code'] . ' _' . $body['attachments'];
                 self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
@@ -2022,7 +2025,7 @@ class VK_api
             return false;
         }
         // Upload Photo To Server
-        #$curl = new Wp_Http_Curl();
+        $curl = new Wp_Http_Curl();
         $body['photo'] = '@' . $image_path;
         $result = $curl->request(
             $data['response']['upload_url'],
