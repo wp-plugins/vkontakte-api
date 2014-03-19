@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.10
+Version: 3.11
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -1852,11 +1852,11 @@ class VK_api
             : get_option('vkapi_crosspost_link');
         if (!empty($temp)) {
             $temp = get_permalink($post->ID);
-            if (!class_exists('Punycode')) {
-                // todo-dx: глянуть, говорят сломалось... потестил, у мну всё замечательно работает. Саботаж?
-                require_once($this->plugin_path . 'php/punycode.php');
-                $temp = Punycode::urldecode($temp);
-            }
+//            if (!class_exists('Punycode')) {
+//                // todo-dx: глянуть, говорят сломалось... потестил, у мну всё замечательно работает. Саботаж?
+//                require_once($this->plugin_path . 'php/punycode.php');
+//                $temp = Punycode::urldecode($temp);
+//            }
             $att[] = $temp;
         }
         if (!empty($att)) {
