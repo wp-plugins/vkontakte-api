@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.12
+Version: 3.13
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -2019,8 +2019,8 @@ class VK_api
         }
         $data = json_decode($result['body'], true);
         if (!$data['response']) {
-            if ($r_data['error']['error_code'] == 17) {
-                $msg = "ВК просит верификацию пользователя (с выдачей нового Access Token): <a href='{$r_data['error']['redirect_uri']}'>ссылка для получения</a>";
+            if ($data['error']['error_code'] == 17) {
+                $msg = "ВК просит верификацию пользователя (с выдачей нового Access Token): <a href='{$data['error']['redirect_uri']}'>ссылка для получения</a>";
             } else {
                 $msg = $data['error']['error_msg'];
             }
