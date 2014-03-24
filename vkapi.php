@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.13
+Version: 3.14
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -1831,8 +1831,7 @@ class VK_api
             }
             $r_data = json_decode($result['body'], true);
             if (!$r_data['response']) {
-                $msg = $r_data['error']['error_msg'];
-                self::notice_error('CrossPost: API Error. Code: ' . $r_data['error']['error_code'] . '. Msg: ' . $msg . '. Line: ' . __LINE__);
+                self::notice_error('CrossPost: API Error. Code: ' . $r_data['error']['error_code'] . '. Msg: ' . $r_data['error']['error_msg'] . '. Line: ' . __LINE__);
 
                 return false;
             }
@@ -1845,7 +1844,6 @@ class VK_api
         $body['owner_id'] = $vk_group_id;
         // Attachment
         $att = array();
-        // todo(dx): upgrade crosspost_get_image
         $image_path = $this->crosspost_get_image($post->ID);
         if ($image_path) {
             $temp = $this->vk_upload_photo($vk_at, $vk_group_id, $image_path);
@@ -2024,7 +2022,7 @@ class VK_api
             } else {
                 $msg = $data['error']['error_msg'];
             }
-            self::notice_error('CrossPost: API Error. Code: ' . $r_data['error']['error_code'] . '. Msg: ' . $msg . '. Line' . __LINE__);
+            self::notice_error('CrossPost: API Error. Code: ' . $data['error']['error_code'] . '. Msg: ' . $msg . '. Line' . __LINE__);
 
             return false;
         }
@@ -2068,13 +2066,12 @@ class VK_api
         $data = json_decode($result['body'], true);
         if (!$data['response']) {
             $msg = $data['error']['error_msg'];
-            self::notice_error('CrossPost: API Error. Code: ' . '. Msg: ' . $msg . '. Line: ' . __LINE__);
+            self::notice_error('CrossPost: API Error. Code: ' . $data['error']['error_code'] . '. Msg: ' . $msg . '. Line: ' . __LINE__);
 
             return false;
         }
-
         // Return Photo ID
-        return $data['response'][0]['id'];
+        return 'photo' . $data['response'][0]['owner_id'] . '_' . $data['response'][0]['id'];
     }
 
     private function first_postImage(&$text)
