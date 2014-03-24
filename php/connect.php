@@ -52,14 +52,12 @@ function authOpenAPIMember()
 
 function doHttpRequest($url)
 {
-    // todo(dx): maybe sockets...
-    $ch = curl_init(); // start
-    curl_setopt($ch, CURLOPT_URL, "$url"); // where
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // why
-    $request_result = curl_exec($ch); // do this
-    if ($request_result === false) echo curl_error($ch);
-    curl_close($ch); // close, free memory
-    return $request_result; // profit
+    $result = wp_remote_get($url);
+    if (is_wp_error($result)) {
+        echo $result->get_error_message();
+        return false;
+    }
+    return $result['body'];
 }
 
 function params($params)

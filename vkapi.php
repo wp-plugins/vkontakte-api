@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.14
+Version: 3.15
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -27,6 +27,8 @@ Author URI: http://www.kowack.info/
 */
 
 /** todo-dx:
+ * Перевести ошибки, ибо некоторые люди тупые.
+ *
  * _ счётчик комментариев — пересчёт
  * _ шорткод для соц. кнопок
  * _ соц.кнопки слева\справа\центр
