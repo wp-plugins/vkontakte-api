@@ -4,7 +4,7 @@ Donate link: http://www.kowack.info/projects/vk_api/
 Tags: vkontakte, facebook, crosspost, comments, social, share, vk.com
 Requires at least: 3.5.1
 Tested up to: 3.5.1
-Stable tag: 3.11
+Stable tag: 3.12
 
 Добавляет функционал API сайта VKontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...
 
@@ -46,16 +46,10 @@ Stable tag: 3.11
 
 == Screenshots ==
 
-1. Комментарии VKontakte.
-2. Комментарии WordPress.
-3. Анимация переключения.
-4. Настройки записи.
-5. Привязка аккаунта VKontakte.
-6. Отсоединение аккаунта VKontakte.
-7. Страница настроек.
-8. Кнопка входа через VKontakte.
-9. Виджеты.
-10. Виджеты.
+1. Настройки ВКонтакте.
+2. Настройки Facebook.
+3. Настройки социальных кнопок.
+4. Остальные настройки.
 
 == Changelog ==
 

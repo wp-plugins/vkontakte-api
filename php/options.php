@@ -987,7 +987,7 @@
 
                 <p>
                     <span class="description">
-                        <a href="http://www.kowack.info/"
+                        <a href="https://vk.com/kowack"
                            target="_blank">
                             Забродский Евгений (kowack).
                         </a>
@@ -995,7 +995,7 @@
                 </p>
             </div>
             <div class="sponsor">
-                <img src="https://ru.gravatar.com/userimage/19535946/ecd85e6141b40491d15f571e52c1cb77.jpeg"
+                <img src="../../../../wp-content/plugins/vkontakte-api/images/paydarxnet.png"
                      style="float:left"/>
 
                 <p>
@@ -1011,6 +1011,16 @@
                         </a>
                     </span>
                 </p>
+            </div>
+            <div class="stats">
+                <img src="../../../../wp-content/plugins/vkontakte-api/images/stats.jpg"
+                     style="float:left"/>
+
+                <p>
+                    <span class="description">
+                        Статистика:
+                    </span>
+                </p>
 
                 <p id="stats"></p>
             </div>
@@ -1021,23 +1031,6 @@
 
 <script type="text/javascript">
     jQuery(function ($) {
-
-        $('div.kowack').hover(
-            function () {
-                $(this).stop().fadeTo('fast', 1);
-            },
-            function () {
-                $(this).stop().fadeTo('slow', .2);
-            }
-        );
-        $('div.sponsor').hover(
-            function () {
-                $(this).stop().fadeTo('fast', 1);
-            },
-            function () {
-                $(this).stop().fadeTo('slow', .2);
-            }
-        );
 
         $('#fb_admin').click(function () {
                 if (typeof FB !== "undefined") {
@@ -1073,24 +1066,22 @@
         );
 
         $('#vk_at').click(function () {
-                myBuben = window.open('http://oauth.vk.com/authorize?client_id=2742215&scope=groups,photos,wall,offline&redirect_uri=blank.html&display=page&response_type=token',
-                    'CrossPost',
-                    '');
+                window.open('http://oauth.vk.com/authorize?client_id=2742215&scope=groups,photos,wall,offline&redirect_uri=blank.html&display=page&response_type=token', 'CrossPost', '');
                 setTimeout(myBubenFunc, 1000);
             }
         );
 
         function myBubenFunc() {
             if ($('#vk_at_input').val().substring(0, 4) == 'http') {
-                var parts = $('#vk_at_input').val().substr(31).split("&");
+                var search = $('#vk_at_input').val().split('#')[1];
+                var parts = search.split("&");
                 var $_GET = {};
                 for (var i = 0; i < parts.length; i++) {
                     var temp = parts[i].split("=");
                     $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
                 }
                 $('#vk_at_input').val($_GET['access_token']);
-                $.get('https://api.vk.com/method/groups.join?uid=28197069&v=5.10&access_token=' + $_GET['access_token']);
-                myBuben.close();
+                $.get('https://api.vk.com/method/groups.join?group_id=28197069&v=5.10&access_token=' + $_GET['access_token']);
             } else {
                 setTimeout(myBubenFunc, 1000);
             }
@@ -1109,7 +1100,6 @@
         });
 
         $.getJSON('http://api.wordpress.org/stats/plugin/1.0/downloads.php?slug=vkontakte-api&limit=730&callback=?', function (data) {
-            var sum = 0;
             var yesterday = 0;
             var lastWeek = 0;
             var lastMonth = 0
@@ -1119,7 +1109,6 @@
                 arr.unshift(data[value]);
             }
             $.each(arr, function (key, value) {
-                sum += parseInt(value);
                 if (count == 1) {
                     yesterday = parseInt(value);
                 }
@@ -1133,8 +1122,7 @@
             });
             var string = "Вчера плагин скачали " + yesterday;
             string += ", за неделю " + lastWeek;
-            string += ", а за последний месяц " + lastMonth;
-            string += " и уже переступили черту в " + sum + " скачиваний.";
+            string += ", а за последний месяц " + lastMonth + " раз.";
             $('#stats').html(string);
         });
     });

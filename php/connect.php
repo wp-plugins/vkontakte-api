@@ -52,10 +52,12 @@ function authOpenAPIMember()
 
 function doHttpRequest($url)
 {
+    // todo(dx): maybe sockets...
     $ch = curl_init(); // start
     curl_setopt($ch, CURLOPT_URL, "$url"); // where
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // why
     $request_result = curl_exec($ch); // do this
+    if ($request_result === false) echo curl_error($ch);
     curl_close($ch); // close, free memory
     return $request_result; // profit
 }
@@ -74,12 +76,12 @@ function get_VkMethod($method_name, $parameters = array())
 {
     ksort($parameters);
     $parameters = params($parameters);
-    $url = VKAPI_SERVER . $method_name . "?" . $parameters;
+    $url = VKAPI_SERVER . $method_name . '?' . $parameters . '&v=2.0';
     $result = doHttpRequest($url);
     $result = urldecode($result);
     $data = json_decode($result, true);
 
-    return $data["response"];
+    return $data;
 }
 
 function main()
@@ -103,7 +105,6 @@ function main()
     );
     if ($wp_user_id !== null) {
         wp_set_auth_cookie($wp_user_id);
-        // todo-dx: check if it is working
         do_action('wp_login', $wp_user_id);
         echo 'Ok';
     } else {
@@ -113,10 +114,11 @@ function main()
 
 function oauth_new_user($id)
 {
-    $users = get_VkMethod(
+    $data = get_VkMethod(
         'getProfiles',
         array('uids' => $id, 'fields' => 'uid,first_name,nickname,last_name,screen_name,photo_medium_rec')
     );
+    $users = $data['response'];
     $user = $users[0];
     if (strlen($user["uid"]) > 0) {
         $data = array();
@@ -147,6 +149,7 @@ function oauth_new_user($id)
         } else {
             echo 'Ok';
         }
+        return;
     }
-    echo print_r($user);
+    echo print_r($data);
 }

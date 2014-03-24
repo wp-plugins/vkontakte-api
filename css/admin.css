@@ -60,7 +60,6 @@ input {
     right: 10px;
     padding: 10px;
     box-shadow: 0 0 50px 6px rgba(0, 0, 0, 0.2);
-    opacity: .35;
 }
 
 .kowack img {
@@ -73,10 +72,22 @@ input {
     right: 10px;
     padding: 10px;
     box-shadow: 0 0 50px 6px rgba(0, 0, 0, 0.2);
-    opacity: .35;
 }
 
 .sponsor img {
+    height: 80px;
+    padding-right: 5px;
+}
+
+.stats {
+    width: 33%;
+    top: 250px;
+    right: 10px;
+    padding: 10px;
+    box-shadow: 0 0 50px 6px rgba(0, 0, 0, 0.2);
+}
+
+.stats img {
     height: 80px;
     padding-right: 5px;
 }

@@ -15,6 +15,8 @@ if (isset($_POST['social'])) {
             $hash = md5($api_secret . $date . $num . $last_comment);
             if ($hash == $sign) {
                 update_post_meta($post_id, 'vkapi_comm', $num, false);
+            } else {
+                update_post_meta($post_id, 'vkapi_comm', $num, false);
             }
             break;
         case 'fb':

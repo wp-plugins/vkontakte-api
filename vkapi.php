@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.11
+Version: 3.12
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -350,7 +350,7 @@ class VK_api
             ?>
             <div id="vk_api_transport"></div>
             <script type="text/javascript">
-                jQuery(function($){
+                jQuery(function ($) {
                     window.vkAsyncInit = function () {
                         VK.init({
                             apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
@@ -909,6 +909,7 @@ class VK_api
             echo "
                 <script type='text/javascript'>
                     // todo-dx: check all function is calling
+                   if (typeof window.webkitNotifications !== undefined ) {
                     function vkapi_checkPermission() {
                         if(window.webkitNotifications.checkPermission()==0){
                             window.webkitNotifications.createNotification(
@@ -925,9 +926,6 @@ class VK_api
                     function vkapi_requestPermission(){
                         window.webkitNotifications.requestPermission();
                         jQuery('button.vkapi_remove').remove();
-                    }
-                    function onChangeRecalc(num){
-                        jQuery('button.vk_recount').html('{$vkapi_button} ('+num+')');
                     }
                     function onChange(num,last_comment,data,hash){
                         if (window.webkitNotifications.checkPermission() == 0) {
@@ -948,6 +946,11 @@ class VK_api
                                 .append(\"<button class='submit' class='vkapi_remove'\" +
                                 \"onclick='vkapi_requestPermission()'>Разрешить всплывающие сообщения</button>\");
                         }
+                    }
+                   }
+
+                    function onChangeRecalc(num){
+                        jQuery('button.vk_recount').html('{$vkapi_button} ('+num+')');
                     }
                 </script>";
         } else {
@@ -1324,7 +1327,7 @@ class VK_api
             ?>
             <div id="fb-root"></div>
             <script>
-                jQuery(function($){
+                jQuery(function ($) {
                     window.fbAsyncInit = function () {
                         FB.init({
                             appId: <?php echo get_option('fbapi_appid'); ?>,
@@ -1828,8 +1831,8 @@ class VK_api
             }
             $r_data = json_decode($result['body'], true);
             if (!$r_data['response']) {
-                $msg = $r_data['error']['error_msg'] . ' ' . $r_data['error']['error_code'];
-                self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
+                $msg = $r_data['error']['error_msg'];
+                self::notice_error('CrossPost: API Error. Code: ' . $r_data['error']['error_code'] . '. Msg: ' . $msg . '. Line: ' . __LINE__);
 
                 return false;
             }
@@ -1845,18 +1848,15 @@ class VK_api
         // todo(dx): upgrade crosspost_get_image
         $image_path = $this->crosspost_get_image($post->ID);
         if ($image_path) {
-            $att[] = $this->vk_upload_photo($vk_at, $vk_group_id, $image_path);
+            $temp = $this->vk_upload_photo($vk_at, $vk_group_id, $image_path);
+            if ($temp === false) return;
+            $att[] = $temp;
         }
         $temp = isset($_REQUEST['vkapi_crosspost_link'])
             ? $_REQUEST['vkapi_crosspost_link']
             : get_option('vkapi_crosspost_link');
         if (!empty($temp)) {
             $temp = get_permalink($post->ID);
-//            if (!class_exists('Punycode')) {
-//                // todo-dx: глянуть, говорят сломалось... потестил, у мну всё замечательно работает. Саботаж?
-//                require_once($this->plugin_path . 'php/punycode.php');
-//                $temp = Punycode::urldecode($temp);
-//            }
             $att[] = $temp;
         }
         if (!empty($att)) {
@@ -1929,17 +1929,17 @@ class VK_api
                         <input type='submit' class='button button-primary'>
                     </form>
                     ";
-                self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
+                self::notice_error('CrossPost: API Error: ' . $msg . '. Line: ' . __LINE__);
             } elseif ($r_data['error']['error_code'] == 17) {
-                $msg = "ВК просит верификацию пользователя (с выдачей нового Access Token): <a href='{$r_data['error']['redirect_uri']}'>link</a>";
-                self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
+                $msg = "ВК просит верификацию пользователя (с выдачей нового Access Token): <a href='{$r_data['error']['redirect_uri']}'>ссылка для получения</a>";
+                self::notice_error('CrossPost: API Error: ' . $msg . '. Line: ' . __LINE__);
             } else {
                 $msg = $r_data['error']['error_msg'] . ' ' . $r_data['error']['error_code'] . ' _' . $body['attachments'];
-                self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
+                self::notice_error('CrossPost: API Error Code: ' . $msg . '. Line: ' . __LINE__);
             }
             return false;
         }
-        $temp = isset($vk_group_screen_name) ? $vk_group_screen_name : 'club' . $vk_group_id;
+        $temp = isset($vk_group_screen_name) ? $vk_group_screen_name : 'club' . -$vk_group_id;
         $post_link = "https://vk.com/{$temp}?w=wall{$vk_group_id}_{$r_data['response']['post_id']}%2Fall";
         $post_href = "<a href='{$post_link}' target='_blank'>{$temp}</a>";
         self::notice_notice('CrossPost: Success ! ' . $post_href);
@@ -2019,8 +2019,12 @@ class VK_api
         }
         $data = json_decode($result['body'], true);
         if (!$data['response']) {
-            $msg = $data['error']['error_msg'] . ' ' . $data['error']['error_code'];
-            self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
+            if ($r_data['error']['error_code'] == 17) {
+                $msg = "ВК просит верификацию пользователя (с выдачей нового Access Token): <a href='{$r_data['error']['redirect_uri']}'>ссылка для получения</a>";
+            } else {
+                $msg = $data['error']['error_msg'];
+            }
+            self::notice_error('CrossPost: API Error. Code: ' . $r_data['error']['error_code'] . '. Msg: ' . $msg . '. Line' . __LINE__);
 
             return false;
         }
@@ -2042,8 +2046,8 @@ class VK_api
         }
         $data = json_decode($result['body'], true);
         if (!isset($data['photo'])) {
-            $msg = $data['error']['error_msg'] . ' ' . $data['error']['error_code'];
-            self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
+            $msg = $data['error']['error_msg'];
+            self::notice_error('CrossPost: API Error. Code: ' . $data['error']['error_code'] . '. Msg: ' . $msg . '. Line: ' . __LINE__);
 
             return false;
         }
@@ -2063,8 +2067,8 @@ class VK_api
         }
         $data = json_decode($result['body'], true);
         if (!$data['response']) {
-            $msg = $data['error']['error_msg'] . ' ' . $data['error']['error_code'];
-            self::notice_error('CrossPost: API Error Code: ' . $msg . 'vkx' . __LINE__);
+            $msg = $data['error']['error_msg'];
+            self::notice_error('CrossPost: API Error. Code: ' . '. Msg: ' . $msg . '. Line: ' . __LINE__);
 
             return false;
         }
