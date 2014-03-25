@@ -1,6 +1,5 @@
 <?php
 
-define('VKAPI_AT', 'https://api.vk.com/oauth/access_token');
 define('VKAPI_SERVER', 'https://api.vk.com/method/');
 define('WP_USE_THEMES', false);
 require_once('../../../../wp-load.php');

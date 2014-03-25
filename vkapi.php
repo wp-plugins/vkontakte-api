@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.15
+Version: 3.16
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -1894,7 +1894,8 @@ class VK_api
             self::notice_error('Crosspost: (рус) Ни текста ни медиа-приложений.');
         }
         // Call
-        $body['v'] = $this->vkapi_version;
+        // !!! $body['v'] = $this->vkapi_version;
+        $body['v'] = '3.0';
         #$body['publish_date'] = unixtime; // $post->post_date_gmt = '2014-12-21 06:39:40';
         $curl = new Wp_Http_Curl();
         $result = $curl->request(
@@ -1934,8 +1935,8 @@ class VK_api
                 $msg = "ВК просит верификацию пользователя (с выдачей нового Access Token): <a href='{$r_data['error']['redirect_uri']}'>ссылка для получения</a>";
                 self::notice_error('CrossPost: API Error: ' . $msg . '. Line: ' . __LINE__);
             } else {
-                $msg = $r_data['error']['error_msg'] . ' ' . $r_data['error']['error_code'] . ' _' . $body['attachments'];
-                self::notice_error('CrossPost: API Error Code: ' . $msg . '. Line: ' . __LINE__);
+                $msg = $r_data['error']['error_msg'];
+                self::notice_error('CrossPost: API Error. Code: ' . $r_data['error']['error_code'] . '. Msg: ' . $msg . '. Line ' . __LINE__);
             }
             return false;
         }
@@ -2009,7 +2010,9 @@ class VK_api
         // Get Wall Upload Server
         $params = array();
         $params['access_token'] = $vk_at;
-        $params['gid'] = -$vk_group;
+//        $params['gid'] = -$vk_group;
+        $params['uid'] = $vk_group;
+        $params['v'] = '3.0';
         $result = wp_remote_get($this->vk_api_buildQuery('photos.getWallUploadServer', $params));
         if (is_wp_error($result)) {
             $msg = $result->get_error_message();
@@ -2024,7 +2027,7 @@ class VK_api
             } else {
                 $msg = $data['error']['error_msg'];
             }
-            self::notice_error('CrossPost: API Error. Code: ' . $data['error']['error_code'] . '. Msg: ' . $msg . '. Line' . __LINE__);
+            self::notice_error('CrossPost: API Error. Code: ' . $data['error']['error_code'] . '. Msg: ' . $msg . '. Line ' . __LINE__);
 
             return false;
         }
