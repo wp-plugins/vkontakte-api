@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.16
+Version: 3.17
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -29,7 +29,6 @@ Author URI: http://www.kowack.info/
 /** todo-dx:
  * Перевести ошибки, ибо некоторые люди тупые.
  *
- * _ счётчик комментариев — пересчёт
  * _ шорткод для соц. кнопок
  * _ соц.кнопки слева\справа\центр
  * _ кросспост: твиттер, фейсбук, гуглоплюс
@@ -2013,7 +2012,7 @@ class VK_api
 //        $params['gid'] = -$vk_group;
         $params['uid'] = $vk_group;
         $params['v'] = '3.0';
-        $result = wp_remote_get($this->vk_api_buildQuery('photos.getWallUploadServer', $params));
+        $result = wp_remote_get($this->vkapi_server . 'photos.getWallUploadServer?' . http_build_query($params));
         if (is_wp_error($result)) {
             $msg = $result->get_error_message();
             self::notice_error('CrossPost: ' . $msg . ' wpx' . __LINE__);
@@ -2057,11 +2056,12 @@ class VK_api
         // Save Wall Photo
         $params = array();
         $params['access_token'] = $vk_at;
-        $params['gid'] = -$vk_group;
+        $params['uid'] = -$vk_group;
         $params['server'] = $data['server'];
         $params['photo'] = $data['photo'];
         $params['hash'] = $data['hash'];
-        $result = wp_remote_get($this->vk_api_buildQuery('photos.saveWallPhoto', $params));
+        $params['v'] = '3.0';
+        $result = wp_remote_get($this->vkapi_server . 'photos.saveWallPhoto?' . http_build_query($params));
         if (is_wp_error($result)) {
             $msg = $result->get_error_message();
             self::notice_error('CrossPost: ' . $msg . ' wpx' . __LINE__);
@@ -2076,7 +2076,7 @@ class VK_api
             return false;
         }
         // Return Photo ID
-        return 'photo' . $data['response'][0]['owner_id'] . '_' . $data['response'][0]['id'];
+        return $data['response'][0]['id'];
     }
 
     private function first_postImage(&$text)
