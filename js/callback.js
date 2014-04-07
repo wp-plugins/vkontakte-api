@@ -27,30 +27,37 @@ function showWP(Tshow, Thide) {
 // SignOn
 function onSignon(response) {
     if (response.session) {
-        var vkdata = {
-            mid:response.session.mid
-        };
+        VK.Api.call(
+            'getProfiles',
+            {
+                'v': '2.0',
+                'uids': response.session.mid,
+                'fields': 'uid,first_name,nickname,last_name,screen_name,photo_medium_rec'
+            },
+            function (response) {
 
-        var parts = window.location.search.substr(1).split("&");
-        var $_GET = {};
-        for (var i = 0; i < parts.length; i++) {
-            var temp = parts[i].split("=");
-            $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
-        }
-        jQuery.post(vkapi.wpurl + '/wp-content/plugins/vkontakte-api/php/connect.php', vkdata, function (text) {
-            if (jQuery.trim(text) == 'Ok') {
-                jQuery("div.vkapi_vk_login").html("<span style='color:green'>Result: ✔ " + text + "</span>");
-                if (typeof $_GET['redirect_to'] != 'undefined') {
-                    document.location.href = $_GET['redirect_to'];
-                } else if ($_GET['loggedout'] == 'true') {
-                    document.location.href = '/';
-                } else {
-                    document.location.reload();
+                var parts = window.location.search.substr(1).split("&");
+                var $_GET = {};
+                for (var i = 0; i < parts.length; i++) {
+                    var temp = parts[i].split("=");
+                    $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
                 }
-            } else {
-                jQuery("div.vkapi_vk_login").html('<span style="color:red">Result: ' + text + '</span>');
+                jQuery.post(vkapi.wpurl + '/wp-content/plugins/vkontakte-api/php/connect.php', response.response[0], function (text) {
+                    if (jQuery.trim(text) == 'Ok') {
+                        jQuery("div.vkapi_vk_login").html("<span style='color:green'>Result: ✔ " + text + "</span>");
+                        if (typeof $_GET['redirect_to'] != 'undefined') {
+                            document.location.href = $_GET['redirect_to'];
+                        } else if ($_GET['loggedout'] == 'true') {
+                            document.location.href = '/';
+                        } else {
+                            document.location.reload();
+                        }
+                    } else {
+                        jQuery("div.vkapi_vk_login").html('<span style="color:red">Result: ' + text + '</span>');
+                    }
+                });
             }
-        });
+        );
     } else {
         VK.Auth.login(onSignon);
     }

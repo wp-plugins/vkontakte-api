@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://www.kowack.info/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.17
+Version: 3.18
 Author: kowack
 Author URI: http://www.kowack.info/
 */
@@ -343,7 +343,7 @@ class VK_api
         echo
         '<div id="vkapi_groups"></div>
 			<script type="text/javascript">
-                $("body").on("vkapi_vk", function(){
+                jQuery(document).on("vkapi_vk", function(){
                     VK.Widgets.Group("vkapi_groups", {mode: 2, width: "auto", height: "290"}, 28197069);
                 });
 			</script>';
@@ -356,7 +356,7 @@ class VK_api
                         VK.init({
                             apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
                         });
-                        $('body').trigger('vkapi_vk');
+                        $(document).trigger('vkapi_vk');
                     };
 
                     setTimeout(function () {
@@ -572,17 +572,15 @@ class VK_api
             $wp_url = get_bloginfo('wpurl');
             echo
             "<br style='display: none' id='vkapi_connect' data-vkapi-url='{$wp_url}' />
-			    <div id='vkapi_status'></div>
+			    <div class='vkapi_vk_login'></div>
 			    <div id='vkapi_login_button' onclick='VK.Auth.login(onSignon)'>
 			        <a>
 			            ВойтиВКонтакте
 			        </a>
 			    </div>
                         <script>
-                            jQuery(function($){
-                                $('body').on('vkapi_vk', function () {
-                                    VK.UI.button('vkapi_login_button');
-                                });
+                            jQuery(document).on('vkapi_vk', function () {
+                                VK.UI.button('vkapi_login_button');
                             });
                         </script>
                 <br />";
@@ -969,7 +967,7 @@ class VK_api
         echo "
 			<div id='vkapi' onclick='showNotification()'></div>
 			<script type='text/javascript'>
-				jQuery('body').on('vkapi_vk', function(){
+				jQuery(document).on('vkapi_vk', function(){
                     VK.Widgets.Comments(
                         'vkapi', {
                             width: {$width},
@@ -1140,10 +1138,8 @@ class VK_api
                             }
                         </style>
                         <script>
-                            jQuery(function ($) {
-                                $('body').on('vkapi_vk', function () {
-                                    VK.UI.button('vkapi_login_button');
-                                });
+                            jQuery(document).on('vkapi_vk', function () {
+                                VK.UI.button('vkapi_login_button');
                             });
                         </script>
                     </td>
@@ -1275,7 +1271,7 @@ class VK_api
                         });
                         VK.Observer.subscribe('widgets.comments.new_comment', onChangePlusVK);
                         VK.Observer.subscribe('widgets.comments.delete_comment', onChangeMinusVK);
-                        $("body").trigger('vkapi_vk');
+                        $(document).trigger('vkapi_vk');
                     };
 
                     setTimeout(function () {
@@ -1338,7 +1334,7 @@ class VK_api
                         });
                         FB.Event.subscribe('comment.create', onChangePlusFB);
                         FB.Event.subscribe('comment.remove', onChangeMinusFB);
-                        jQuery("body").trigger('vkapi_fb');
+                        jQuery(document).trigger('vkapi_fb');
                     };
 
                     (function (d) {
@@ -1610,7 +1606,7 @@ class VK_api
         echo "
 						<script type=\"text/javascript\">
 							<!--
-							    jQuery('body').on('vkapi_vk', function(){
+							    jQuery(document).on('vkapi_vk', function(){
 							        var temp = Math.random()%1;
 								    jQuery('#{$div_id}').attr('id',temp);
 									VK.Widgets.Like(temp, {
@@ -1940,6 +1936,7 @@ class VK_api
             return false;
         }
         $temp = isset($vk_group_screen_name) ? $vk_group_screen_name : 'club' . -$vk_group_id;
+        if (is_numeric($vk_group_id) && (int)$vk_group_id > 0) $temp = 'id' . $vk_group_id;
         $post_link = "https://vk.com/{$temp}?w=wall{$vk_group_id}_{$r_data['response']['post_id']}%2Fall";
         $post_href = "<a href='{$post_link}' target='_blank'>{$temp}</a>";
         self::notice_notice('CrossPost: Success ! ' . $post_href);
@@ -1957,10 +1954,10 @@ class VK_api
             3 => '~<tr[^>]+>~si',
             4 => '~<li[^>]+>~si',
             5 => '~<br[^>]+>~si',
-            6 => '~<p[^>]+>~si',
             7 => '~<div[^>]+>~si',
         );
         $html = preg_replace($tags, "\n", $html);
+        $html = preg_replace('~<p[^>]+>~si', "\n\n", $html);
         $html = preg_replace('~</t(d|h)>\s*<t(d|h)[^>]+>~si', ' - ', $html);
         $html = preg_replace('~<[^>]+>~s', '', $html);
 
@@ -2026,7 +2023,7 @@ class VK_api
             } else {
                 $msg = $data['error']['error_msg'];
             }
-            self::notice_error('CrossPost: API Error. Code: ' . $data['error']['error_code'] . '. Msg: ' . $msg . '. Line ' . __LINE__);
+            self::notice_error('CrossPost: API Error. Code: ' . $data['error']['error_code'] . '. Msg: ' . $msg . '. Line: ' . __LINE__);
 
             return false;
         }
@@ -2056,7 +2053,10 @@ class VK_api
         // Save Wall Photo
         $params = array();
         $params['access_token'] = $vk_at;
-        $params['uid'] = -$vk_group;
+        if ((int)$vk_group < 0) $params['uid'] = -$vk_group;
+        if ((int)$vk_group > 0) $params['gid'] = $vk_group;
+        // https://vk.com/kowack?w=wall14867871_1183%2Fall
+        // https://vk.com/club-14867871?w=wall14867871_1184%2Fall
         $params['server'] = $data['server'];
         $params['photo'] = $data['photo'];
         $params['hash'] = $data['hash'];
@@ -2086,6 +2086,13 @@ class VK_api
         } else {
             return '';
         }
+    }
+
+    private function vkapi_crosspots_error($error, $line)
+    {
+        self::notice_error(
+            "CrossPost: API Error. Code: {$error['error_code']}. Msg: {$error['error_msg']}. Line: {$line}."
+        );
     }
 
     private function authOpenAPIMember()
@@ -2303,10 +2310,11 @@ class VK_api
    <a>ВойтиВКонтакте</a>
 </div>
 <style type=\"text/css\">
-	#login_button td, #login_button tr {
+	.vkapi_vk_login table td, .vkapi_vk_login table tr {
 		padding: 0px !important;
 		margin: 0px !important;
 		vertical-align: top !important;
+		width: auto !important;
 	}
 </style>
 <script type=\"text/javascript\">
@@ -2629,12 +2637,12 @@ class VKAPI_Login extends WP_Widget
             $href = site_url('/wp-admin/profile.php');
             $text = __('Profile', $this->plugin_domain);
             echo "<a href='{$href}' title=''>{$text}</a><br /><br />";
-            $href = wp_logout_url(home_url($_SERVER['REQUEST_URI']));
+            $href = wp_logout_url($_SERVER['REQUEST_URI']);
             $text = __('Logout', $this->plugin_domain);
             echo "<a href='{$href}' title=''>{$text}</a>";
             echo '</div>';
         } else {
-            $href = wp_login_url(home_url($_SERVER['REQUEST_URI']));
+            $href = wp_login_url($_SERVER['REQUEST_URI']);
             $text = __('Login', $this->plugin_domain);
             $link = wp_register('', '', false);
             echo "<div><a href='{$href}' title=''>{$text}</a></div><br />";

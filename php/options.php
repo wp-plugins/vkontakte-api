@@ -932,100 +932,105 @@
 
 
 <!-- Donate -->
-<div>
-    <div>
-        <div class="infofooter">
-            <div class="info">
-                <span class="description"><?php _e(
-                        'Support project (I need some eating...)',
-                        $this->plugin_domain
-                    ) ?></span>
+<div class="infofooter">
+    <div class="info">
+        <span class="description">
+            <?php _e('Support project (I need some eating...)', $this->plugin_domain) ?>
+        </span>
 
-                <p>
-                    <a href="wmk:payto?Purse=R771756795015&Amount=100&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
-                        Donate Webmoney
-                    </a>(R771756795015)
-                </p>
+        <p>
+            <a href="wmk:payto?Purse=R771756795015&Amount=100&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
+                Donate Webmoney
+            </a>(R771756795015)
+        </p>
 
-                <p>
-                    <a href="wmk:payto?Purse=Z163761330315&Amount=5&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
-                        Donate Webmoney
-                    </a>(Z163761330315)
-                </p>
+        <p>
+            <a href="wmk:payto?Purse=Z163761330315&Amount=5&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
+                Donate Webmoney
+            </a>(Z163761330315)
+        </p>
 
-                <p>
-                    <a href="wmk:payto?Purse=U247198770431&Amount=30&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
-                        Donate Webmoney
-                    </a>(U247198770431)
-                </p>
+        <p>
+            <a href="wmk:payto?Purse=U247198770431&Amount=30&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
+                Donate Webmoney
+            </a>(U247198770431)
+        </p>
 
-                <p>
-                    Donate YandexMoney <b>410011126761075</b>
-                </p>
+        <p>
+            Donate YandexMoney <b>410011126761075</b>
+        </p>
 
-                <p>
-                    <iframe frameborder="0" allowtransparency="true" scrolling="no"
-                            src="https://money.yandex.ru/embed/small.xml?account=410011126761075&quickpay=small&yamoney-payment-type=on&button-text=06&button-size=s&button-color=white&targets=VKontakte+API&default-sum=500"
-                            width="147" height="31"></iframe>
-                    <iframe frameborder="0" allowtransparency="true" scrolling="no"
-                            src="https://money.yandex.ru/embed/small.xml?account=410011126761075&quickpay=small&any-card-payment-type=on&button-text=06&button-size=s&button-color=white&targets=VKontakte+API&default-sum=500"
-                            width="146" height="31"></iframe>
-                </p>
+        <p>
+            <iframe frameborder="0" allowtransparency="true" scrolling="no"
+                    src="https://money.yandex.ru/embed/small.xml?account=410011126761075&quickpay=small&yamoney-payment-type=on&button-text=06&button-size=s&button-color=white&targets=VKontakte+API&default-sum=500"
+                    width="147" height="31"></iframe>
+            <iframe frameborder="0" allowtransparency="true" scrolling="no"
+                    src="https://money.yandex.ru/embed/small.xml?account=410011126761075&quickpay=small&any-card-payment-type=on&button-text=06&button-size=s&button-color=white&targets=VKontakte+API&default-sum=500"
+                    width="146" height="31"></iframe>
+        </p>
                 <span class="description">
                     <?php _e('Thanks...', $this->plugin_domain) ?>
                 </span>
-            </div>
-            <div class="kowack">
-                <img src="https://ru.gravatar.com/userimage/19535946/ecd85e6141b40491d15f571e52c1cb77.jpeg"
-                     style="float:left"/>
 
-                <p>
-                    <span class="description">
-                        Разработчик:
-                    </span>
-                </p>
+        <p class="submit">
+            <input type="submit"
+                   class="button-primary"
+                   value="<?php _e('Save Changes', $this->plugin_domain) ?>"/>
+        </p>
+    </div>
+    <div class="info2">
+        <div class="kowack">
+            <img src="https://ru.gravatar.com/userimage/19535946/ecd85e6141b40491d15f571e52c1cb77.jpeg"
+                 style="float:left"/>
 
-                <p>
-                    <span class="description">
-                        <a href="https://vk.com/kowack"
-                           target="_blank">
-                            Забродский Евгений (kowack).
-                        </a>
-                    </span>
-                </p>
-            </div>
-            <div class="sponsor">
-                <img src="../../../../wp-content/plugins/vkontakte-api/images/paydarxnet.png"
-                     style="float:left"/>
+            <p>
+                        <span class="description">
+                            Разработчик:
+                        </span>
+            </p>
 
-                <p>
-                    <span class="description">
-                        Пополнение операторов Украины:
-                    </span>
-                </p>
+            <p>
+                        <span class="description">
+                            <a href="https://vk.com/kowack"
+                               target="_blank">
+                                Забродский Евгений (kowack).
+                            </a>
+                        </span>
+            </p>
+        </div>
+        <div class="sponsor">
+            <img src="../../../../wp-content/plugins/vkontakte-api/images/paydarxnet.png"
+                 style="float:left"/>
 
-                <p>
-                    <span class="description">
-                        <a href="http://pay.darx.net" target="_blank">
-                            Пополняшка (:
-                        </a>
-                    </span>
-                </p>
-            </div>
-            <div class="stats">
-                <img src="../../../../wp-content/plugins/vkontakte-api/images/stats.jpg"
-                     style="float:left"/>
+            <p>
+                        <span class="description">
+                            Пополнение операторов Украины:
+                        </span>
+            </p>
 
-                <p>
-                    <span class="description">
-                        Статистика:
-                    </span>
-                </p>
+            <p>
+                        <span class="description">
+                            <a href="http://pay.darx.net" target="_blank">
+                                Пополняшка (:
+                            </a>
+                        </span>
+            </p>
+        </div>
+        <div class="stats">
+            <img src="../../../../wp-content/plugins/vkontakte-api/images/stats.jpg"
+                 style="float:left"/>
 
-                <p id="stats"></p>
-            </div>
+            <p>
+                        <span class="description">
+                            Статистика:
+                        </span>
+            </p>
+
+            <p id="stats"></p>
         </div>
     </div>
+</div>
+</div>
 </div>
 
 
@@ -1154,11 +1159,6 @@
     }
 </script>
 
-<p class="submit">
-    <input type="submit"
-           class="button-primary"
-           value="<?php _e('Save Changes', $this->plugin_domain) ?>"/>
-</p>
 </table>
 </form>
 </div>
