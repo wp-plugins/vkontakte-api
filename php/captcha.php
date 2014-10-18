@@ -1,5 +1,4 @@
 <div class="wrap">
-    <?php screen_icon(); ?>
     <h2>VKontakte API - <?php _e('Captcha', $this->plugin_domain); ?></h2>
 </div>
 

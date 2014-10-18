@@ -66,12 +66,12 @@ function onSignon(response) {
 // Mail callback + count plus
 function vkapi_comm_plus(id, num, last_comment, date, sign) {
     var data = {
-        social:'vk',
-        id:id,
-        num:num,
-        last_comment:last_comment,
-        date:date,
-        sign:sign
+        social: 'vk',
+        id: id,
+        num: num,
+        last_comment: last_comment,
+        date: date,
+        sign: sign
     };
     var jqxhr = jQuery.post(vkapi.wpurl + '/wp-content/plugins/vkontakte-api/php/mail.php', data);
     jqxhr.fail(function () {
@@ -81,8 +81,8 @@ function vkapi_comm_plus(id, num, last_comment, date, sign) {
 
 function fbapi_comm_plus(id) {
     var data = {
-        social:'fb',
-        id:id
+        social: 'fb',
+        id: id
     };
     // @var vkapi Object
     var jqxhr = jQuery.post(vkapi.wpurl + '/wp-content/plugins/vkontakte-api/php/mail.php', data);
@@ -95,12 +95,12 @@ function fbapi_comm_plus(id) {
 function vkapi_comm_minus(id, num, last_comment, date, sign) {
     onChangeRecalc(num);
     var data = {
-        social:'vk',
-        id:id,
-        num:num,
-        last_comment:last_comment,
-        date:date,
-        sign:sign
+        social: 'vk',
+        id: id,
+        num: num,
+        last_comment: last_comment,
+        date: date,
+        sign: sign
     };
     var jqxhr = jQuery.post(vkapi.wpurl + '/wp-content/plugins/vkontakte-api/php/count.php', data);
     jqxhr.fail(function () {
@@ -110,8 +110,8 @@ function vkapi_comm_minus(id, num, last_comment, date, sign) {
 
 function fbapi_comm_minus(id) {
     var data = {
-        social:'fb',
-        id:id
+        social: 'fb',
+        id: id
     };
     var jqxhr = jQuery.post(vkapi.wpurl + '/wp-content/plugins/vkontakte-api/php/count.php', data);
     jqxhr.fail(function () {

@@ -874,25 +874,7 @@
                 />
         </div>
     </div>
-    <!-- Decor -->
-    <div>
-        <div class="section-title"><h3><?php _e('Decorations: ', $this->plugin_domain); ?></h3>
-        </div>
-    </div>
-    <div>
-        <div><label for="vkapi_some_desktop"><?php _e(
-                    'Desktop notifications:',
-                    $this->plugin_domain
-                ); ?></label>
-        </div>
-        <div><input type="checkbox"
-                    id="vkapi_some_desktop"
-                    name="vkapi_some_desktop"
-                    value="1" <?php echo get_option(
-                'vkapi_some_desktop'
-            ) ? 'checked' : '';?> /></div>
-    </div>
-    <!-- Non plagin -->
+    <!-- Non plugin -->
     <div>
         <div class="section-title"><h3><?php _e('No Plugin Options: ', $this->plugin_domain); ?></h3>
         </div>
@@ -1097,7 +1079,7 @@
         $('#mymenu').on('click', 'li', function () {
             var page = '#page_' + $(this).attr('id');
             if ($(page).css('display') == 'none') {
-                $('#mymenu li').css({color: '#333'});
+                $('#mymenu').find('li').css({color: '#333'});
                 $(this).css({color: '#21759b'});
                 $('div.page').stop().slideUp(100);
                 var speed = $(page).height();
@@ -1108,10 +1090,10 @@
         $.getJSON('http://api.wordpress.org/stats/plugin/1.0/downloads.php?slug=vkontakte-api&limit=730&callback=?', function (data) {
             var yesterday = 0;
             var lastWeek = 0;
-            var lastMonth = 0
+            var lastMonth = 0;
             var count = 1;
             var arr = [];
-            for (value in data) {
+            for (var value in data) {
                 arr.unshift(data[value]);
             }
             $.each(arr, function (key, value) {

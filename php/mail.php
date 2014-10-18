@@ -18,12 +18,11 @@ if (isset($_POST['social'])) {
             if (get_option('vkapi_notice_admin') == '1') {
                 $emails[] = get_bloginfo('admin_email');
             }
-            // todo-dx: optimize this
-            if ( get_user_meta($profile->ID, 'vkapi_notice_comments', true) == '1' ) {
-                $post = get_post($post_id);
+	        $post = get_post($post_id);
+	        if ( get_user_meta($post->post_author, 'vkapi_notice_comments', true) == '1' ) {
                 $emails[] = get_the_author_meta('email', $post->post_author);
             }
-            $blog_url = get_bloginfo("url");
+            $blog_url = get_bloginfo('url');
             if (substr($blog_url, 0, 7) == 'http://') {
                 $blog_url = substr($blog_url, 7);
             }
@@ -58,8 +57,8 @@ if (isset($_POST['social'])) {
             if (get_option('vkapi_notice_admin') == '1') {
                 $emails[] = get_bloginfo('admin_email');
             }
-            if ( get_user_meta($profile->ID, 'vkapi_notice_comments', true) == '1' ) {
-                $post = get_post($post_id);
+	        $post = get_post($post_id);
+	        if ( get_user_meta($post->post_author, 'vkapi_notice_comments', true) == '1' ) {
                 $emails[] = get_the_author_meta('email', $post->post_author);
             }
             $blog_url = site_url();
