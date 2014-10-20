@@ -391,7 +391,7 @@ class VK_api {
 						VK.init({
 							apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
 						});
-						$(document).trigger('vkapi_vk');
+                        jQuery(document).trigger('vkapi_vk');
 					};
 
 					setTimeout(function () {
@@ -1580,7 +1580,7 @@ class VK_api {
 							VK.Observer.subscribe('widgets.comments.new_comment', onChangePlusVK);
 						if (typeof onChangeMinusVK !== 'undefined')
 							VK.Observer.subscribe('widgets.comments.delete_comment', onChangeMinusVK);
-						$(document).trigger('vkapi_vk');
+                        jQuery(document).trigger('vkapi_vk');
 					};
 
 					setTimeout(function () {
