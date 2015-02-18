@@ -1291,7 +1291,7 @@ class VK_api {
 				break;
 		}
 		echo '
-                <audio id="vkapi_sound" preload="auto" style="display: none; visibility: hidden;">
+                <audio id="vkapi_sound" preload="auto" style="display: none !important; visibility: hidden !important;">
 				    <source src="https://vk.com/mp3/bb2.mp3">
 			    </audio >
         ';
