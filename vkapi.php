@@ -386,7 +386,7 @@ class VK_api {
 			?>
 			<div id="vk_api_transport"></div>
 			<script type="text/javascript">
-				jQuery(function ($) {
+				jQuery(function () {
 					window.vkAsyncInit = function () {
 						VK.init({
 							apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
@@ -1571,7 +1571,7 @@ class VK_api {
 			?>
 			<div id="vk_api_transport"></div>
 			<script type="text/javascript">
-				jQuery(function ($) {
+				jQuery(function () {
 					window.vkAsyncInit = function () {
 						VK.init({
 							apiId: <?php echo get_option('vkapi_appid') . "\n"; ?>
