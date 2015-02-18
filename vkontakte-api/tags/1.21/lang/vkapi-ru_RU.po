@@ -1,0 +1,611 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Vkontakte API\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-01-25 04:05+0200\n"
+"PO-Revision-Date: 2012-01-25 04:15+0200\n"
+"Last-Translator: www.kowack.info <kowack@gmail.com>\n"
+"Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: UKRAINE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: ../vkapi-mail.php:22
+#: ../vkapi-mail.php:38
+msgid "VKapi: Page has just commented!"
+msgstr "VKapi: Страницу только что прокомментировали."
+
+#: ../vkapi-mail.php:24
+#: ../vkapi-mail.php:40
+msgid "Comment: "
+msgstr "Комментарий:"
+
+#: ../vkapi-mail.php:25
+#: ../vkapi-mail.php:41
+msgid "[VKapi] Website:"
+msgstr "[VKapi] Сайт:"
+
+#: ../vkapi-options.php:1
+msgid "VKontakte API Plugin - Settings"
+msgstr "Vkontakte API Plugin - Настройки"
+
+#: ../vkapi-options.php:1
+msgid "If you dont have <b>Application ID</b> and <b>Secure key</b> : go this <a href='http://vkontakte.ru/apps.php?act=add&site=1'>link</a> and register your site(blog). It's easy."
+msgstr "Если у Вас нет <b>ID приложения</b> и <b>Защищенного ключа</b> : перейдите по этой <a href='http://vkontakte.ru/apps.php?act=add&site=1'>ссылке</a> и зарегестрируйте ваш сайт(блог). Это просто!"
+
+#: ../vkapi-options.php:1
+msgid "If don't remember : go this <a href='http://vkontakte.ru/apps?act=settings'>link</a> and choose need application."
+msgstr "Если не помните : перейдите по этой <a href='http://vkontakte.ru/apps?act=settings'>ссылке</a> и выбирите нужное приложение."
+
+#: ../vkapi-options.php:1
+msgid "Application ID:"
+msgstr "ID приложения:"
+
+#: ../vkapi-options.php:1
+msgid "Secure key:"
+msgstr "Защищенный ключ:"
+
+#: ../vkapi-options.php:1
+msgid "Comments: "
+msgstr "Комментарии:"
+
+#: ../vkapi-options.php:1
+msgid "Show"
+msgstr "Показывать"
+
+#: ../vkapi-options.php:1
+msgid "Dont show"
+msgstr "Не показывать"
+
+#: ../vkapi-options.php:1
+msgid "Height of widget(0=unlimited):"
+msgstr "Высота виджета (0=неограничено):"
+
+#: ../vkapi-options.php:1
+msgid "Block width in pixels(>300):"
+msgstr "Ширина блока в пикселях (>300):"
+
+#: ../vkapi-options.php:1
+msgid "Number of comments on the page (5-100):"
+msgstr "Количество коментариев на странице (5-100):"
+
+#: ../vkapi-options.php:1
+msgid "AutoPublish to vk user wall"
+msgstr "Автопубликация на стене пользователя"
+
+#: ../vkapi-options.php:1
+msgid "Show first Vkontakte comments"
+msgstr "Первыми показывать комментарии Vkontakte"
+
+#: ../vkapi-options.php:1
+msgid "Hide WordPress Comments"
+msgstr "Убрать комметарии WordPress-а"
+
+#: ../vkapi-options.php:1
+msgid "Media in comments:"
+msgstr "Медиа в комментариях:"
+
+#: ../vkapi-options.php:1
+msgid "Graffiti:"
+msgstr "Графити:"
+
+#: ../vkapi-options.php:1
+msgid "Photo:"
+msgstr "Фото:"
+
+#: ../vkapi-options.php:1
+msgid "Audio:"
+msgstr "Аудио:"
+
+#: ../vkapi-options.php:1
+msgid "Video:"
+msgstr "Видео:"
+
+#: ../vkapi-options.php:1
+msgid "Link:"
+msgstr "Ссылки:"
+
+#: ../vkapi-options.php:1
+msgid "Sign On: "
+msgstr "Вход:"
+
+#: ../vkapi-options.php:1
+#: ../vkapi.php:574
+msgid "Enable"
+msgstr "Включено"
+
+#: ../vkapi-options.php:1
+#: ../vkapi.php:576
+msgid "Disable"
+msgstr "Выключено"
+
+#: ../vkapi-options.php:1
+msgid "Like button: "
+msgstr "Кнопка \"Мне нравится\":"
+
+#: ../vkapi-options.php:1
+msgid "Valign:"
+msgstr "Вертикальная позиция:"
+
+#: ../vkapi-options.php:1
+msgid "top"
+msgstr "вверху"
+
+#: ../vkapi-options.php:1
+msgid "bottom"
+msgstr "внизу"
+
+#: ../vkapi-options.php:1
+msgid "Align:"
+msgstr "Позиция:"
+
+#: ../vkapi-options.php:1
+msgid "right"
+msgstr "справа"
+
+#: ../vkapi-options.php:1
+msgid "left"
+msgstr "слева"
+
+#: ../vkapi-options.php:1
+msgid "Button style:"
+msgstr "Стиль кнопки:"
+
+#: ../vkapi-options.php:1
+msgid "Button with text counter"
+msgstr "Кнопка с текстовым счётчиком"
+
+#: ../vkapi-options.php:1
+msgid "Button with mini counter"
+msgstr "Кнопка с миниатюрным счётчиком"
+
+#: ../vkapi-options.php:1
+msgid "Mini button"
+msgstr "Миниатюрная кнопка"
+
+#: ../vkapi-options.php:1
+msgid "Mini button with counter at the top"
+msgstr "Миниатюрная кнопка, счётчик сверху"
+
+#: ../vkapi-options.php:1
+msgid "Statement:"
+msgstr "Формулировка:"
+
+#: ../vkapi-options.php:1
+msgid "I like"
+msgstr "Мне нравится"
+
+#: ../vkapi-options.php:1
+msgid "It's interesting"
+msgstr "Это интересно"
+
+#: ../vkapi-options.php:1
+msgid "Show in Categories page and Home:"
+msgstr "Показывать в Категориях и на Главной:"
+
+#: ../vkapi-options.php:1
+msgid "Share button: "
+msgstr "Кнопка \"Сохранить\":"
+
+#: ../vkapi-options.php:1
+msgid "Button"
+msgstr "Кнопка"
+
+#: ../vkapi-options.php:1
+msgid "Button without a Counter"
+msgstr "Кнопка без счетчика"
+
+#: ../vkapi-options.php:1
+msgid "Button Right Angles"
+msgstr "Кнопка Прямые углы"
+
+#: ../vkapi-options.php:1
+msgid "Button without a Counter Right Angles"
+msgstr "Кнопка без счетчика Прямые углы"
+
+#: ../vkapi-options.php:1
+msgid "Link"
+msgstr "Ссылка"
+
+#: ../vkapi-options.php:1
+msgid "Link without an Icon"
+msgstr "Ссылка без иконки"
+
+#: ../vkapi-options.php:1
+msgid "Text on the button:"
+msgstr "Текст на кнопке"
+
+#: ../vkapi-options.php:1
+msgid "Decorations: "
+msgstr "Декор:"
+
+#: ../vkapi-options.php:1
+msgid "Desktop notifications:"
+msgstr "Уведомления на рабочем столе:"
+
+#: ../vkapi-options.php:1
+msgid "No Plugin Options: "
+msgstr "Не связаное с плагином:"
+
+#: ../vkapi-options.php:1
+msgid "Custom login logo:"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Path :"
+msgstr "Путь:"
+
+#: ../vkapi-options.php:1
+msgid "path to image..."
+msgstr "путь к изображению..."
+
+#: ../vkapi-options.php:1
+msgid "Disable Autosave Post Script:"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Disable Revision Post Save:"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Support project (I need some eating...)"
+msgstr "Поддержка проекта (Мне нужно немного еды ...)"
+
+#: ../vkapi-options.php:1
+msgid "Donate Webmoney(R)"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Donate Webmoney(Z)"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Donate Webmoney(U)"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Thanks..."
+msgstr "Пасибки..."
+
+#: ../vkapi-options.php:1
+msgid "Save Changes"
+msgstr " Сохранить настройки "
+
+#: ../vkapi.php:109
+#, php-format
+msgid "Vkontakte API Plugin needs <a href=\"%s\">configuration</a>."
+msgstr "Vkontakte API Plugin нуждается в <a href=\"%s\">настройке</a>."
+
+#: ../vkapi.php:197
+#: ../vkapi.php:233
+msgid "Vkontakte API Plugin - Comments"
+msgstr "Vkontakte API Plugin - Комментарии"
+
+#: ../vkapi.php:216
+#: ../vkapi.php:217
+msgid "Vkontakte API"
+msgstr "Vkontakte API"
+
+#: ../vkapi.php:225
+msgid "Vkontakte API Plugin - Settings"
+msgstr "Vkontakte API Plugin - Настройки"
+
+#: ../vkapi.php:226
+#: ../vkapi.php:785
+msgid "Settings"
+msgstr "Настройки"
+
+#: ../vkapi.php:234
+#: ../vkapi.php:1024
+msgid "Last Comments"
+msgstr "Последнии комментарии"
+
+#: ../vkapi.php:265
+msgid "Main"
+msgstr "Обзор"
+
+#: ../vkapi.php:274
+msgid "Comments"
+msgstr "Комментарии"
+
+#: ../vkapi.php:282
+msgid "Like button"
+msgstr "Кнопка \"Мне нравиться\""
+
+#: ../vkapi.php:290
+msgid "Decor"
+msgstr "Декор"
+
+#: ../vkapi.php:299
+msgid "No Plugin Options"
+msgstr "Не связаное с плагином"
+
+#: ../vkapi.php:306
+msgid "Help"
+msgstr "Помощь"
+
+#: ../vkapi.php:324
+msgid "Vkontakte comments"
+msgstr "Комментарии Vkontakte"
+
+#: ../vkapi.php:391
+msgid "WordPress comments"
+msgstr "Комментарии сайта"
+
+#: ../vkapi.php:563
+#: ../vkapi.php:564
+msgid "VK.com comments"
+msgstr "VK.com комментарии"
+
+#: ../vkapi.php:603
+msgid "Vkontakte"
+msgstr "Вконтакте"
+
+#: ../vkapi.php:625
+msgid "Connected User Id : "
+msgstr "Присоединённый User Id : "
+
+#: ../vkapi.php:626
+msgid "Disconnect from Vkontakte"
+msgstr "Отсоединить аккаунт Vkontakte"
+
+#: ../vkapi.php:772
+msgid "Vkontakte Profile"
+msgstr "Профиль Vkontakte"
+
+#: ../vkapi.php:832
+msgid "Information about VKontakte group"
+msgstr "Информация о группе Вконтакте"
+
+#: ../vkapi.php:833
+msgid "VKapi: Community Users"
+msgstr "VKAPI: Группа"
+
+#: ../vkapi.php:865
+#: ../vkapi.php:927
+#: ../vkapi.php:1063
+msgid "Title:"
+msgstr "Название:"
+
+#: ../vkapi.php:869
+msgid "ID of group (can be seen by reference to statistics):"
+msgstr "ID группы (видно по ссылке на статистику):"
+
+#: ../vkapi.php:873
+#: ../vkapi.php:1071
+msgid "Width:"
+msgstr "Ширина:"
+
+#: ../vkapi.php:877
+#: ../vkapi.php:1075
+msgid "Height:"
+msgstr "Высота:"
+
+#: ../vkapi.php:882
+msgid "Layout:"
+msgstr "Тип виджета:"
+
+#: ../vkapi.php:884
+msgid "Members"
+msgstr "Список пользователей"
+
+#: ../vkapi.php:885
+msgid "News"
+msgstr "Новости группы"
+
+#: ../vkapi.php:886
+msgid "Only Name"
+msgstr "Только название"
+
+#: ../vkapi.php:899
+msgid "Top site on basis of \"I like\" statistics"
+msgstr "Топ сайта на основе \"Мне нравиться\""
+
+#: ../vkapi.php:900
+msgid "VKapi: Recommends"
+msgstr "VKAPI: Популярное"
+
+#: ../vkapi.php:931
+msgid "Number of posts:"
+msgstr "Количество:"
+
+#: ../vkapi.php:936
+msgid "Selection period:"
+msgstr "Период:"
+
+#: ../vkapi.php:938
+msgid "Day"
+msgstr "Сутки"
+
+#: ../vkapi.php:939
+msgid "Week"
+msgstr "Неделя"
+
+#: ../vkapi.php:940
+msgid "Month"
+msgstr "Месяц"
+
+#: ../vkapi.php:945
+msgid "Formulation:"
+msgstr "Формулировка:"
+
+#: ../vkapi.php:947
+msgid "... people like this"
+msgstr "Понравилось ..."
+
+#: ../vkapi.php:948
+msgid "... people find it intersting"
+msgstr "Интересно ..."
+
+#: ../vkapi.php:961
+msgid "Login widget"
+msgstr "Виджет входа"
+
+#: ../vkapi.php:962
+msgid "VKapi: Login"
+msgstr "VKAPI: Вход"
+
+#: ../vkapi.php:976
+#: ../vkapi.php:981
+msgid "Profile"
+msgstr "Профиль"
+
+#: ../vkapi.php:977
+#: ../vkapi.php:982
+msgid "Logout"
+msgstr "Выход"
+
+#: ../vkapi.php:993
+msgid "Login"
+msgstr "Вход"
+
+#: ../vkapi.php:1010
+msgid "Message:"
+msgstr "Сообщение:"
+
+#: ../vkapi.php:1025
+msgid "VKapi: Last Comments"
+msgstr "VKapi: Последние комментарии"
+
+#: ../vkapi.php:1067
+msgid "Number of comments:"
+msgstr "Количество комментариев:"
+
+#~ msgid "Add Vkontakte account."
+#~ msgstr "Присоеденить аккаунт Vkontakte."
+
+#~ msgid "Profile: "
+#~ msgstr "Профиль:"
+
+#~ msgid "Login Widget:"
+#~ msgstr "Виджет входа:"
+
+#~ msgid "Your AppId:"
+#~ msgstr "Ваш AppId:"
+
+#~ msgid "VKAPI: Страницу только что прокомментировали."
+#~ msgstr "VKAPI: Страницу только что прокомментировали."
+
+#~ msgid "Комментарий: "
+#~ msgstr "Комментарий: "
+
+#~ msgid "кнопка с текстовым счётчиком"
+#~ msgstr "кнопка с текстовым счётчиком"
+
+#~ msgid "кнопка с миниатюрным счётчиком"
+#~ msgstr "кнопка с миниатюрным счётчиком"
+
+#~ msgid "миниатюрная кнопка"
+#~ msgstr "миниатюрная кнопка"
+
+#~ msgid "миниатюрная кнопка, счётчик сверху"
+#~ msgstr "миниатюрная кнопка, счётчик сверху"
+
+#~ msgid "Информация о группе вконтакте"
+#~ msgstr "Информация о группе вконтакте"
+
+#~ msgid "ID группы (видно по ссылке на статистику):"
+#~ msgstr "ID группы (видно по ссылке на статистику):"
+
+#~ msgid "Тип виджета:"
+#~ msgstr "Тип виджета:"
+
+#~ msgid "Список пользователей"
+#~ msgstr "Список пользователей"
+
+#~ msgid "Новости группы"
+#~ msgstr "Новости группы"
+
+#~ msgid "Только название"
+#~ msgstr "Только название"
+
+#~ msgid "Топ сайта на основе \"Мне нравиться\""
+#~ msgstr "Топ сайта на основе \"Мне нравиться\""
+
+#~ msgid "Количество:"
+#~ msgstr "Количество:"
+
+#~ msgid "Период:"
+#~ msgstr "Период:"
+
+#~ msgid "Сутки"
+#~ msgstr "Сутки"
+
+#~ msgid "Неделя"
+#~ msgstr "Неделя"
+
+#~ msgid "Месяц"
+#~ msgstr "Месяц"
+
+#~ msgid "Формулировка:"
+#~ msgstr "Формулировка:"
+
+#~ msgid "Понравилось ..."
+#~ msgstr "Понравилось ..."
+
+#~ msgid "Интересно ..."
+#~ msgstr "Интересно ..."
+
+#~ msgid "Выравнивание :"
+#~ msgstr "Выравнивание :"
+
+#~ msgid "справа"
+#~ msgstr "справа"
+
+#~ msgid "слева"
+#~ msgstr "слева"
+
+#~ msgid "Тип кнопки :"
+#~ msgstr "Тип кнопки :"
+
+#~ msgid "Формулировка :"
+#~ msgstr "Формулировка :"
+
+#~ msgid "Мне нравится"
+#~ msgstr "Мне нравится"
+
+#~ msgid "Это интересно"
+#~ msgstr "Это интересно"
+
+#~ msgid "Приветствие, иначе авторизация"
+#~ msgstr "Приветствие, иначе авторизация"
+
+#~ msgid "VK: Hello"
+#~ msgstr "VK: Приветствие"
+
+#~ msgid "Текст приветствия:"
+#~ msgstr "Текст приветствия:"
+
+#~ msgid "Стиль текста:"
+#~ msgstr "Стиль текста:"
+
+#~ msgid "Support project"
+#~ msgstr "Поддержка проекта"
+
+#~ msgid "Your theme background :"
+#~ msgstr "Цвет фона вашей страницы :"
+
+#~ msgid "Background of tabs :"
+#~ msgstr "Цвет фона вкладок :"
+
+#~ msgid "Hover background :"
+#~ msgstr "Цвет при наведении на ссылку :"
+
+#~ msgid "Link color :"
+#~ msgstr "Цвет текста  ссылки :"
+
+#~ msgid "Media:"
+#~ msgstr "Медиа:"
+
+#~ msgid "Avalible attachment^"
+#~ msgstr "Медиа:"
+
+#~ msgid "Options for Comments Tab."
+#~ msgstr "Опции для вкладок коментариев."

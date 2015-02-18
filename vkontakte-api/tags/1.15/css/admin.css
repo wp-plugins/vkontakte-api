@@ -1,0 +1,48 @@
+.form-table td {
+    padding:10px;
+}
+
+textarea.mid-text {
+    width:70%;
+}
+
+.form-table .section-title {
+    margin:0; padding:0;
+}
+
+.widefat, input {
+	border-color: #999 !important;
+}
+
+#wpbody{
+	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/admin-bg.jpg) no-repeat right top;
+}
+
+.webmoney {
+	width:16px;
+	float:left;
+	background:#FFF url(../../../../wp-content/plugins/vkontakte-api/images/webmoney.png) no-repeat;
+}
+
+.form-table .section-title h3 {
+    margin:0; padding:5px 10px;
+    background:#DFDFDF url(../../../../wp-admin/images/menu-bits.gif) repeat-x scroll left -379px !important; 
+    border:1px solid #999 !important;
+    font-family:font-size:14px; font-weight:700; line-height:18px; color:#464646; text-shadow:#fff 0 1px 0;
+    -moz-border-radius:6px;
+    -khtml-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+}
+
+.form-table td .info {
+    padding:5px 10px; margin-top:10px;
+    width:67%;
+    background:#f1f1f1;
+    border:1px solid #e3e3e3;
+    font-size:12px; color:#666;
+    -moz-border-radius:4px;
+    -khtml-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+}

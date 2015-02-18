@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Vkontakte API\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-22 03:00+0200\n"
+"PO-Revision-Date: 2011-06-22 03:00+0200\n"
+"Last-Translator: www.kowack.info <kowack@gmail.com>\n"
+"Language-Team: http://www.kowack.info/projects/vk_api/ <kowack@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: UKRAINE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: ../vkapi-options.php:1
+msgid "VKontakte API Plugin Settings"
+msgstr "Vkontate API Plugin - Настройки "
+
+#: ../vkapi-options.php:1
+msgid "If you dont have appId go this<a href='http://vkontakte.ru/apps.php?act=add&site=1'>link</a> and register your site(blog)."
+msgstr "Если у Вас нет appId перейдите по этой <a href=\"http://vkontakte.ru/apps.php?act=add&site=1\">ссылке</a> и зарегестрируйте ваш сайт(блог)."
+
+#: ../vkapi-options.php:1
+msgid "Your AppId :"
+msgstr "Ваш AppId :"
+
+#: ../vkapi-options.php:1
+msgid "Comments settings."
+msgstr "Настройки комментариев."
+
+#: ../vkapi-options.php:1
+msgid "Height of widget(0=unlimited):"
+msgstr "Высота виджета (0=неограничено):"
+
+#: ../vkapi-options.php:1
+msgid "Block width in pixels(>300):"
+msgstr "Ширина блока в пикселях (>300):"
+
+#: ../vkapi-options.php:1
+msgid "Number of comments on the page (5-100):"
+msgstr "Количество коментариев на странице (5-100):"
+
+#: ../vkapi-options.php:1
+msgid "AutoPublish to vk user wall"
+msgstr "Автопубликация на стене пользователя"
+
+#: ../vkapi-options.php:1
+msgid "Show first Vkontakte comments"
+msgstr "Первыми показывать комментарии Vkontakte"
+
+#: ../vkapi-options.php:1
+msgid "Media in comments:"
+msgstr "Медиа в комментариях:"
+
+#: ../vkapi-options.php:1
+msgid "Graffiti :"
+msgstr "Графити :"
+
+#: ../vkapi-options.php:1
+msgid "Photo :"
+msgstr "Фото :"
+
+#: ../vkapi-options.php:1
+msgid "Audio :"
+msgstr "Аудио :"
+
+#: ../vkapi-options.php:1
+msgid "Video :"
+msgstr "Видео :"
+
+#: ../vkapi-options.php:1
+msgid "Link :"
+msgstr "Ссылки :"
+
+#: ../vkapi-options.php:1
+msgid "Support project"
+msgstr "Поддержка проекта"
+
+#: ../vkapi-options.php:1
+msgid "Donate Webmoney(R)"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Donate Webmoney(Z)"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Donate Webmoney(U)"
+msgstr ""
+
+#: ../vkapi-options.php:1
+msgid "Thanks..."
+msgstr "Пасибки..."
+
+#: ../vkapi-options.php:1
+msgid "Save Changes"
+msgstr " Сохранить настройки "
+
+#: ../vkapi.php:42
+msgid "VKontakte API plugin requires Wordpress 2.8 or newer. <a href=\"http://codex.wordpress.org/Upgrading_WordPress\">Please update!</a>"
+msgstr ""
+
+#: ../vkapi.php:85
+msgid "Vkontate API Plugin Settings"
+msgstr ""
+
+#: ../vkapi.php:85
+msgid "Vkontakte API"
+msgstr ""
+
+#: ../vkapi.php:150
+msgid "Class VK_api already declared!"
+msgstr ""
+
+#~ msgid "Tabs settings."
+#~ msgstr "Настройки вкладок."
+
+#~ msgid "Your theme background :"
+#~ msgstr "Цвет фона вашей страницы :"
+
+#~ msgid "Background of tabs :"
+#~ msgstr "Цвет фона вкладок :"
+
+#~ msgid "Hover background :"
+#~ msgstr "Цвет при наведении на ссылку :"
+
+#~ msgid "Link color :"
+#~ msgstr "Цвет текста  ссылки :"
+
+#~ msgid "Media:"
+#~ msgstr "Медиа:"
+
+#~ msgid "Avalible attachment^"
+#~ msgstr "Медиа:"
+
+#~ msgid "Options for Comments Tab."
+#~ msgstr "Опции для вкладок коментариев."
