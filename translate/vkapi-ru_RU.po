@@ -364,7 +364,7 @@ msgstr "Первыми показывать комментарии %s"
 
 #: ../php/options.php:217
 msgid "Hide WordPress Comments"
-msgstr "Убрать комметарии WordPress-а"
+msgstr "Убрать комментарии WordPress-а"
 
 #: ../php/options.php:229
 msgid "Media in comments:"
