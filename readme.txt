@@ -1,10 +1,10 @@
 === VKontakte API ===
 Contributors: kowack
-Donate link: http://www.kowack.info/projects/vk_api/
+Donate link: http://blog.darx.net/projects/vk_api/
 Tags: vkontakte, facebook, crosspost, comments, social, share, vk.com
 Requires at least: 3.5.1
-Tested up to: 3.8.1
-Stable tag: 3.18
+Tested up to: 4.1
+Stable tag: 3.19
 
 Добавляет функционал API сайта VKontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...
 
@@ -52,6 +52,9 @@ Stable tag: 3.18
 4. Остальные настройки.
 
 == Changelog ==
+
+= 3.11 - 1.19 =
+Улучшения.
 
 = 3.10 =
 Улучшения и отображение каптчи.
@@ -223,6 +226,9 @@ Better.
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 1.19 =
+Улучшения.
 
 = 3.10 =
 Улучшения и отображение каптчи.
