@@ -1720,89 +1720,62 @@ class VK_api {
 			&& $vkapi_get_butt !== '0'
 			&& ! ( in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) ) )
 		) {
+            $is_on_page = ! is_home() && ! is_category() && ! is_archive();
 			// mrc share
 			if ( get_option( 'mrc_show_share' ) == 'true' ) {
-				$count ++;
 				$in_cat = get_option( 'mrc_share_cat' );
-				if ( $in_cat ) {
-					add_action( 'add_social_button_action', array( &$this, 'mrc_button_share' ), 5 );
-				} else {
-					if ( ! is_home() && ! is_category() && ! is_archive() ) {
-						add_action( 'add_social_button_action', array( &$this, 'mrc_button_share' ), 5 );
-					}
-				}
+                if ( $in_cat || $is_on_page)  {
+                    $count ++;
+                    add_action( 'add_social_button_action', array( &$this, 'mrc_button_share' ), 5 );
+                }
 			}
 			// gp +
 			if ( get_option( 'gpapi_show_like' ) == 'true' ) {
-				$count ++;
 				$in_cat = get_option( 'gpapi_like_cat' );
-				if ( $in_cat ) {
-					add_action( 'add_social_button_action', array( &$this, 'gpapi_button_like' ), 5 );
-				} else {
-					if ( ! is_home() && ! is_category() && ! is_archive() ) {
-						add_action( 'add_social_button_action', array( &$this, 'gpapi_button_like' ), 5 );
-					}
-				}
+                if ( $in_cat || $is_on_page)  {
+                    $count ++;
+                    add_action( 'add_social_button_action', array( &$this, 'gpapi_button_like' ), 5 );
+                }
 			}
 			// fb like
 			if ( get_option( 'fbapi_show_like' ) == 'true' ) {
-				$count ++;
 				$in_cat = get_option( 'fbapi_like_cat' );
-				if ( $in_cat ) {
-					add_action( 'add_social_button_action', array( &$this, 'fbapi_button_like' ), 5 );
-				} else {
-					if ( ! is_home() && ! is_category() && ! is_archive() ) {
-						add_action( 'add_social_button_action', array( &$this, 'fbapi_button_like' ), 5 );
-					}
-				}
+                if ( $in_cat || $is_on_page)  {
+                    $count ++;
+                    add_action( 'add_social_button_action', array( &$this, 'fbapi_button_like' ), 5 );
+                }
 			}
 			// tweet me
 			if ( get_option( 'tweet_show_share' ) == 'true' ) {
-				$count ++;
 				$in_cat = get_option( 'tweet_share_cat' );
-				if ( $in_cat ) {
-					add_action( 'add_social_button_action', array( &$this, 'tweet_button_share' ), 5 );
-				} else {
-					if ( ! is_home() && ! is_category() && ! is_archive() ) {
-						add_action( 'add_social_button_action', array( &$this, 'tweet_button_share' ), 5 );
-					}
-				}
+                if ( $in_cat || $is_on_page)  {
+                    $count ++;
+                    add_action( 'add_social_button_action', array( &$this, 'tweet_button_share' ), 5 );
+                }
 			}
 			// ya share
 			if ( get_option( 'ya_show_share' ) == 'true' ) {
-				$count ++;
 				$in_cat = get_option( 'ya_share_cat' );
-				if ( $in_cat ) {
-					add_action( 'add_social_button_action', array( &$this, 'ya_button_share' ), 5 );
-				} else {
-					if ( ! is_home() && ! is_category() && ! is_archive() ) {
-						add_action( 'add_social_button_action', array( &$this, 'ya_button_share' ), 5 );
-					}
-				}
+                if ( $in_cat || $is_on_page)  {
+                    $count ++;
+                    add_action( 'add_social_button_action', array( &$this, 'ya_button_share' ), 5 );
+                }
 			}
 			// vk share
 			if ( get_option( 'vkapi_show_share' ) == 'true' ) {
-				$count ++;
 				$in_cat = get_option( 'vkapi_share_cat' );
-				if ( $in_cat ) {
-					add_action( 'add_social_button_action', array( &$this, 'vkapi_button_share' ), 5 );
-				} else {
-					if ( ! is_home() && ! is_category() && ! is_archive() ) {
-						add_action( 'add_social_button_action', array( &$this, 'vkapi_button_share' ), 5 );
-					}
-				}
+                if ( $in_cat || $is_on_page)  {
+                    $count ++;
+                    add_action( 'add_social_button_action', array( &$this, 'vkapi_button_share' ), 5 );
+                }
 			}
 			// vk like
 			if ( get_option( 'vkapi_show_like' ) == 'true' ) {
-				$count ++;
 				$in_cat = get_option( 'vkapi_like_cat' );
-				if ( $in_cat ) {
-					add_action( 'add_social_button_action', array( &$this, 'vkapi_button_like' ), 5 );
-				} else {
-					if ( ! is_home() && ! is_category() && ! is_archive() ) {
-						add_action( 'add_social_button_action', array( &$this, 'vkapi_button_like' ), 5 );
-					}
-				}
+                if ( $in_cat || $is_on_page)  {
+                    $count ++;
+                    add_action( 'add_social_button_action', array( &$this, 'vkapi_button_like' ), 5 );
+                }
 			}
 			// shake
 			if ( $count ) {
