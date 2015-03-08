@@ -768,7 +768,7 @@ class VK_api {
 			)
 		);
 		if ( is_wp_error( $result ) ) {
-			$msg = $data->get_error_message();
+			$msg = $result->get_error_message();
 			self::notice_error( 'CrossPost: ' . $msg . ' wpx' . __LINE__ );
 
 			return false;
@@ -793,7 +793,7 @@ class VK_api {
 		// https://vk.com/kowack?w=wall14867871_1183%2Fall
 		// https://vk.com/club-14867871?w=wall14867871_1184%2Fall
 		$params['server'] = $data['server'];
-		$params['photo']  = $data['photo'];
+		$params['photo']  = json_encode($data['photo']);
 		$params['hash']   = $data['hash'];
 		$params['v']      = '3.0';
 		$result           = wp_remote_get( $this->vkapi_server . 'photos.saveWallPhoto?' . http_build_query( $params ) );
