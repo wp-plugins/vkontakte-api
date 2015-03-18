@@ -295,7 +295,8 @@
         <select name="vkapi_login"
                 id="vkapi_login"
                 class="widefat">
-            <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Enable', $this->plugin_domain); ?></option>
+            <option
+                value="true"<?php selected($temp, 'true'); ?>><?php _e('Enable', $this->plugin_domain); ?></option>
             <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
                     'Disable',
                     $this->plugin_domain
@@ -326,7 +327,8 @@
         <select name="vkapi_show_like"
                 id="vkapi_show_like"
                 class="widefat">
-            <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
+            <option
+                value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
             <option value="false"<?php selected($temp, 'false'); ?>><?php _e(
                     'Dont show',
                     $this->plugin_domain
@@ -365,8 +367,10 @@
         <select name="vkapi_align"
                 id="vkapi_align"
                 class="widefat">
-            <option value="right"<?php selected($temp, 'right'); ?>><?php _e('right', $this->plugin_domain); ?></option>
-            <option value="left"<?php selected($temp, 'left'); ?>><?php _e('left', $this->plugin_domain); ?></option>
+            <option
+                value="right"<?php selected($temp, 'right'); ?>><?php _e('right', $this->plugin_domain); ?></option>
+            <option
+                value="left"<?php selected($temp, 'left'); ?>><?php _e('left', $this->plugin_domain); ?></option>
         </select>
     </div>
 </div>
@@ -437,7 +441,8 @@
     <div><select name="vkapi_show_share"
                  id="vkapi_show_share"
                  class="widefat">
-            <option value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
+            <option
+                value="true"<?php selected($temp, 'true'); ?>><?php _e('Show', $this->plugin_domain); ?></option>
             <option
                 value="false"<?php selected($temp, 'false'); ?>><?php _e('Dont show', $this->plugin_domain); ?></option>
         </select></div>
@@ -464,7 +469,8 @@
                     'Button without a Counter Right Angles',
                     $this->plugin_domain
                 ); ?></option>
-            <option value="link"<?php selected($temp, 'link'); ?>><?php _e('Link', $this->plugin_domain); ?></option>
+            <option
+                value="link"<?php selected($temp, 'link'); ?>><?php _e('Link', $this->plugin_domain); ?></option>
             <option value="link_noicon"<?php selected($temp, 'link_noicon'); ?>><?php _e(
                     'Link without an Icon',
                     $this->plugin_domain
@@ -565,6 +571,15 @@
                 name="vkapi_crosspost_length"
                 value="<?php echo get_option('vkapi_crosspost_length'); ?>"/>
     </div>
+</div>
+<div>
+    <div><label for="vkapi_tags"><?php _e('Add tags:', $this->plugin_domain); ?></label></div>
+    <div><input type="checkbox"
+                id="vkapi_tags"
+                name="vkapi_tags"
+                value="1" <?php echo get_option(
+            'vkapi_tags'
+        ) ? 'checked' : '';?> /></div>
 </div>
 <div>
     <div><label for="vkapi_crosspost_link"><?php _e('Show link:', $this->plugin_domain); ?></label></div>
@@ -921,21 +936,15 @@
         </span>
 
         <p>
-            <a href="wmk:payto?Purse=R771756795015&Amount=100&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
-                Donate Webmoney
-            </a>(R771756795015)
+            Donate Webmoney <b>R771756795015</b>
         </p>
 
         <p>
-            <a href="wmk:payto?Purse=Z163761330315&Amount=5&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
-                Donate Webmoney
-            </a>(Z163761330315)
+            Donate Webmoney <b>Z163761330315</b>
         </p>
 
         <p>
-            <a href="wmk:payto?Purse=U247198770431&Amount=30&Desc=Поддержка%20разработки%20плагина%20VKontakte-API&BringToFront=Y">
-                Donate Webmoney
-            </a>(U247198770431)
+            Donate Webmoney <b>U247198770431</b>
         </p>
 
         <p>
@@ -962,7 +971,7 @@
     </div>
     <div class="info2">
         <div class="kowack">
-            <img src="https://ru.gravatar.com/userimage/19535946/ecd85e6141b40491d15f571e52c1cb77.jpeg"
+            <img src="http://www.gravatar.com/avatar/<?php echo md5('kowack@gmail.com'); ?>"
                  style="float:left"/>
 
             <p>
@@ -980,24 +989,24 @@
                         </span>
             </p>
         </div>
-        <div class="sponsor">
-            <img src="../../../../wp-content/plugins/vkontakte-api/images/paydarxnet.png"
-                 style="float:left"/>
-
-            <p>
-                        <span class="description">
-                            Пополнение операторов Украины:
-                        </span>
-            </p>
-
-            <p>
-                        <span class="description">
-                            <a href="http://pay.darx.net" target="_blank">
-                                Пополняшка (:
-                            </a>
-                        </span>
-            </p>
-        </div>
+        <!--		<div class="sponsor">-->
+        <!--			<img src="../../../../wp-content/plugins/vkontakte-api/images/paydarxnet.png"-->
+        <!--			     style="float:left"/>-->
+        <!---->
+        <!--			<p>-->
+        <!--                        <span class="description">-->
+        <!--                            Пополнение операторов Украины:-->
+        <!--                        </span>-->
+        <!--			</p>-->
+        <!---->
+        <!--			<p>-->
+        <!--                        <span class="description">-->
+        <!--                            <a href="http://pay.darx.net" target="_blank">-->
+        <!--	                            Пополняшка (:-->
+        <!--                            </a>-->
+        <!--                        </span>-->
+        <!--			</p>-->
+        <!--		</div>-->
         <div class="stats">
             <img src="../../../../wp-content/plugins/vkontakte-api/images/stats.jpg"
                  style="float:left"/>
