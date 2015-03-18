@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://blog.darx.net/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.20
+Version: 3.21
 Author: kowack
 Author URI: http://blog.darx.net/
 */
@@ -237,8 +237,9 @@ class VK_api {
         add_option( 'vkapi_crosspost_default', '0' );
         add_option( 'vkapi_crosspost_length', '888' );
         add_option( 'vkapi_crosspost_link', '0' );
-        add_option( 'vkapi_crosspost_signed', '1' );
-        add_option( 'vkapi_crosspost_anti', '0' );
+        add_option('vkapi_crosspost_signed', '1');
+        add_option('vkapi_crosspost_anti', '0');
+        add_option('vkapi_tags', '0');
     }
 
     static function pause() {
@@ -297,6 +298,7 @@ class VK_api {
         delete_option( 'vkapi_crosspost_signed' );
         delete_option( 'vkapi_crosspost_category' );
         delete_option( 'vkapi_crosspost_anti' );
+        delete_option('vkapi_tags');
     }
 
     static function get_vk_login() {
@@ -599,16 +601,32 @@ class VK_api {
             $text_len = mb_strlen( $text );
             $text     = mb_substr( $text, 0, (int) $temp );
             $last_pos = strrpos( $text, ' ' );
-            if ( ! $last_pos ) {
-                $last_pos = strrpos( $text, "\n" );
-            }
+//            if ( ! $last_pos ) {
+//                $last_pos = strrpos( $text, "\r\n" );
+//            }
             if ( $last_pos ) {
                 $text = mb_substr( $text, 0, $last_pos );
             }
             if ( mb_strlen( $text ) != $text_len ) {
-                $text .= '...';
+                $text .= '…';
             }
             $text = $post->post_title . "\r\n\r\n" . $text;
+            $temp = get_option('vkapi_tags');
+            if ($temp != 0) {
+                $tags = wp_get_post_tags(
+                    $post->ID,
+                    array(
+                        'fields' => 'names',
+                    )
+                );
+                if (count($tags) !== 0) {
+                    $text .= "\r\n\r\n#";
+                    $text .= implode(
+                        ' #',
+                        $tags
+                    );
+                }
+            }
         } else {
             if ( (int) $temp === - 1 ) {
                 $text = '';
@@ -2100,6 +2118,7 @@ class VK_api {
         register_setting( 'vkapi-settings-group', 'vkapi_crosspost_category' );
         register_setting( 'vkapi-settings-group', 'vkapi_crosspost_anti' );
         register_setting( 'vkapi-settings-group', 'vkapi_notice_admin' );
+        register_setting('vkapi-settings-group', 'vkapi_tags');
     }
 
     function contextual_help() {
