@@ -1874,11 +1874,9 @@ class VK_api {
                 vertical-align: top !important;
             }
 
-            /*.fb-like span {*/
-            /*overflow:visible !important;*/
-            /*width:480px !important;*/
-            /*margin-right:-375px;*/
-            /*}*/
+            ul.nostyle iframe {
+                max-width: none !important;
+            }
         </style>
     <?php
     }
