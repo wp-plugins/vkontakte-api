@@ -1014,7 +1014,7 @@ class VK_api {
 
         $option = get_option( 'vkapi_show_share' );
         if ( $option == 'true' ) {
-            add_action( 'vkapi_body', array( &$this, 'js_async_vkshare' ) );
+            add_action( 'vkapi_body', array( &$this, 'js_async_vkshare' ), 1 );
         }
         $option = get_option( 'gpapi_show_like' );
         if ( $option == 'true' ) {
@@ -1606,24 +1606,17 @@ class VK_api {
                             VK.Observer.subscribe('widgets.comments.new_comment', onChangePlusVK);
                         if (typeof onChangeMinusVK !== 'undefined')
                             VK.Observer.subscribe('widgets.comments.delete_comment', onChangeMinusVK);
-                        jQuery(document).trigger('vkapi_vk');
-                    };
-
-                    setTimeout(function () {
-                        if (typeof VK === 'undefined') {
-                            var el = document.createElement("script");
-                            el.type = "text/javascript";
-                            el.src = "https://vk.com/js/api/openapi.js";
-                            el.async = true;
-                            document.getElementById("vk_api_transport").appendChild(el);
-                        } else {
-                            if (typeof onChangePlusVK !== 'undefined')
-                                VK.Observer.subscribe('widgets.comments.new_comment', onChangePlusVK);
-                            if (typeof onChangeMinusVK !== 'undefined')
-                                VK.Observer.subscribe('widgets.comments.delete_comment', onChangeMinusVK);
+                        if (!window.vkapi_vk) {
+                            window.vkapi_vk = true;
                             jQuery(document).trigger('vkapi_vk');
                         }
-                    }, 0);
+                    };
+
+                    var el = document.createElement("script");
+                    el.type = "text/javascript";
+                    el.src = "https://vk.com/js/api/openapi.js";
+                    el.async = true;
+                    document.getElementById("vk_api_transport").appendChild(el);
                 });
             </script>
         <?php endif;
