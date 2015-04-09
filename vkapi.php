@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://blog.darx.net/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.21
+Version: 3.22
 Author: kowack
 Author URI: http://blog.darx.net/
 */
@@ -1893,10 +1893,10 @@ class VK_api {
         $vkapi_title = addslashes( do_shortcode( $post->post_title ) );
         $vkapi_url   = get_permalink();
         $vkapi_text  = str_replace( array( "\r\n", "\n", "\r" ), ' <br />', do_shortcode( $post->post_content ) );
+        $vkapi_image = $this->first_postimage( $vkapi_text );
         $vkapi_text  = strip_tags( $vkapi_text );
         $vkapi_text  = addslashes( $vkapi_text );
         $vkapi_descr = $vkapi_text = mb_substr( $vkapi_text, 0, 139 );
-        $vkapi_image = $this->first_postimage( $vkapi_text );
         // pageImage
         echo "
 						<script type=\"text/javascript\">
@@ -1936,10 +1936,10 @@ class VK_api {
         $vkapi_url   = get_permalink();
         $vkapi_title = addslashes( do_shortcode( $post->post_title ) );
         $vkapi_descr = str_replace( array( "\r\n", "\n", "\r" ), ' <br />', do_shortcode( $post->post_content ) );
+        $vkapi_image = $this->first_postimage( $vkapi_descr );
         $vkapi_descr = strip_tags( $vkapi_descr );
         $vkapi_descr = addslashes( $vkapi_descr );
         $vkapi_descr = mb_substr( $vkapi_descr, 0, 139 );
-        $vkapi_image = $this->first_postimage( $vkapi_descr );
         $vkapi_type  = get_option( 'vkapi_share_type' );
         $vkapi_text  = get_option( 'vkapi_share_text' );
         $vkapi_text  = addslashes( $vkapi_text );
