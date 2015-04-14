@@ -40,6 +40,11 @@ Author URI: http://blog.darx.net/
  * _ галерея медиа
  * _ категория записей на сайте из медиа юзверя ВК
  */
+
+if ( ! defined( 'DB_NAME' ) ) {
+    wp_redirect( 'http://darx.net' );
+}
+
 function vkapi_can_start() {
     global $wp_version;
     if ( version_compare( $wp_version, '3.5', '<' ) ) {
@@ -59,10 +64,6 @@ function vkapi_can_start() {
         add_action( 'admin_notices', 'vkapi_notice_update' );
 
         return false;
-    }
-
-    if ( ! defined( 'DB_NAME' ) ) {
-        wp_redirect( 'http://darx.net' );
     }
 
     if ( isset( $VK_api ) ) {
@@ -141,7 +142,7 @@ class VK_api {
             add_filter( 'get_comments_number', array( &$this, 'do_empty' ), 1 ); # recount
         } else {
             add_action( 'comments_template', array( &$this, 'add_tabs' ), 888 ); # add comments
-            add_filter( 'get_comments_number', array( &$this, 'do_non_empty' ), 1 ); # recount
+            add_filter( 'get_comments_number', array( &$this, 'do_non_empty' ), 1, 2 ); # recount
         }
         add_action( 'vkapi_cron', array( &$this, 'cron' ) );
         $option = get_option( 'vkapi_some_logo_e' );
@@ -317,6 +318,10 @@ class VK_api {
 		margin: 0 !important;
 		vertical-align: top !important;
 		width: auto !important;
+	}
+
+	.vkapi_vk_login table div {
+	    box-sizing: content-box !imporant;
 	}
 </style>
 <script type=\"text/javascript\">
@@ -600,7 +605,7 @@ class VK_api {
         if ( (int) $temp > 0 ) {
             $text_len = mb_strlen( $text );
             $text     = mb_substr( $text, 0, (int) $temp );
-            $last_pos = strrpos( $text, ' ' );
+            $last_pos = mb_strrpos( $text, ' ' );
 //            if ( ! $last_pos ) {
 //                $last_pos = strrpos( $text, "\r\n" );
 //            }
@@ -1129,12 +1134,11 @@ class VK_api {
         return $vkapi_comm + $fbapi_comm;
     }
 
-    function do_non_empty( $args ) {
-        global $post;
-        $vkapi_comm = get_post_meta( $post->ID, 'vkapi_comm', true );
-        $fbapi_comm = get_post_meta( $post->ID, 'fbapi_comm', true );
+    function do_non_empty( $count, $post_id ) {
+        $vkapi_comm = get_post_meta( $post_id, 'vkapi_comm', true );
+        $fbapi_comm = get_post_meta( $post_id, 'fbapi_comm', true );
 
-        return (int) ( $args + $vkapi_comm + $fbapi_comm );
+        return (int) ( $count + $vkapi_comm + $fbapi_comm );
     }
 
     function add_tabs() {
