@@ -572,6 +572,21 @@
                 value="<?php echo get_option('vkapi_crosspost_length'); ?>"/>
     </div>
 </div>
+
+<div>
+    <div>
+        <label for="vkapi_crosspost_images_count">
+            <?php _e('Images count:', $this->plugin_domain); ?>
+        </label>
+    </div>
+    <div>
+        <input type="text"
+                id="vkapi_crosspost_images_count"
+                name="vkapi_crosspost_images_count"
+                value="<?php echo get_option('vkapi_crosspost_images_count'); ?>"/>
+    </div>
+</div>
+
 <div>
     <div><label for="vkapi_tags"><?php _e('Add tags:', $this->plugin_domain); ?></label></div>
     <div><input type="checkbox"

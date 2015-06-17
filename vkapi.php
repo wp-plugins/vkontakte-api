@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://blog.darx.net/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.22
+Version: 3.23
 Author: kowack
 Author URI: http://blog.darx.net/
 */
@@ -237,6 +237,7 @@ class VK_api {
         add_option( 'vkapi_vk_group' );
         add_option( 'vkapi_crosspost_default', '0' );
         add_option( 'vkapi_crosspost_length', '888' );
+        add_option( 'vkapi_crosspost_images_count', '1' );
         add_option( 'vkapi_crosspost_link', '0' );
         add_option('vkapi_crosspost_signed', '1');
         add_option('vkapi_crosspost_anti', '0');
@@ -295,6 +296,7 @@ class VK_api {
         delete_option( 'vkapi_at' );
         delete_option( 'vkapi_crosspost_default' );
         delete_option( 'vkapi_crosspost_length' );
+        delete_option( 'vkapi_crosspost_images_count' );
         delete_option( 'vkapi_crosspost_link' );
         delete_option( 'vkapi_crosspost_signed' );
         delete_option( 'vkapi_crosspost_category' );
@@ -547,6 +549,13 @@ class VK_api {
 
         // todo-dx: crosspost to facebook, g-plus, twitter
 
+        //
+        // Set basic params
+        //
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
         $body['access_token'] = $vk_at;
         $body['from_group']   = 1;
         $body['signed']       = get_option( 'vkapi_crosspost_signed' );
@@ -555,7 +564,12 @@ class VK_api {
             $params             = array();
             $params['group_id'] = $vk_group_id;
             $params['fields']   = 'screen_name';
-            $result             = wp_remote_get( $this->vk_api_buildQuery( 'groups.getById', $params ) );
+            $result             = wp_remote_get(
+                $this->vk_api_buildQuery( 'groups.getById', $params ),
+                array(
+                    'timeout' => 10,
+                )
+            );
             if ( is_wp_error( $result ) ) {
                 $msg = $result->get_error_message();
                 self::notice_error( 'CrossPost: ' . $msg . ' wpx' . __LINE__ );
@@ -574,28 +588,81 @@ class VK_api {
         $vk_group_id = - $vk_group_id;
 
         $body['owner_id'] = $vk_group_id;
+
+        //
         // Attachment
+        //
+
         $att        = array();
-        $image_path = $this->crosspost_get_image( $post->ID );
-        if ( $image_path ) {
-            $temp = $this->vk_upload_photo( $vk_at, $vk_group_id, $image_path );
-            if ( $temp === false ) {
-//                return false;
-            } else {
-                $att[] = $temp;
+        $images = $this->_get_post_images( $post->post_content, get_option( 'vkapi_crosspost_images_count') );
+
+        $upload_dir = wp_upload_dir();
+        $upload_dir = $upload_dir['basedir'] . DIRECTORY_SEPARATOR;
+
+//        $upload_dir = 'php://temp';
+
+        foreach ($images as $image) {
+
+            $image_name = explode('/', $image);
+            $image_name = array_pop($image_name);
+            $upload_path = $upload_dir . $image_name;
+
+            self::notice_notice('CrossPost: Process photo: ' . $upload_path);
+
+            // download from web
+
+            $fp = fopen($upload_path, 'w+b');
+            if ($fp === false) {
+                self::notice_error(__LINE__ . ' Cant open: ' . $upload_path);
+                break;
             }
+
+            $ch = curl_init(str_replace(" ","%20", $image));
+            if ($ch === false) {
+                self::notice_error(__LINE__ . 'Cant open: ' . $image);
+                break;
+            }
+
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_FILE, $fp);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+            // upload to vk.com
+
+            if ( curl_exec($ch) !== false ) {
+                rewind($fp);
+                $temp = $this->vk_upload_photo( $vk_at, $vk_group_id, $upload_path );
+                if ( $temp === false ) {
+                    //
+                } else {
+                    $att[] = $temp;
+                }
+            } else {
+                self::notice_error(__LINE__ . curl_error($ch));
+            }
+
+            curl_close($ch);
+            fclose($fp);
+            unlink($upload_path);
         }
-        $temp = isset( $_REQUEST['vkapi_crosspost_link'] )
+
+        $temp =
+            isset( $_REQUEST['vkapi_crosspost_link'] )
             ? $_REQUEST['vkapi_crosspost_link']
             : get_option( 'vkapi_crosspost_link' );
         if ( ! empty( $temp ) ) {
             $temp  = get_permalink( $post->ID );
             $att[] = $temp;
         }
+
         if ( ! empty( $att ) ) {
             $body['attachments'] = implode( ',', $att );
         }
+
+        //
         // Text
+        //
+
         $text = do_shortcode( $post->post_content );
         $text = $this->html2text( $text );
         $text = html_entity_decode( $text, ENT_QUOTES );
@@ -606,9 +673,7 @@ class VK_api {
             $text_len = mb_strlen( $text );
             $text     = mb_substr( $text, 0, (int) $temp );
             $last_pos = mb_strrpos( $text, ' ' );
-//            if ( ! $last_pos ) {
-//                $last_pos = strrpos( $text, "\r\n" );
-//            }
+
             if ( $last_pos ) {
                 $text = mb_substr( $text, 0, $last_pos );
             }
@@ -756,10 +821,13 @@ class VK_api {
     }
 
     private function vk_upload_photo( $vk_at, $vk_group, $image_path ) {
+
+        //
         // Get Wall Upload Server
+        //
+
         $params                 = array();
         $params['access_token'] = $vk_at;
-//        $params['gid'] = -$vk_group;
         $params['uid'] = $vk_group;
         $params['v']   = '3.0';
         $result        = wp_remote_get( $this->vkapi_server . 'photos.getWallUploadServer?' . http_build_query( $params ) );
@@ -780,13 +848,17 @@ class VK_api {
 
             return false;
         }
+
+        //
         // Upload Photo To Server
+        //
+
         $curl          = new Wp_Http_Curl();
         $result        = $curl->request(
             $data['response']['upload_url'],
             array(
                 'method' => 'POST',
-                'timeout' => 12,
+                'timeout' => 30,
                 'body'   => array(
                     'photo' => '@' . $image_path,
                 ),
@@ -806,7 +878,30 @@ class VK_api {
 
             return false;
         }
+
+//        $post_params['photo'] = '@' . $image_path;
+//        $ch = curl_init();
+//        curl_setopt($ch, CURLOPT_URL, $data['response']['upload_url']);
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($ch, CURLOPT_POST, true);
+//        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
+//        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+//        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+//
+//        $result = curl_exec($ch);
+
+//        $data = json_decode( $result, true );
+//        if ( ! isset( $data['photo'] ) ) {
+//            $msg = $this->getVkApiMsg( $data['error'] );
+//            self::notice_error( 'CrossPost: API Error. Code: ' . $data['error']['error_code'] . '. Msg: ' . $msg . '. Line: ' . __LINE__ );
+//
+//            return false;
+//        }
+
+        //
         // Save Wall Photo
+        //
+
         $params                 = array();
         $params['access_token'] = $vk_at;
         // ВК сказал что теперь это опциональные поля
@@ -1050,6 +1145,7 @@ class VK_api {
         if ( ! empty( $temp1 ) && ! empty( $temp2 ) ) {
             ?>
             <div class="misc-pub-section">
+
             <label>
                 <input type="checkbox"
                        value="1"
@@ -1058,7 +1154,9 @@ class VK_api {
                     />
             </label>
             <?php _e( 'CrossPost to VK.com Wall', $this->plugin_domain ); ?>
+
             <br/>
+
             <?php _e( 'Text length:', $this->plugin_domain ); ?>
             <label>
                 <input type="text"
@@ -1067,7 +1165,20 @@ class VK_api {
                        value="<?php echo get_option( 'vkapi_crosspost_length' ); ?>"
                     />
             </label>
+
             <br/>
+
+            <?php _e( 'Images count:', $this->plugin_domain ); ?>
+            <label>
+                <input type="number" min="0" max="10"
+                       name="vkapi_crosspost_images_count"
+                       style="width: 50px;"
+                       value="<?php echo get_option( 'vkapi_crosspost_images_count' ); ?>"
+                    />
+            </label>
+
+            <br/>
+
             <label>
                 <input type="checkbox"
                        name="vkapi_crosspost_link"
@@ -1656,7 +1767,7 @@ class VK_api {
     <?php
     }
 
-    function js_async_fbapi() {
+    static function js_async_fbapi() {
         if ( get_option( 'fbapi_appid' ) ):
             ?>
             <div id="fb-root"></div>
@@ -1925,11 +2036,21 @@ class VK_api {
     }
 
     private function first_postImage( &$text ) {
-        if ( (bool) preg_match( '#<img[^>]+src=[\'"]([^\'"]+)[\'"]#', $text, $matches ) ) {
-            return $matches[1];
-        } else {
-            return '';
+        $images = $this->_get_post_images( $text, 1 );
+
+        if ( count($images) === 1 ) {
+            return array_shift($images);
         }
+
+        return '';
+    }
+
+    private function _get_post_images ( &$text, $count = 5 ) {
+        if ( (bool) preg_match_all(  '#<img[^>]+src=[\'"]([^\'"]+)[\'"]#ui', $text, $matches ) ) {
+            return array_slice( $matches[1], 0, $count );
+        }
+
+        return array();
     }
 
     function vkapi_button_share() {
@@ -2108,6 +2229,7 @@ class VK_api {
         register_setting( 'vkapi-settings-group', 'vkapi_like_top' );
         register_setting( 'vkapi-settings-group', 'vkapi_crosspost_default' );
         register_setting( 'vkapi-settings-group', 'vkapi_crosspost_length' );
+        register_setting( 'vkapi-settings-group', 'vkapi_crosspost_images_count' );
         register_setting( 'vkapi-settings-group', 'vkapi_crosspost_link' );
         register_setting( 'vkapi-settings-group', 'vkapi_crosspost_signed' );
         register_setting( 'vkapi-settings-group', 'vkapi_crosspost_category' );
@@ -2853,6 +2975,7 @@ class FBAPI_LikeBox extends WP_Widget {
     var $plugin_domain = 'vkapi';
 
     function __construct() {
+        add_action( 'vkapi_body', array( 'VK_api', 'js_async_fbapi' ) );
         load_plugin_textdomain( $this->plugin_domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
         $widget_ops = array(
             'classname'   => 'widget_vkapi',
