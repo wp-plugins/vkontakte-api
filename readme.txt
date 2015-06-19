@@ -3,8 +3,8 @@ Contributors: kowack
 Donate link: http://blog.darx.net/projects/vk_api/
 Tags: vkontakte, facebook, crosspost, comments, social, share, vk.com
 Requires at least: 3.5.1
-Tested up to: 4.1
-Stable tag: 3.23
+Tested up to: 4.2.2
+Stable tag: 3.24
 
 Добавляет функционал API сайта VKontakte.ru(vk.com) на ваш блог. Комментарии, кнопки, виджеты...
 
@@ -52,6 +52,9 @@ Stable tag: 3.23
 4. Остальные настройки.
 
 == Changelog ==
+
+= 3.24 =
+Мелкие изменения.
 
 = 3.23 =
 Кросспост нескольких изображений и мелкие улучшения.
@@ -235,6 +238,9 @@ Better.
 * "The plugin first time seeing this grey world. =)".
 
 == Upgrade Notice ==
+
+= 3.24 =
+Мелкие изменения.
 
 = 3.23 =
 Кросспост нескольких изображений и мелкие улучшения.

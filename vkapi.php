@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://blog.darx.net/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.23
+Version: 3.24
 Author: kowack
 Author URI: http://blog.darx.net/
 */
@@ -594,6 +594,19 @@ class VK_api {
         //
 
         $att        = array();
+
+        // thumbnail
+
+        $image_path = $this->crosspost_get_image( $post->ID );
+        if ( $image_path ) {
+            $temp = $this->vk_upload_photo( $vk_at, $vk_group_id, $image_path );
+            if ( $temp !== false ) {
+                $att[] = $temp;
+            }
+        }
+
+        // images in post
+
         $images = $this->_get_post_images( $post->post_content, get_option( 'vkapi_crosspost_images_count') );
 
         $upload_dir = wp_upload_dir();
@@ -794,27 +807,33 @@ class VK_api {
     private function crosspost_get_image( $post_id ) {
         // need thumbnail? no problem!
         $file_id = get_post_thumbnail_id( $post_id );
-        if ( empty( $file_id ) ) {
-            // get first image id
-            $images = get_children(
-                array(
-                    'post_parent'    => $post_id,
-                    'post_type'      => 'attachment',
-                    'numberposts'    => 1, // show all -1
-                    'post_status'    => 'inherit',
-                    'post_mime_type' => 'image',
-                    'order'          => 'ASC',
-                    'orderby'        => 'menu_order id'
-                )
-            );
-            if ( ! $images ) {
-                return false;
-            }
-            foreach ( $images as $image ) {
-                $file_id = $image->ID;
-            }
+//        if ( empty( $file_id ) ) {
+//            // get first image id
+//            $images = get_children(
+//                array(
+//                    'post_parent'    => $post_id,
+//                    'post_type'      => 'attachment',
+//                    'numberposts'    => 1, // show all -1
+//                    'post_status'    => 'inherit',
+//                    'post_mime_type' => 'image',
+//                    'order'          => 'ASC',
+//                    'orderby'        => 'menu_order id'
+//                )
+//            );
+//            if ( ! $images ) {
+//                return false;
+//            }
+//            foreach ( $images as $image ) {
+//                $file_id = $image->ID;
+//            }
+//        }
+
+        if (!$file_id) {
+            return false;
         }
+
         // get absolute path
+
         $image_url = get_attached_file( $file_id );
 
         return $image_url;
