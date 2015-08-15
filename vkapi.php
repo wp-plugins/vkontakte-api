@@ -3,7 +3,7 @@
 Plugin Name: VKontakte API
 Plugin URI: http://blog.darx.net/projects/vk_api
 Description: Add API functions from vk.com in your own blog. <br /><strong><a href="options-general.php?page=vkapi_settings">Settings!</a></strong>
-Version: 3.24
+Version: 3.25
 Author: kowack
 Author URI: http://blog.darx.net/
 */
@@ -597,66 +597,72 @@ class VK_api {
 
         // thumbnail
 
-        $image_path = $this->crosspost_get_image( $post->ID );
-        if ( $image_path ) {
-            $temp = $this->vk_upload_photo( $vk_at, $vk_group_id, $image_path );
-            if ( $temp !== false ) {
-                $att[] = $temp;
+        $vkapi_crosspost_images_count = get_option('vkapi_crosspost_images_count');
+
+        if ($vkapi_crosspost_images_count == 1) {
+            $image_path = $this->crosspost_get_image($post->ID);
+            if ($image_path) {
+                $temp = $this->vk_upload_photo($vk_at, $vk_group_id, $image_path);
+                if ($temp !== false) {
+                    $att[] = $temp;
+                }
             }
         }
 
         // images in post
 
-        $images = $this->_get_post_images( $post->post_content, get_option( 'vkapi_crosspost_images_count') );
+        if ($vkapi_crosspost_images_count > 1) {
+            $images = $this->_get_post_images($post->post_content, $vkapi_crosspost_images_count);
 
-        $upload_dir = wp_upload_dir();
-        $upload_dir = $upload_dir['basedir'] . DIRECTORY_SEPARATOR;
+            $upload_dir = wp_upload_dir();
+            $upload_dir = $upload_dir['basedir'] . DIRECTORY_SEPARATOR;
 
 //        $upload_dir = 'php://temp';
 
-        foreach ($images as $image) {
+            foreach ($images as $image) {
 
-            $image_name = explode('/', $image);
-            $image_name = array_pop($image_name);
-            $upload_path = $upload_dir . $image_name;
+                $image_name = explode('/', $image);
+                $image_name = array_pop($image_name);
+                $upload_path = $upload_dir . $image_name;
 
-            self::notice_notice('CrossPost: Process photo: ' . $upload_path);
+                self::notice_notice('CrossPost: Process photo: ' . $upload_path);
 
-            // download from web
+                // download from web
 
-            $fp = fopen($upload_path, 'w+b');
-            if ($fp === false) {
-                self::notice_error(__LINE__ . ' Cant open: ' . $upload_path);
-                break;
-            }
-
-            $ch = curl_init(str_replace(" ","%20", $image));
-            if ($ch === false) {
-                self::notice_error(__LINE__ . 'Cant open: ' . $image);
-                break;
-            }
-
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            curl_setopt($ch, CURLOPT_FILE, $fp);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-            // upload to vk.com
-
-            if ( curl_exec($ch) !== false ) {
-                rewind($fp);
-                $temp = $this->vk_upload_photo( $vk_at, $vk_group_id, $upload_path );
-                if ( $temp === false ) {
-                    //
-                } else {
-                    $att[] = $temp;
+                $fp = fopen($upload_path, 'w+b');
+                if ($fp === false) {
+                    self::notice_error(__LINE__ . ' Cant open: ' . $upload_path);
+                    break;
                 }
-            } else {
-                self::notice_error(__LINE__ . curl_error($ch));
-            }
 
-            curl_close($ch);
-            fclose($fp);
-            unlink($upload_path);
+                $ch = curl_init(str_replace(" ", "%20", $image));
+                if ($ch === false) {
+                    self::notice_error(__LINE__ . 'Cant open: ' . $image);
+                    break;
+                }
+
+                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                curl_setopt($ch, CURLOPT_FILE, $fp);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+                // upload to vk.com
+
+                if (curl_exec($ch) !== false) {
+                    rewind($fp);
+                    $temp = $this->vk_upload_photo($vk_at, $vk_group_id, $upload_path);
+                    if ($temp === false) {
+                        //
+                    } else {
+                        $att[] = $temp;
+                    }
+                } else {
+                    self::notice_error(__LINE__ . curl_error($ch));
+                }
+
+                curl_close($ch);
+                fclose($fp);
+                unlink($upload_path);
+            }
         }
 
         $temp =
@@ -2027,7 +2033,8 @@ class VK_api {
         $vkapi_title = addslashes( do_shortcode( $post->post_title ) );
         $vkapi_url   = get_permalink();
         $vkapi_text  = str_replace( array( "\r\n", "\n", "\r" ), ' <br />', do_shortcode( $post->post_content ) );
-        $vkapi_image = $this->first_postimage( $vkapi_text );
+        // <link rel="image_src" href="600x268.png" />
+        $vkapi_image = $this->first_postimage(get_the_post_thumbnail($post_id, array(600, 268))) or $this->first_postimage($vkapi_text);
         $vkapi_text  = strip_tags( $vkapi_text );
         $vkapi_text  = addslashes( $vkapi_text );
         $vkapi_descr = $vkapi_text = mb_substr( $vkapi_text, 0, 139 );
